@@ -1,0 +1,6 @@
+/build/
+/.gradle/
+*.class
+*.obj
+*.lib
+*.exp

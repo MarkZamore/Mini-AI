@@ -1,0 +1,9 @@
+{
+  "jni": [
+    {"type":"ai.enterprise.database.SQLiteNative","methods":[{"name":"open","parameterTypes":["java.lang.String"]},{"name":"close","parameterTypes":["long"]},{"name":"interrupt","parameterTypes":["long"]},{"name":"version","parameterTypes":[]},{"name":"query","parameterTypes":["long","java.lang.String","java.lang.String[]"]}]},
+    {"type":"java.lang.String","methods":[{"name":"getBytes","parameterTypes":["java.lang.String"]}]},
+    {"type":"java.util.ArrayList","methods":[{"name":"<init>","parameterTypes":[]},{"name":"add","parameterTypes":["java.lang.Object"]},{"name":"get","parameterTypes":["int"]},{"name":"size","parameterTypes":[]}]},
+    {"type":"java.lang.IllegalStateException","methods":[{"name":"<init>","parameterTypes":["java.lang.String"]}]},
+    {"type":"java.lang.String[]"}
+  ]
+}

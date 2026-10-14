@@ -1,0 +1,1 @@
+{"id":"database","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.database.DatabaseModule","requires":[],"provides":["DatabaseServiceV1"],"native":["enterpriseai-sqlite.dll"]}

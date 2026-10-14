@@ -1,0 +1,4 @@
+{
+  "requiresModules": ["graph", "database", "documents"],
+  "fixture": "graph-snapshot"
+}

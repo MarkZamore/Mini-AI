@@ -1,0 +1,1 @@
+{"id":"sources","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.sources.SourcesModule","requires":["documents"],"provides":["SourceViewerServiceV1"],"native":[]}

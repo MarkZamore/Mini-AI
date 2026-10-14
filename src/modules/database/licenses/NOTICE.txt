@@ -1,0 +1,11 @@
+SQLite 3.53.1
+Source: https://www.sqlite.org/2026/sqlite-amalgamation-3530100.zip
+Archive SHA-256: 36ad6e7f38540a3b21a2ac36340833f0a9e426bc1c752751c3ba669466827eae
+SQLite is dedicated to the public domain: https://www.sqlite.org/copyright.html
+
+EnterpriseAI's JNI bridge is a separate application source, not Xerial JDBC.
+The delivered DLL is loaded directly from native/ and never extracted.
+FTS5, TEMP_STORE=3 and OMIT_LOAD_EXTENSION are enabled at compile time.
+The guarded win32-longpath VFS rejects creating, writing, truncating, deleting,
+shared-memory mappings and external extension loads.
+The read-only authorizer permits FTS5's read-only data_version check.

@@ -1,0 +1,1 @@
+{"id":"documents","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.documents.DocumentsModule","requires":["database"],"provides":["DocumentAccessServiceV1"],"native":[]}

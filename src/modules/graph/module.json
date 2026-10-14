@@ -1,0 +1,1 @@
+{"id":"graph","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.graph.GraphModule","uiFactory":"ai.enterprise.graph.GraphPanelFactory","requires":["DatabaseServiceV1","DocumentAccessServiceV1"],"provides":["GraphServiceV1"]}

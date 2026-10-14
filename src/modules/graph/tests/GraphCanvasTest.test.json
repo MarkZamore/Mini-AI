@@ -1,0 +1,6 @@
+{
+  "requiresModules": ["graph"],
+  "fixture": "graph-snapshot",
+  "fixtureRequiresModules": ["database", "documents"],
+  "nativeUi": true
+}

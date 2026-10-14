@@ -1,0 +1,1 @@
+{"id":"assistant","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.assistant.AssistantModule","uiFactory":"ai.enterprise.assistant.AssistantPanel","requires":[],"optional":["SearchServiceV1","InferenceServiceV1","DocumentAccessServiceV1","SourceViewerServiceV1"],"provides":["AssistantSessionServiceV1"]}

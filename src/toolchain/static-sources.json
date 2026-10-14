@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "graal": {
+    "repository": "oracle/graal",
+    "revision": "981ecb6e1be6bf4591a6dd24b48ea053221209f5",
+    "archiveSha256": "9e498b743a9ed345012806f4ecfa4b9f67e1f3255ad150538e6503c00ee7d03d"
+  },
+  "labs-openjdk": {
+    "repository": "graalvm/labs-openjdk",
+    "revision": "2ea5f0bb564c",
+    "archiveSha256": "2af2d87df3dbfb08c351fc3925f186acaf43cf2a0a758f956756f157a83fdf47"
+  },
+  "javaVersion": "25.0.2+10-jvmci-b01",
+  "graalVersion": "25.0.2+10.1",
+  "msvcVersion": "14.51.36231",
+  "runtimeLinkage": "MultiThreaded",
+  "platform": "windows-x64"
+}

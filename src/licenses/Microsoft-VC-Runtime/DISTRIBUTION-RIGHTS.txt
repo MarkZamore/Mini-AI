@@ -1,0 +1,49 @@
+EnterpriseAI static Microsoft C/C++ runtime: distribution evidence
+Review date: 2026-10-14. Toolset: release MSVC 14.51.36231, Visual Studio 2026.
+
+The accompanying Cpp_v14_ENU.1033 LICENSE.txt is the runtime recipient licence.
+It is not, by itself, the developer's redistribution grant. Redistribution is
+assessed using the Visual Studio licence and applicable distributable list.
+
+Applicable primary references:
+1. Visual Studio Community 2026 licence, VS2026_Comm_ENU.1033,
+   last updated October 1, 2025. Original DOCX and its plain-text transcription
+   are supplied alongside this notice and embedded in corresponding-source.zip.
+   https://visualstudio.microsoft.com/license-terms/vs2026-ga-community/
+   https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual_Studio_2026-License-Community_ENU.docx
+2. Visual Studio 2026 Distributable Code list (the target of the installed
+   Licenses/1049/Redist.txt):
+   https://learn.microsoft.com/en-us/visualstudio/releases/2026/redistribution
+3. Microsoft C++ deployment documentation, section Static linking:
+   https://learn.microsoft.com/en-us/cpp/windows/deployment-in-visual-cpp?view=msvc-170
+4. Microsoft Visual Studio licensing guidance, Distributable Code:
+   https://www.microsoft.com/licensing/guidance/Visual-Studio
+
+The Visual Studio licence's DISTRIBUTABLE CODE section provides the developer
+grant and its conditions. Microsoft's deployment documentation describes
+release static-library object code linked into a single deployable executable.
+The licensing guidance distinguishes distributing linked output from shipping
+the .lib files themselves. EnterpriseAI ships no Microsoft .lib, compiler,
+headers, CRT source, debug runtime, or redistributable DLL. The current web
+distributable list explicitly enumerates VC/redist files; it does not separately
+enumerate the static CRT .lib paths. The release static-link distribution
+interpretation therefore also relies on the deployment/licensing guidance.
+
+Release distribution remains conditional on a valid developer licence,
+Community edition eligibility, absence of preview/unreleased components, added
+application functionality, the required protection in distributor/end-user
+terms, and the other distribution restrictions and obligations in that licence.
+Including these documents is evidence, not proof that all such conditions or
+the distributor's end-user agreement have been fulfilled.
+
+GraalVM/OpenJDK modified sources retain their original GPLv2 Classpath Exception.
+That exception permits executable linkage with independent modules governed by
+their own terms. Microsoft CRT code is not relicensed under GPL/EPL and its
+source is not included in the source archive. No Classpath Exception is removed.
+This avoids claiming that the CRT becomes GPL-covered source; it is not a legal
+certification of the entire distribution. SWT and other components retain their
+own licences and notices. The application owner's licence is not inferred.
+
+Static runtime servicing requires rebuilding and redistributing the application
+when relevant runtime security fixes are adopted; Windows Update cannot replace
+the runtime object code embedded in this EXE.

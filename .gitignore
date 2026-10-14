@@ -1,0 +1,26 @@
+# Local build products and downloaded toolchains
+/src/build/
+**/.gradle/
+**/__pycache__/
+*.py[cod]
+
+# Runtime data is distributed through GitHub Releases
+/EnterpriseAI.exe
+/docs/
+/db/_runtime/
+/db/artifacts/
+/db/documents/
+/db/index.sqlite*
+/db/catalog.json
+/db/report.json
+
+# Model weights and runtime packages are prepared separately
+/model/*
+!/model/instructions.md
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key

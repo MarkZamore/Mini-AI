@@ -1,0 +1,1 @@
+{"jni":[{"type":"java.lang.String"},{"type":"java.lang.IllegalStateException","methods":[{"name":"<init>","parameterTypes":["java.lang.String"]}]},{"type":"java.lang.Throwable","methods":[{"name":"printStackTrace","parameterTypes":[]},{"name":"getMessage","parameterTypes":[]},{"name":"toString","parameterTypes":[]}]}]}

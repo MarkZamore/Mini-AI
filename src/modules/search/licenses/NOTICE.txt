@@ -1,0 +1,12 @@
+EnterpriseAI search normalization
+
+The bundled Unicode 15.0 tables are reproducibly derived from Python 3.12's
+Unicode database and are covered by UNICODE-LICENSE.txt.
+NFC, case folding and alphanumeric token membership are pinned to version 15.0.
+
+RussianStemmer.java is a literal implementation of the Russian algorithm and
+suffix tables from Snowball 3.1.1. Preserve SNOWBALL-COPYING.txt on redistribution.
+Source algorithm: https://snowballstem.org/algorithms/russian/stemmer.html
+Reference implementation: snowballstemmer 3.1.1, russian_stemmer.py.
+The implementation is validated against all 38,936 distinct Russian tokens
+in the initial database; changing a database does not require Python.

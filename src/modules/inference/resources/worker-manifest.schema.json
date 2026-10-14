@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:enterpriseai:inference:worker-manifest:v1",
+  "title": "EnterpriseAI offline Windows CPU worker manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "protocol", "executable", "engine", "revision",
+    "architecture", "supportedIsa", "weights", "files", "precision",
+    "contextTokens", "threads", "minFreeMemoryBytes", "maxProcessMemoryBytes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "protocol": { "const": "enterpriseai.inference.v1" },
+    "executable": { "const": "inference-worker.exe" },
+    "engine": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "revision": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "architecture": { "const": "windows-x64" },
+    "supportedIsa": {
+      "description": "Required CPU instruction sets. Every requirement must be recognized and positively verified by the host; this is not a list of optional backends.",
+      "type": "array", "minItems": 1, "maxItems": 32, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9][a-z0-9_.-]*$" }
+    },
+    "weights": { "$ref": "#/$defs/file" },
+    "files": {
+      "description": "Complete standalone executable and required data inventory, including executable and primary weights. DLLs and additional executables are prohibited even when listed and hashed. The worker validates the weight format; GGUF is not required by the host. Path uniqueness, containment and inventory completeness also require runtime validation.",
+      "type": "array", "minItems": 2, "maxItems": 1024, "uniqueItems": true,
+      "items": { "$ref": "#/$defs/file" }
+    },
+    "precision": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "contextTokens": { "type": "integer", "minimum": 1, "maximum": 1048576 },
+    "threads": { "type": "integer", "minimum": 1, "maximum": 256 },
+    "minFreeMemoryBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "maxProcessMemoryBytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+  },
+  "$defs": {
+    "relativePath": {
+      "description": "Forward-slash relative path under model, with no traversal, empty segment, drive, ADS, trailing dot/space, Windows wildcard, control character or backslash. Canonical containment and Windows reserved names are checked by the host.",
+      "type": "string", "minLength": 1, "maxLength": 32760,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//)(?!.*/$)(?!.*[. ](?:/|$))[^\\\\:\\u0000-\\u001f<>\"|?*]+$"
+    },
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}
