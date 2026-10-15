@@ -9,11 +9,21 @@ $target = Join-Path $weightsDirectory 'Qwen3.5-4B-baseline-Q6_K.gguf'
 function Hash-File([string]$Path) {
     return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
+function Verify-Package {
+    $manifest = Get-Content -LiteralPath (Join-Path $base 'worker.json') -Raw | ConvertFrom-Json
+    if ($manifest.weights.sha256 -ne $expectedHash -or $manifest.weights.path -ne 'weights/Qwen3.5-4B-baseline-Q6_K.gguf') {
+        throw 'This downloader does not match worker.json.'
+    }
+    foreach ($file in $manifest.files) {
+        if ((Hash-File (Join-Path $base $file.path)) -ne $file.sha256) { throw "Package file differs: $($file.path)" }
+    }
+}
 if (Test-Path -LiteralPath $target) {
     if ((Get-Item -LiteralPath $target).Length -ne $expectedBytes -or (Hash-File $target) -ne $expectedHash) {
         throw 'Existing weights differ from this package. Preserve them separately before installing this model.'
     }
-    Write-Host 'Correct model weights are already installed.'
+    Verify-Package
+    Write-Host 'Correct weights are already installed; all package hashes verified.'
     exit 0
 }
 $parts = @(
@@ -53,10 +63,7 @@ if ((Get-Item -LiteralPath $temporary).Length -ne $expectedBytes -or (Hash-File 
     throw 'Combined weights did not pass SHA-256 verification; package is not ready.'
 }
 [IO.File]::Move($temporary, $target)
-$manifest = Get-Content -LiteralPath (Join-Path $base 'worker.json') -Raw | ConvertFrom-Json
-foreach ($file in $manifest.files) {
-    if ((Hash-File (Join-Path $base $file.path)) -ne $file.sha256) { throw "Package file differs: $($file.path)" }
-}
+Verify-Package
 if ($downloadedHere) {
     foreach ($part in $parts) { Remove-Item -LiteralPath (Join-Path $partsDirectory $part.Name) }
 }

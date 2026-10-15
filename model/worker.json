@@ -3,7 +3,7 @@
   "protocol": "enterpriseai.inference.v1",
   "executable": "inference-worker.exe",
   "engine": "llama.cpp",
-  "revision": "a0e6dc7384edb8f5d927155e1d26c10b4a310e6d+static-only.sha256=e3c3ca872bfcc2db926a05c573d2193eea5f7eb48e295e54c01f10ea74c1ce49+cpu-avx2-v1",
+  "revision": "a0e6dc7384edb8f5d927155e1d26c10b4a310e6d+static-only.sha256=e3c3ca872bfcc2db926a05c573d2193eea5f7eb48e295e54c01f10ea74c1ce49+cpu-avx2-v2-progress",
   "architecture": "windows-x64",
   "supportedIsa": [
     "x86-64",
@@ -14,22 +14,22 @@
     "sha256": "3acaea00a98af4e8cb7195259d7dd903b0cc749dff61a8cf47274c9a91ed02f6"
   },
   "precision": "Q6_K",
-  "contextTokens": 4096,
-  "threads": 4,
+  "contextTokens": 16384,
+  "threads": 12,
   "minFreeMemoryBytes": 8589934592,
   "maxProcessMemoryBytes": 6442450944,
   "files": [
     {
       "path": "Download-weights.ps1",
-      "sha256": "ac0a9b5305ec35334c9a3ecb4d562046fcfcc2268a1dae4bc9c488248ceec517"
+      "sha256": "ec71dc4028e202ecb4fc267c120fd75dac204756645c9ab94ceb5e7c2a09a541"
     },
     {
       "path": "inference-worker.exe",
-      "sha256": "5c36b1736343f5fea56f1c589a7f41f5a16bb7d97b11cc72aae3ae7e8bf7b5d8"
+      "sha256": "48c2a1394571d7dae79e20577ec26a4d57e8084a6c7f32c491387f29c4963bf7"
     },
     {
       "path": "licenses/ENGINE-MODIFICATIONS.txt",
-      "sha256": "aca930b255d05c25b142202512c8bda4b73939f05506720915bd1a32d96ffbdf"
+      "sha256": "a3183eeaf0c7160f8577061d3bf0c9fecc7a7914b9f7b633e2592dd1f8034542"
     },
     {
       "path": "licenses/llama-static-only.patch",
@@ -77,7 +77,7 @@
     },
     {
       "path": "licenses/worker-source-avx2.zip",
-      "sha256": "c5f7ff6fcc9965d4db2b460ba7e0701001eb7a2a4893ce93b050d6b9d7831096"
+      "sha256": "7a6b8e6c875650730b73827867a5f431e1062b71a27d282d3f942c2a85a5600c"
     },
     {
       "path": "licenses/xxhash-BSD-2-Clause.txt",
@@ -85,15 +85,15 @@
     },
     {
       "path": "minimum-smoke-results.json",
-      "sha256": "67abbecb39a585775d8d95d2f7ac4e3e5446430a084c14f6cacb1c632237282c"
+      "sha256": "41edf597b3c93b425e51d19725afc727727fe154878a22b73154cb898e77e6c9"
     },
     {
       "path": "preparation-report.md",
-      "sha256": "213ac0da4531dbb6279b3504253469737e5e8f38b0e7fb321a5e4b8d2daeb199"
+      "sha256": "2f72bd263fae8d58be57b8a5902558c8a7e4b98f8d95a141c3527e975bff1c10"
     },
     {
       "path": "README.md",
-      "sha256": "11345ee89950a4a4432237162235b0c1351b0ee5856f169ac397f513b1d2a541"
+      "sha256": "43b2139b9775f1607a86cf7e804f79a849c20c63dbb1c7bb104990fb7b9f0add"
     },
     {
       "path": "weights/Qwen3.5-4B-baseline-Q6_K.gguf",
