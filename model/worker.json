@@ -3,10 +3,11 @@
   "protocol": "enterpriseai.inference.v1",
   "executable": "inference-worker.exe",
   "engine": "llama.cpp",
-  "revision": "a0e6dc7384edb8f5d927155e1d26c10b4a310e6d+static-only.sha256=e3c3ca872bfcc2db926a05c573d2193eea5f7eb48e295e54c01f10ea74c1ce49",
+  "revision": "a0e6dc7384edb8f5d927155e1d26c10b4a310e6d+static-only.sha256=e3c3ca872bfcc2db926a05c573d2193eea5f7eb48e295e54c01f10ea74c1ce49+cpu-avx2-v1",
   "architecture": "windows-x64",
   "supportedIsa": [
-    "x86-64"
+    "x86-64",
+    "avx2"
   ],
   "weights": {
     "path": "weights/Qwen3.5-4B-baseline-Q6_K.gguf",
@@ -24,11 +25,11 @@
     },
     {
       "path": "inference-worker.exe",
-      "sha256": "f3018793239238db586c4d509c3c105f96000aeb5291defd14c3824f7b5df42a"
+      "sha256": "5c36b1736343f5fea56f1c589a7f41f5a16bb7d97b11cc72aae3ae7e8bf7b5d8"
     },
     {
       "path": "licenses/ENGINE-MODIFICATIONS.txt",
-      "sha256": "c148b361ebf6cbb5616a344cf9ae91a7c189868838fb87a2e8ae4f65c478708b"
+      "sha256": "aca930b255d05c25b142202512c8bda4b73939f05506720915bd1a32d96ffbdf"
     },
     {
       "path": "licenses/llama-static-only.patch",
@@ -75,16 +76,24 @@
       "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
     },
     {
+      "path": "licenses/worker-source-avx2.zip",
+      "sha256": "c5f7ff6fcc9965d4db2b460ba7e0701001eb7a2a4893ce93b050d6b9d7831096"
+    },
+    {
       "path": "licenses/xxhash-BSD-2-Clause.txt",
       "sha256": "a2973411d278045bde3c7161b911e0680d53e2d73d6457c77068d2e55d816d67"
     },
     {
+      "path": "minimum-smoke-results.json",
+      "sha256": "67abbecb39a585775d8d95d2f7ac4e3e5446430a084c14f6cacb1c632237282c"
+    },
+    {
       "path": "preparation-report.md",
-      "sha256": "3bfc6f77115955c6ea45b9096abc0682c2cadeefc0f4aa3e69f3e8ff7b5b4c31"
+      "sha256": "213ac0da4531dbb6279b3504253469737e5e8f38b0e7fb321a5e4b8d2daeb199"
     },
     {
       "path": "README.md",
-      "sha256": "ead63c23831c2256b75f12059b4f6764b52a940fcca67bf7d012a2035fde0c03"
+      "sha256": "11345ee89950a4a4432237162235b0c1351b0ee5856f169ac397f513b1d2a541"
     },
     {
       "path": "weights/Qwen3.5-4B-baseline-Q6_K.gguf",

@@ -1,0 +1,77 @@
+{
+  "scope": "Short checks on preparation host only; supplied-context inference command, not full Assistant search/UI or recipient acceptance",
+  "worker_sha256": "5c36b1736343f5fea56f1c589a7f41f5a16bb7d97b11cc72aae3ae7e8bf7b5d8",
+  "weights_sha256": "3acaea00a98af4e8cb7195259d7dd903b0cc749dff61a8cf47274c9a91ed02f6",
+  "revision": "a0e6dc7384edb8f5d927155e1d26c10b4a310e6d+static-only.sha256=e3c3ca872bfcc2db926a05c573d2193eea5f7eb48e295e54c01f10ea74c1ce49+cpu-avx2-v1",
+  "profile": {
+    "contextTokens": 4096,
+    "threads": 4,
+    "supportedIsa": [
+      "x86-64",
+      "avx2"
+    ],
+    "minFreeMemoryBytes": 8589934592,
+    "maxProcessMemoryBytes": 6442450944
+  },
+  "public_RAG_cases": [
+    {
+      "language": "ru",
+      "passed": true,
+      "seconds": 37.76721820000057,
+      "peak_worker_rss_bytes": 3764625408,
+      "peak_worker_private_bytes": 720990208
+    },
+    {
+      "language": "kz",
+      "passed": true,
+      "seconds": 38.12926869999865,
+      "peak_worker_rss_bytes": 3764576256,
+      "peak_worker_private_bytes": 723992576
+    }
+  ],
+  "runtime_controls": [
+    {
+      "name": "cancel_during_generation",
+      "passed": true,
+      "seconds": 0.0008589000008214498
+    },
+    {
+      "name": "same_process_generation_after_cancel",
+      "passed": true
+    },
+    {
+      "name": "absent_fact",
+      "passed": true,
+      "grading": {
+        "passed": true,
+        "failures": [],
+        "provided_source_ids": 1
+      },
+      "terminal": {
+        "requestId": "absent",
+        "type": "done"
+      },
+      "output_sha256": "b2c7a8e2a43d4e21096f475d8656365eeb478edfc634b749c00ed87fdd675aeb"
+    }
+  ],
+  "load_seconds": 2.9663493999996717,
+  "loaded_module_names": [
+    "KernelBase.dll",
+    "advapi32.dll",
+    "bcrypt.dll",
+    "bcryptprimitives.dll",
+    "inference-worker.exe",
+    "kernel.appcore.dll",
+    "kernel32.dll",
+    "msvcrt.dll",
+    "ntdll.dll",
+    "rpcrt4.dll",
+    "sechost.dll"
+  ],
+  "real_source_probe": {
+    "seconds": 40.60132209999938,
+    "grounded_value_and_citation_present": true,
+    "strict_literal_only_format_passed": false
+  },
+  "recipient_tested": false
+}

@@ -16,3 +16,5 @@ model package and its hashes, and handle cancellation and pipe shutdown.
 These integration changes are separate from model-weight training,
 merging and quantization; the specific weight modifications must be
 identified in that model's own preparation report and modification notice.
+
+Selected recipient update, 2026-10-15: static ggml CPU configured with AVX and AVX2; MSVC also enables FMA/F16C. Custom worker verifies the required CPU/OS state before any engine call. Runtime revision suffix +cpu-avx2-v1. No GPU, DLL or dynamic-backend addition. Current wrapper/build sources are in worker-source-avx2.zip.
