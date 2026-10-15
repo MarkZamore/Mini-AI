@@ -126,7 +126,14 @@ try {
     $expectedCount = @($data.files | Where-Object { $_.path.StartsWith('docs/') -or $_.path.StartsWith('db/') }).Count
     if ($count -ne $expectedCount) { throw "Incomplete data: $count of $expectedCount files" }
     Write-Host "Verified all $count document/data files. Preparing model..."
-    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $base 'model/Download-weights.ps1') -LocalPartsDirectory $DownloadsDirectory
+    # Use the inbox engine and load its Utility module explicitly. A caller may
+    # have inherited another PowerShell edition's module search paths.
+    $nativePowerShell = Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe'
+    $utilityModule = Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1'
+    $modelScript = Join-Path $base 'model/Download-weights.ps1'
+    $modelCommand = "Import-Module '" + $utilityModule.Replace("'","''") + "' -ErrorAction Stop; & '" +
+        $modelScript.Replace("'","''") + "' -LocalPartsDirectory '" + $DownloadsDirectory.Replace("'","''") + "'"
+    & $nativePowerShell -NoProfile -ExecutionPolicy Bypass -Command $modelCommand
     if ($LASTEXITCODE -ne 0) { throw 'Model assembly or verification failed.' }
     $modelManifest = Get-Content -LiteralPath (Join-Path $base 'model/worker.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     foreach ($file in $modelManifest.files) {
