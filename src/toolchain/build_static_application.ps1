@@ -1,10 +1,12 @@
-param([switch]$SkipJavaBuild,[string]$OutputDirectory='',[string]$SourceDirectory='')
+﻿param([switch]$SkipJavaBuild,[string]$OutputDirectory='',[string]$SourceDirectory='',
+    [ValidatePattern('^[^\\/:*?"<>|]+\.exe$')][string]$ExecutableName='миниИИ.exe')
 $ErrorActionPreference='Stop'
 $toolSourceRoot=Split-Path -Parent $PSScriptRoot
 $sourceRoot=if($SourceDirectory){[IO.Path]::GetFullPath($SourceDirectory)}else{$toolSourceRoot}
 $staticRoot=Join-Path $toolSourceRoot 'build/static-toolchain'
 $jdk=Join-Path $staticRoot 'graalvm-static'
 $native=Join-Path $staticRoot 'application-native'
+$linkedExecutableName='EnterpriseAI.exe'
 if(!$OutputDirectory){$OutputDirectory=Join-Path $sourceRoot 'build/static-image'}
 New-Item -ItemType Directory -Force -Path $OutputDirectory,(Join-Path $staticRoot 'tmp') | Out-Null
 $msvc='C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231'
@@ -47,7 +49,12 @@ try {
     & (Join-Path $jdk 'bin/java.exe') -classpath "$classes;$cp" NativeMetadata (Join-Path $toolSourceRoot 'build/dependencies/swt-3.135.0-patched.jar') $metadata;Check 'Static JNI metadata'
     $inventory=Get-Content -LiteralPath (Join-Path $native 'inventory.json') -Raw | ConvertFrom-Json
     $selected=@($inventory | Where-Object {$_.name -ne 'enterpriseai_sqlite' -or (Test-Path -LiteralPath (Join-Path $sourceRoot 'modules/database/module.json'))})
-    $arguments=@('--no-fallback','--verbose','--enable-native-access=ALL-UNNAMED','-O2','-march=x86-64','-R:MaxHeapSize=1073741824','-H:+UnlockExperimentalVMOptions','--features=ai.enterprise.build.NoFileLogFeature,ai.enterprise.build.StaticLibrariesFeature','--initialize-at-build-time=ai.enterprise.build.NoFileLogHandler','--initialize-at-run-time=org.eclipse.swt,ai.enterprise.platform.WindowsPlatform',"--class-path=$classes;$cp","-H:Path=$OutputDirectory",'-H:Name=EnterpriseAI',"-H:JNIConfigurationFiles=$metadata/jni-config.json","-H:ReflectionConfigurationFiles=$metadata/reflect-config.json","-H:IncludeResources=enterpriseai/legal/.*","-H:CLibraryPath=$native",'-H:NativeLinkerOption=/SUBSYSTEM:WINDOWS','-H:NativeLinkerOption=/ENTRY:mainCRTStartup','-J-Xmx8g','-J-XX:-UsePerfData')
+    $iconInventoryPath=Join-Path $native 'swt-icons.json'
+    if(!(Test-Path -LiteralPath $iconInventoryPath)){throw 'Refresh static icon resources: toolchain/build_static_libraries.py --resources-only'}
+    $iconInventory=Get-Content -LiteralPath $iconInventoryPath -Raw | ConvertFrom-Json
+    $iconRelativePath='core/shell/resources/enterpriseai/ui/application.ico'
+    if($iconInventory.sourcePath -ne $iconRelativePath -or $iconInventory.resourceGroup -ne 101 -or $iconInventory.sourceSha256 -ne (Get-FileHash -LiteralPath (Join-Path $sourceRoot $iconRelativePath) -Algorithm SHA256).Hash.ToLowerInvariant() -or $iconInventory.sha256 -ne (Get-FileHash -LiteralPath (Join-Path $native 'swt-icons.res') -Algorithm SHA256).Hash.ToLowerInvariant()){throw 'Static icon resources do not match the single source ICO; regenerate them before building.'}
+    $arguments=@('--no-fallback','--verbose','--enable-native-access=ALL-UNNAMED','-O2','-march=x86-64','-R:MaxHeapSize=1073741824','-H:+UnlockExperimentalVMOptions','--features=ai.enterprise.build.NoFileLogFeature,ai.enterprise.build.StaticLibrariesFeature','--initialize-at-build-time=ai.enterprise.build.NoFileLogHandler','--initialize-at-run-time=org.eclipse.swt,ai.enterprise.platform.WindowsPlatform',"--class-path=$classes;$cp","-H:Path=$OutputDirectory",'-H:Name=EnterpriseAI',"-H:JNIConfigurationFiles=$metadata/jni-config.json","-H:ReflectionConfigurationFiles=$metadata/reflect-config.json","-H:IncludeResources=enterpriseai/(legal|ui)/.*","-H:CLibraryPath=$native",'-H:NativeLinkerOption=/SUBSYSTEM:WINDOWS','-H:NativeLinkerOption=/ENTRY:mainCRTStartup','-J-Xmx8g','-J-XX:-UsePerfData')
     $exports=@('EXPORTS')
     foreach($entry in $selected){
         if((Get-FileHash -LiteralPath $entry.path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256){throw "Static archive changed: $($entry.name)"}
@@ -81,11 +88,15 @@ try {
   <application xmlns="urn:schemas-microsoft-com:asm.v3"><windowsSettings><longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware></windowsSettings></application>
 </assembly>
 '@ | Set-Content -LiteralPath $manifest -Encoding UTF8
-    & (Join-Path $sdk "bin/$sdkVersion/x64/mt.exe") -nologo -manifest $manifest ("-outputresource:"+(Join-Path $OutputDirectory 'EnterpriseAI.exe')+';#1');Check 'EXE manifest'
-    $imports=(& dumpbin.exe /imports (Join-Path $OutputDirectory 'EnterpriseAI.exe')) -join "`n";Check 'Import inspection'
+    $linkedExecutable=Join-Path $OutputDirectory $linkedExecutableName
+    & (Join-Path $sdk "bin/$sdkVersion/x64/mt.exe") -nologo -manifest $manifest ("-outputresource:"+$linkedExecutable+';#1');Check 'EXE manifest'
+    # Keep the linker/argument-file name ASCII; publish the Unicode basename before acceptance.
+    $executable=Join-Path $OutputDirectory $executableName
+    if(![String]::Equals($linkedExecutable,$executable,[StringComparison]::OrdinalIgnoreCase)){Move-Item -LiteralPath $linkedExecutable -Destination $executable -Force}
+    $imports=(& dumpbin.exe /imports $executable) -join "`n";Check 'Import inspection'
     $imports | Set-Content -LiteralPath (Join-Path $OutputDirectory 'imports.txt') -Encoding UTF8
     if($imports -match '(?i)(VCRUNTIME|MSVCP|MSVCR|LIBOMP|JVM|JAVA)\w*\.dll'){throw 'Non-inbox runtime DLL import remains'}
     $selected | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $OutputDirectory 'static-library-inventory.json') -Encoding UTF8
-    @{schemaVersion=1;profile='windows-x64-static';executableSha256=(Get-FileHash -LiteralPath (Join-Path $OutputDirectory 'EnterpriseAI.exe') -Algorithm SHA256).Hash.ToLowerInvariant();applicationJarSha256=$jarSnapshot;toolchainArchives=$toolchainArchives;applicationArchives=$selected;sources=$sourceSnapshot} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $OutputDirectory 'build-manifest.json') -Encoding UTF8
-    Write-Output (Join-Path $OutputDirectory 'EnterpriseAI.exe')
+    @{schemaVersion=1;profile='windows-x64-static';executableName=$executableName;executableSha256=(Get-FileHash -LiteralPath $executable -Algorithm SHA256).Hash.ToLowerInvariant();applicationJarSha256=$jarSnapshot;applicationIcon=$iconInventory;toolchainArchives=$toolchainArchives;applicationArchives=$selected;sources=$sourceSnapshot} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $OutputDirectory 'build-manifest.json') -Encoding UTF8
+    Write-Output $executable
 } finally {Pop-Location}

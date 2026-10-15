@@ -41,8 +41,8 @@ public final class SourcesService implements Api.SourceViewerServiceV1 {
                 if (!resolution.verified()) throw new Api.ServiceException("SOURCE_UNVERIFIED", "Источник не прошёл проверку версии.");
                 // Always open the original. The selected derived file only defines
                 // coordinates; Open With cannot reliably navigate those locators.
-                Path original = resolution.originalPath().toRealPath();
-                Path docsRoot = context.environment().docs().toRealPath();
+                Path docsRoot = docsRoot();
+                Path original = existingOriginal(resolution.originalPath());
                 if (!original.startsWith(docsRoot) || !Files.isRegularFile(original)) throw new Api.ServiceException("SOURCE_PATH_INVALID", "Оригинал находится вне папки docs.");
                 verifyDigest(original, resolution.sourceSha256(), cancellation);
                 cancellation.check();
@@ -55,12 +55,25 @@ public final class SourcesService implements Api.SourceViewerServiceV1 {
     private Path verifyOriginal(String relativePath, String sha, Api.CancellationToken cancellation) throws Exception {
         Path relative = Path.of(relativePath);
         if (relative.isAbsolute()) throw new Api.ServiceException("SOURCE_PATH_INVALID", "Абсолютные пути источников не поддерживаются.");
-        Path docsRoot = context.environment().docs().toRealPath();
-        Path original = context.environment().db().resolve(relative).normalize().toRealPath();
+        Path docsRoot = docsRoot();
+        Path original = existingOriginal(context.environment().db().resolve(relative).normalize());
         if (!original.startsWith(docsRoot) || !Files.isRegularFile(original)) throw new Api.ServiceException("SOURCE_PATH_INVALID", "Оригинал находится вне папки docs или не является файлом.");
         verifyDigest(original, sha, cancellation);
         if (!context.environment().db().resolve(relative).normalize().toRealPath().equals(original)) throw new Api.ServiceException("SOURCE_PATH_CHANGED", "Путь оригинала изменился во время проверки.");
         return original;
+    }
+
+    private Path docsRoot() throws IOException {
+        Path docs = context.environment().docs();
+        if (!Files.isDirectory(docs)) throw new Api.ServiceException("DOCS_FOLDER_MISSING",
+            "Не найдена папка оригиналов docs:\n" + docs + "\nВерните папку docs рядом с приложением, чтобы открывать документы.");
+        return docs.toRealPath();
+    }
+
+    private static Path existingOriginal(Path candidate) throws IOException {
+        if (!Files.isRegularFile(candidate)) throw new Api.ServiceException("SOURCE_UNAVAILABLE",
+            "Оригинал документа отсутствует или недоступен:\n" + candidate + "\nВерните файл исходной версии в папку docs.");
+        return candidate.toRealPath();
     }
 
     private static void verifyDigest(Path original, String sha, Api.CancellationToken cancellation) throws Exception {

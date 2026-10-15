@@ -55,5 +55,5 @@ foreach($mode in @('fatal','oom')){
 }
 $after=@(Get-ChildItem -LiteralPath $probe -Recurse -File | ForEach-Object { $_.FullName+':'+$_.Length+':'+$_.LastWriteTimeUtc.Ticks })
 if(Compare-Object $before $after){throw 'Static fatal/OOM probe changed files'}
-@{completed=$true;exeSha256=(Get-FileHash -LiteralPath (Join-Path $probe 'CrashProbe.exe')).Hash.ToLowerInvariant();cases=$cases;filesUnchanged=$true;scope='Standalone static development probe, actual JNI FatalError + caught OOM, same production NoFileLogFeature/Handler';limitations=@('ProcMon remains required; no blanket operating-system guarantee')}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $sourceRoot 'build/test-results/static-fatal-probe.json') -Encoding UTF8
+@{completed=$true;exeSha256=(Get-FileHash -LiteralPath (Join-Path $probe 'CrashProbe.exe')).Hash.ToLowerInvariant();cases=$cases;filesUnchanged=$true;scope='Standalone static development probe, actual JNI FatalError + caught OOM, same production NoFileLogFeature/Handler';limitations=@('File snapshots do not verify transient writes or registry operations; no blanket operating-system guarantee')}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $sourceRoot 'build/test-results/static-fatal-probe.json') -Encoding UTF8
 Write-Output 'Static JNI FatalError and caught OOM passed; no probe files changed.'

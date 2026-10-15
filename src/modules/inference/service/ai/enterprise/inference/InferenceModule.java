@@ -77,9 +77,9 @@ public final class InferenceModule implements Api.ModuleFactory {
         public Api.Result<Api.ProviderInfo> availability() {
             try {
                 var model = context.environment().model();
-                if (!Files.isDirectory(model)) throw new Api.ServiceException("MODEL_FOLDER_MISSING", "Не найдена папка model рядом с EnterpriseAI.exe");
+                if (!Files.isDirectory(model)) throw new Api.ServiceException("MODEL_FOLDER_MISSING", "Не найдена папка локальной модели:\n"+model+"\nПоместите подготовленную папку model рядом с приложением.");
                 if (!Files.isRegularFile(model.resolve("inference-worker.exe")))
-                    throw new Api.ServiceException("MODEL_WORKER_MISSING", "Локальная модель не подключена: не найден model\\inference-worker.exe");
+                    throw new Api.ServiceException("MODEL_WORKER_MISSING", "Не найден исполняемый файл локальной модели:\n"+model.resolve("inference-worker.exe")+"\nИспользуйте полный подготовленный комплект model.");
                 Map<String,Object> manifest = readManifest(model);
                 if (!PROTOCOL.equals(manifest.get("protocol")) || !"windows-x64".equals(manifest.get("architecture")))
                     throw new Api.ServiceException("INCOMPATIBLE_MODEL", "Несовместимый протокол или архитектура модели");
@@ -168,7 +168,7 @@ public final class InferenceModule implements Api.ModuleFactory {
 
         private static Map<String,Object> readManifest(Path model) throws IOException {
             Path path = model.resolve("worker.json");
-            if (!Files.isRegularFile(path)) throw new Api.ServiceException("MODEL_MANIFEST_MISSING", "Не найден model\\worker.json");
+            if (!Files.isRegularFile(path)) throw new Api.ServiceException("MODEL_MANIFEST_MISSING", "Не найден файл описания локальной модели:\n"+path+"\nИспользуйте полный подготовленный комплект model.");
             if (!path.toRealPath().startsWith(model.toRealPath())) throw new Api.ServiceException("MODEL_PATH_INVALID", "worker.json находится вне model");
             try (InputStream stream = Files.newInputStream(path)) {
                 byte[] bytes = stream.readNBytes(1_048_577);

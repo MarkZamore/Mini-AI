@@ -6,6 +6,7 @@
 
 # Runtime data is distributed through GitHub Releases
 /EnterpriseAI.exe
+/миниИИ.exe
 /docs/
 /db/_runtime/
 /db/artifacts/

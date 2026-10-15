@@ -1,6 +1,7 @@
 package ai.enterprise.graph;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public final class GraphPhysicsTest {
     public static void main(String[] args)throws Exception{
@@ -29,10 +30,41 @@ public final class GraphPhysicsTest {
         double ratio=(maxX-minX)/(maxY-minY);require(ratio>0.75&&ratio<1.3,"Orphans form a rounded cloud, not a side grid");
         require(Math.hypot(cx/ids.size(),cy/ids.size())<15,"Cloud is attracted to the stable world origin");
         var ordered=positions.values().stream().toList();for(int a=0;a<ordered.size();a++)for(int b=a+1;b<ordered.size();b++)minDistance=Math.min(minDistance,Math.hypot(ordered.get(a).x()-ordered.get(b).x(),ordered.get(a).y()-ordered.get(b).y()));
-        require(minDistance>29,"Collision separation prevents substantial disc overlap");
+        require(minDistance>=37.0-1e-6,"Isolated discs retain the complete 5 DIP edge gap");
         require(cloud.sleeping(),"Damping and cooling eventually suspend background physics");
+        require(cloud.finalCorrection()<=2.0,"Final packing does not visibly snap the cloud");
+        for(int i=0;i<120;i++)cloud.step(1.0/60,()->false);
+        require(cloud.snapshot().equals(positions),"A sleeping graph has exactly unchanged coordinates");
         var cloudAgain=new GraphPhysics(ids,List.of());settle(cloudAgain,1600);require(cloudAgain.snapshot().equals(positions),"Same seed and bounded steps are reproducible");
+        var coincident=new GraphPhysics(List.of("A","B"),List.of());
+        var target=coincident.snapshot().get("B");coincident.releaseAt("A",target.x(),target.y());
+        settle(coincident,720);
+        var separated=coincident.snapshot();
+        require(coincident.sleeping()&&Math.hypot(separated.get("A").x()-separated.get("B").x(),separated.get("A").y()-separated.get("B").y())>=37.0-1e-6,"Coincident pointer positions become finite separated discs in bounded time");
         try{new GraphPhysics(ids,List.of()).step(1.0/60,()->true);throw new AssertionError("Cancellation ignored");}catch(java.util.concurrent.CancellationException expected){}
+        var idlePhysics=new GraphPhysics(List.of("A","B"),List.of(new GraphGeometry.Link("A","B")));
+        settle(idlePhysics,720);
+        require(idlePhysics.sleeping(),"Small graphs settle within 720 fixed steps");
+        try(var idle=new GraphSimulation(idlePhysics)){
+            var frame=idle.frame();Thread.sleep(100);
+            require(!idle.active()&&idle.frame().equals(frame),"A settled owner schedules no changing frames");
+            idle.pin("A",500,0);
+            long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(2);
+            while(idle.frame().revision()==frame.revision()&&System.nanoTime()<deadline)Thread.sleep(5);
+            require(idle.active()&&idle.frame().positions().get("A").equals(new GraphLayout.Point(500,0)),"Real dragging wakes and pins an idle owner");
+            long releasedRevision=idle.frame().revision();
+            idle.release("A",530,10);
+            deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(15);
+            while(idle.active()&&System.nanoTime()<deadline)Thread.sleep(20);
+            require(!idle.active()&&idle.failure()==null,"Released owner publishes an inactive final frame and stops scheduling");
+            var stopped=idle.frame();Thread.sleep(100);
+            require(stopped.revision()-releasedRevision<=GraphPhysics.MAX_SETTLE_STEPS+1L,"Owner cooling is bounded by real fixed steps, including one possible in-flight held step");
+            require(idle.frame().equals(stopped),"No revisions or coordinates change after owner sleep");
+            idle.pin("B",-500,25);
+            deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(2);
+            while(idle.frame().revision()==stopped.revision()&&System.nanoTime()<deadline)Thread.sleep(5);
+            require(idle.active()&&idle.frame().positions().get("B").equals(new GraphLayout.Point(-500,25)),"A second real drag starts a fresh series after the owner slept");
+        }
         try(var simulation=new GraphSimulation(new GraphPhysics(List.of("A","B"),List.of(new GraphGeometry.Link("A","B"))))){
             for(int i=0;i<1000;i++)simulation.pin("A",100+i,0);
             simulation.release("A",600,0);

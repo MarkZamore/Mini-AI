@@ -19,7 +19,9 @@ public final class EmbeddingTest {
     }
     public static void main(String[] args) throws Exception {
         Path sourceRoot = Path.of(args.length == 0 ? "src" : args[0]).toAbsolutePath().normalize();
-        Path report = sourceRoot.resolve("build/test-results/embedding.json");
+        String reportName=args.length>1?args[1]:"pink-embedding.json";
+        if(!reportName.matches("[A-Za-z0-9][A-Za-z0-9_.-]*\\.json"))throw new IllegalArgumentException("Report must be a JSON basename");
+        Path report = sourceRoot.resolve("build/test-results").resolve(reportName);
         long start = System.nanoTime();
         Map<String,Object> result = new LinkedHashMap<>();
         result.put("suite", "EnterpriseAIComponent domain embedding");
@@ -46,8 +48,8 @@ public final class EmbeddingTest {
     }
     private static void run(Path sourceRoot) throws Exception {
         ExecutorService executor1 = Executors.newFixedThreadPool(2), executor2 = Executors.newFixedThreadPool(2);
-        ProbePlatform platform1 = new ProbePlatform(sourceRoot.resolve("build/embedding/first"));
-        ProbePlatform platform2 = new ProbePlatform(sourceRoot.resolve("build/embedding/second"));
+        ProbePlatform platform1 = new ProbePlatform(sourceRoot.resolve("build/pink-embedding/first"));
+        ProbePlatform platform2 = new ProbePlatform(sourceRoot.resolve("build/pink-embedding/second"));
         Api.Environment environment1 = new Api.Environment(platform1.root, executor1, platform1);
         Api.Environment environment2 = new Api.Environment(platform2.root, executor2, platform2);
         EnterpriseAIComponent first = EnterpriseAIComponent.create(environment1, List.of(new AssistantModule()), List.of());
@@ -130,7 +132,7 @@ public final class EmbeddingTest {
     private static final class ProbePlatform implements Api.Platform {
         final Path root; final AtomicInteger closes = new AtomicInteger(), nativeCalls = new AtomicInteger();
         ProbePlatform(Path root) { this.root = root; }
-        public Path executablePath() { return root.resolve("EnterpriseAI.exe"); }
+        public Path executablePath() { return root.resolve("миниИИ.exe"); }
         public long availableMemoryBytes() { nativeCalls.incrementAndGet(); throw new AssertionError("Embedding test must not probe native memory"); }
         public void openWith(Path original) { nativeCalls.incrementAndGet(); throw new AssertionError("Embedding test must not open an external viewer"); }
         public Process launchWorker(Path executable, Path directory, long maxMemoryBytes) { nativeCalls.incrementAndGet(); throw new AssertionError("Embedding test must not launch a native worker"); }

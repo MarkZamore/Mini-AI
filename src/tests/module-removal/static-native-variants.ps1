@@ -1,16 +1,21 @@
 param(
     [int[]]$Masks=@(0,118,126,125,123,119,111,95,63),
+    [string]$ExecutableName='миниИИ.exe',
+    [string]$EvidencePrefix='pink',
+    [string]$GuiGate='',
     [string]$PythonExecutable=(Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'),
     [switch]$SkipBuild,
     [switch]$SkipUi
 )
 $ErrorActionPreference='Stop'
+if($ExecutableName -notmatch '^[^\\/:*?"<>|]+\.exe$'){throw 'ExecutableName must be a Windows EXE basename'}
+if($EvidencePrefix -notmatch '^[a-z][a-z0-9-]*$'){throw 'EvidencePrefix must be a safe lowercase basename prefix'}
 $source=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $build=Join-Path $source 'build'
-$work=Join-Path $build 'static-native-variants'
+$work=Join-Path $build ($EvidencePrefix+'-static-native-variants')
 $ids=@('assistant','database','documents','graph','inference','search','sources')
 $builder=Join-Path $source 'toolchain/build_static_application.ps1'
-$reportPath=Join-Path $build 'test-results/static-native-module-removal.json'
+$reportPath=Join-Path $build ('test-results/'+$EvidencePrefix+'-static-native-module-removal.json')
 $results=[Collections.Generic.List[object]]::new()
 $failure=$null
 New-Item -ItemType Directory -Force -Path $work | Out-Null
@@ -25,6 +30,13 @@ function Snapshot([string]$Path){
     return (@(Get-ChildItem -LiteralPath $Path -Force -Recurse -File | ForEach-Object { [IO.Path]::GetRelativePath($Path,$_.FullName)+'|'+$_.Length+'|'+(Get-FileHash -LiteralPath $_.FullName).Hash }) | Sort-Object) -join "`n"
 }
 function Launch([string]$Exe,[string]$Command,[int]$Expected=0){
+    if($Command -eq 'ui-smoke' -and $GuiGate){
+        $guiWait=[Diagnostics.Stopwatch]::StartNew()
+        while(!(Test-Path -LiteralPath $GuiGate)){
+            if($guiWait.Elapsed.TotalMinutes -ge 15){throw 'Observer GUI gate timed out; no application window was opened'}
+            Start-Sleep -Milliseconds 500
+        }
+    }
     $text=& $PythonExecutable -B (Join-Path $PSScriptRoot 'static_native_launch.py') $Exe $Command '25' $Expected $env:SystemRoot
     Check ($LASTEXITCODE -eq 0) "Static composition launch failed: $Exe $Command"
     return ($text -join "`n" | ConvertFrom-Json)
@@ -43,7 +55,7 @@ function SupplyBuildInputs([string]$Copy){
     foreach($name in @('LICENSE.txt','LICENSE_NATIVEIMAGE.txt','THIRD_PARTY_LICENSE.txt','GRAALVM-README.md','legal')){Copy-Item -LiteralPath (Join-Path $oldJdk $name) -Destination (Join-Path $legalJdk $name) -Recurse}
 }
 function WriteReport {
-    $report=[ordered]@{success=(!$failure -and !$SkipUi -and $results.Count -eq @($Masks|Select-Object -Unique).Count);completedAtUtc=[DateTime]::UtcNow.ToString('o');profile='windows-x64-static';results=@($results.ToArray());variants=$results.Count;error=$(if($failure){$failure.ToString()}else{$null});limitations=@('Current Windows laptop, not a clean VM.','Each composition physically removes module folders inside an isolated src/build copy and performs a clean Gradle build.','Snapshots cannot detect transient filesystem writes or registry changes; ProcMon is required separately.','Static toolchain, source archives and JAR inputs are shared read-only; original data and modules are not altered.','Long EXE paths are launched from a short valid Windows working directory.')}
+    $report=[ordered]@{success=(!$failure -and !$SkipUi -and $results.Count -eq @($Masks|Select-Object -Unique).Count);completedAtUtc=[DateTime]::UtcNow.ToString('o');profile='windows-x64-static';executableName=$ExecutableName;evidencePrefix=$EvidencePrefix;results=@($results.ToArray());variants=$results.Count;error=$(if($failure){$failure.ToString()}else{$null});limitations=@('Current Windows laptop, not a clean VM.','Each composition physically removes module folders inside an isolated src/build copy and performs a clean Gradle build.','Snapshots cannot detect transient filesystem writes or registry changes; these operations remain unverified.','Static toolchain, source archives and JAR inputs are shared read-only; original data and modules are not altered.','Long EXE paths are launched from a short valid Windows working directory.')}
     $report | ConvertTo-Json -Depth 16 | Set-Content -LiteralPath $reportPath -Encoding utf8
 }
 try {
@@ -58,10 +70,10 @@ try {
             foreach($item in Get-ChildItem -LiteralPath $source -Force | Where-Object {$_.Name -notin @('build','.git','.gradle')}){Copy-Item -LiteralPath $item.FullName -Destination (Join-Path $copy $item.Name) -Recurse}
             foreach($id in $ids){if($id -notin $selected){Remove-Item -LiteralPath (Owned (Join-Path $copy ('modules/'+$id))) -Recurse -Force}}
             SupplyBuildInputs $copy
-            & $builder -SourceDirectory $copy -OutputDirectory $image *> (Join-Path $case 'build.log')
+            & $builder -SourceDirectory $copy -OutputDirectory $image -ExecutableName $ExecutableName *> (Join-Path $case 'build.log')
             Check ($LASTEXITCODE -eq 0) "Static native build failed mask $mask; inspect $case/build.log"
         }
-        $exe=Join-Path $image 'EnterpriseAI.exe'
+        $exe=Join-Path $image $ExecutableName
         Check (Test-Path -LiteralPath $exe -PathType Leaf) "Missing static variant EXE: $mask"
         $status=Launch $exe 'status'
         Check ((@($status.modules|Sort-Object)-join ',') -eq (@($selected|Sort-Object)-join ',')) "Module mismatch mask $mask"
@@ -82,10 +94,10 @@ try {
         $nativeInventory=Get-Content -LiteralPath (Join-Path $image 'static-library-inventory.json') -Raw|ConvertFrom-Json
         Check ((@($nativeInventory.name) -contains 'enterpriseai_sqlite') -eq ('database' -in $selected)) 'Removed SQLite static library retained'
         $transfer=Join-Path $case 'перенос қазақ ә ғ қ ң ө ұ ү һ і 😀 с пробелами'
-        while((Join-Path $transfer 'EnterpriseAI.exe').Length -le 340){$transfer=Join-Path $transfer 'длинная папка құжаттар перенос приложения 😀'}
+        while((Join-Path $transfer $ExecutableName).Length -le 340){$transfer=Join-Path $transfer 'длинная папка құжаттар перенос приложения 😀'}
         New-Item -ItemType Directory -Force -Path $transfer | Out-Null
-        Copy-Item -LiteralPath $exe -Destination (Join-Path $transfer 'EnterpriseAI.exe') -Force
-        $before=Snapshot $transfer;$transferExe=Join-Path $transfer 'EnterpriseAI.exe'
+        Copy-Item -LiteralPath $exe -Destination (Join-Path $transfer $ExecutableName) -Force
+        $before=Snapshot $transfer;$transferExe=Join-Path $transfer $ExecutableName
         $transferred=Launch $transferExe 'status'
         Check ((@($transferred.modules|Sort-Object)-join ',') -eq (@($selected|Sort-Object)-join ',')) 'Transferred composition mismatch'
         $row=[ordered]@{mask=$mask;modules=$selected;panels=@($status.panels);commands=@($status.commands);exe=$exe;exeSha256=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();exeBytes=(Get-Item -LiteralPath $exe).Length;removedFolders=$(@($ids|Where-Object {$_ -notin $selected}));staticLibraries=@($nativeInventory.name);unicodeArguments=$true;longPathLength=$transferExe.Length;uiSmoke=$false;transferredUiSmoke=$false}
@@ -95,6 +107,7 @@ try {
             Check ([string]::IsNullOrWhiteSpace($smoke.inputNotice)) 'Short path unexpectedly restricts IME'
             Check (![string]::IsNullOrWhiteSpace($longSmoke.inputNotice)) 'Long-path IME limitation not disclosed'
             $row.uiSmoke=$true;$row.transferredUiSmoke=$true;$row['loadedModules']=@($smoke.observerLoadedModules);$row['longPathLoadedModules']=@($longSmoke.observerLoadedModules);$row['imports']=$smoke.observerPeImports
+            $row['ownedModalErrorsDismissed']=$smoke.observerOwnedModalErrorsDismissed;$row['longPathOwnedModalErrorsDismissed']=$longSmoke.observerOwnedModalErrorsDismissed
         }
         Check ((Snapshot $transfer) -ceq $before) 'Runtime altered transferred fixture'
         $row['fixtureInventoryUnchanged']=$true;$results.Add($row);WriteReport

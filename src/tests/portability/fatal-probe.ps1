@@ -44,7 +44,7 @@ foreach($mode in @('fatal','oom')){
 $after=Snapshot
 $changes=@($after.Keys|Where-Object {!$before.ContainsKey($_) -or (($after[$_]-join ',') -ne ($before[$_]-join ','))})
 $owned=@($changes|Where-Object {$_.StartsWith($probeRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)})
-$report=@{completed=($owned.Count -eq 0);testedAt=[DateTime]::UtcNow.ToString('o');scope='Developer-only Native Image using the production NoFileLogFeature and NoFileLogHandler, JNI FatalError and caught Java OOM';cases=$results;changedFiles=$changes;ownedProbeChanges=$owned;limitations=@('Not a Process Monitor trace or registry audit','Windows WER/security/other process operations are outside application guarantee','Snapshots can miss transient operations; clean-Windows ProcMon remains required')}
+$report=@{completed=($owned.Count -eq 0);testedAt=[DateTime]::UtcNow.ToString('o');scope='Developer-only Native Image using the production NoFileLogFeature and NoFileLogHandler, JNI FatalError and caught Java OOM';cases=$results;changedFiles=$changes;ownedProbeChanges=$owned;limitations=@('Not a Process Monitor trace or registry audit','Windows WER/security/other process operations are outside application guarantee','Snapshots can miss transient filesystem operations and registry changes; those operations remain unverified')}
 $report|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $observer -Encoding UTF8
 if($owned.Count -ne 0){throw 'Fatal/OOM probe created or modified files; inspect observer report'}
 Write-Output 'Fatal JNI / Java OOM probe passed: no owned probe files or dumps created.'

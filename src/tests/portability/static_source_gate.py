@@ -16,15 +16,17 @@ def sha(path):
     with path.open('rb') as stream: return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--exe',type=Path,required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--exe',type=Path,required=True);parser.add_argument("--report-prefix",default="dusty-yellow");args=parser.parse_args()
     original_exe=args.exe.resolve();assert_static_imports(original_exe)
-    folder=BUILD/'static-source-fixtures'/uuid.uuid4().hex
+    prefix=args.report_prefix
+    if not prefix.isascii() or not prefix.replace('-', '').isalnum():raise ValueError('Invalid report prefix')
+    folder=BUILD/(prefix+'-source-fixtures')/uuid.uuid4().hex
     folder.mkdir(parents=True);(folder/'db').mkdir()
-    shutil.copyfile(original_exe,folder/'EnterpriseAI.exe')
+    shutil.copyfile(original_exe,folder/original_exe.name)
     index=ROOT/'db/index.sqlite';index_hash=sha(index)
     shutil.copyfile(index,folder/'db/index.sqlite')
     def run(*arguments,code=0):
-        child=subprocess.run([str(folder/'EnterpriseAI.exe'),*arguments],cwd=ROOT.parent,capture_output=True,encoding='utf-8',timeout=30)
+        child=subprocess.run([str(folder/original_exe.name),*arguments],cwd=ROOT.parent,capture_output=True,encoding='utf-8',timeout=30)
         if child.returncode!=code or child.stderr:raise AssertionError((arguments,child.returncode,child.stderr,child.stdout))
         return json.loads(child.stdout)
     hits=run('--search','академическая политика','10')
@@ -54,8 +56,8 @@ def main():
     report={'success':True,'exe':str(original_exe),'exeSha256':sha(original_exe),'fixture':str(folder),'fragmentId':hit['fragment_id'],
         'exactFragmentAndLocator':True,'verifiedOriginalSha256':original_hash,'sourceUnchangedAfterVerification':before==verified_after,
         'modifiedSourceRejected':refused['error'],'indexUnchangedSha256':index_hash,'sidecars':sidecars,
-        'limitations':['Physical copied PDF fixture; external viewer is not launched.','Filesystem operation and registry qualification require ProcMon separately.']}
-    (BUILD/'static-source-gate.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+        'limitations':['Physical copied PDF fixture; external viewer is not launched.','This source check does not verify transient filesystem operations or registry changes.']}
+    (BUILD/(prefix+'-source-gate.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     print('PASS static fragment/provenance, original PDF SHA and rejection after observer-only source alteration')
 
 if __name__=='__main__':main()

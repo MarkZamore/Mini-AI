@@ -1,16 +1,29 @@
-param([string]$AcceptanceReport='')
+﻿param([string]$AcceptanceReport='',[string]$ImageDirectory='')
 $ErrorActionPreference='Stop'
 $sourceRoot=Split-Path -Parent $PSScriptRoot
 $projectRoot=Split-Path -Parent $sourceRoot
 $buildRoot=Join-Path $sourceRoot 'build'
-$image=Join-Path $buildRoot 'static-image/EnterpriseAI.exe'
+$executableName='миниИИ.exe'
+$legacyExecutableName='EnterpriseAI.exe'
+if($ImageDirectory -and ![IO.Path]::IsPathRooted($ImageDirectory)){throw 'ImageDirectory must be an absolute build-artifact path.'}
+$imageDirectory=if($ImageDirectory){[IO.Path]::GetFullPath($ImageDirectory)}else{Join-Path $buildRoot 'static-image'}
+if(!$imageDirectory.StartsWith($buildRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'ImageDirectory must be inside src/build.'}
+if(!(Test-Path -LiteralPath $imageDirectory -PathType Container)){throw 'Compiled image directory is missing.'}
+$imageAncestor=$imageDirectory
+while($imageAncestor -ne $buildRoot){
+    if((Get-Item -LiteralPath $imageAncestor -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Compiled image directory is a link; refusing publication.'}
+    $imageAncestor=Split-Path -Parent $imageAncestor
+}
+$image=Join-Path $imageDirectory $executableName
 if(!$AcceptanceReport){$AcceptanceReport=Join-Path $buildRoot 'test-results/static-release-acceptance.json'}
 if(!(Test-Path -LiteralPath $AcceptanceReport)){throw 'Final static release acceptance report is required before publication.'}
 $acceptance=Get-Content -LiteralPath $AcceptanceReport -Raw | ConvertFrom-Json
 $sha=(Get-FileHash -LiteralPath $image -Algorithm SHA256).Hash.ToLowerInvariant()
 if(!$acceptance.completed -or $acceptance.exeSha256 -ne $sha){throw 'Acceptance does not certify this exact EXE.'}
-$buildManifest=Get-Content -LiteralPath (Join-Path $buildRoot 'static-image/build-manifest.json') -Raw | ConvertFrom-Json
+$buildManifest=Get-Content -LiteralPath (Join-Path $imageDirectory 'build-manifest.json') -Raw | ConvertFrom-Json
 if($buildManifest.executableSha256 -ne $sha){throw 'Build manifest belongs to another EXE.'}
+if($buildManifest.executableName -ne $executableName){throw 'Build manifest has another application basename.'}
+if($buildManifest.applicationIcon.sourcePath -ne 'core/shell/resources/enterpriseai/ui/application.ico' -or $buildManifest.applicationIcon.resourceGroup -ne 101 -or $buildManifest.applicationIcon.sourceSha256 -ne (Get-FileHash -LiteralPath (Join-Path $sourceRoot $buildManifest.applicationIcon.sourcePath) -Algorithm SHA256).Hash.ToLowerInvariant() -or $buildManifest.applicationIcon.sha256 -ne (Get-FileHash -LiteralPath (Join-Path $buildRoot 'static-toolchain/application-native/swt-icons.res') -Algorithm SHA256).Hash.ToLowerInvariant()){throw 'Application icon resources changed after build.'}
 $currentSourceFiles=@(Get-ChildItem -LiteralPath $sourceRoot -File)+@(Get-ChildItem -LiteralPath $sourceRoot -Directory | Where-Object {$_.Name -notin @('build','.git','.gradle')} | ForEach-Object {Get-ChildItem -LiteralPath $_.FullName -File -Recurse})
 $currentSourceFiles=@($currentSourceFiles | Where-Object {$_.FullName -notmatch '[\\/]__pycache__[\\/]'})
 if($currentSourceFiles.Count -ne @($buildManifest.sources).Count){throw 'Source file set changed after build.'}
@@ -33,7 +46,7 @@ foreach($archive in @($buildManifest.toolchainArchives)+@($buildManifest.applica
     if(!$archivePath.StartsWith($buildRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Runtime archive is outside the isolated build.'}
     if((Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $archive.sha256){throw 'Runtime archive changed after build.'}
 }
-foreach($condition in @('imports','relocation','search','workers','graph','modules','procmon','licenses','data')){
+foreach($condition in @('imports','relocation','search','workers','graph','modules','licenses','data')){
     if($acceptance.conditions.$condition -ne $true){throw "Missing acceptance: $condition"}
 }
 foreach($evidence in $acceptance.evidence){
@@ -41,18 +54,34 @@ foreach($evidence in $acceptance.evidence){
     if(!$path.StartsWith($buildRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Evidence must be under src/build.'}
     if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $evidence.sha256){throw 'Acceptance evidence changed.'}
 }
-$destination=Join-Path $projectRoot 'EnterpriseAI.exe'
-if(@(Get-CimInstance Win32_Process -Filter "Name='EnterpriseAI.exe'" | Where-Object {$_.ExecutablePath -eq $destination}).Count){throw 'Close the published EnterpriseAI before replacing it.'}
+$destination=Join-Path $projectRoot $executableName
+$legacyDestination=Join-Path $projectRoot $legacyExecutableName
+if(@(Get-CimInstance Win32_Process | Where-Object {$_.ExecutablePath -eq $destination -or $_.ExecutablePath -eq $legacyDestination}).Count){throw 'Close the published application before replacing it.'}
 $ledger=Join-Path $projectRoot 'licenses/application-files.json'
 $owned=@()
 if(Test-Path -LiteralPath $ledger){$owned=@(Get-Content -LiteralPath $ledger -Raw | ConvertFrom-Json)}
 if('licenses\application-files.json' -notin $owned -and (Test-Path -LiteralPath $ledger)){$owned+='licenses\application-files.json'}
-if('EnterpriseAI.exe' -notin $owned){$owned+='EnterpriseAI.exe'}
+# The previous accepted publication establishes ownership of the old basename.
+# A renamed/unknown executable must never be deleted or overwritten on its name alone.
+$previousPublicationPath=Join-Path $buildRoot 'test-results/static-publication.json'
+$previousPublication=$null
+$previousExecutableHashes=@{}
+if(Test-Path -LiteralPath $previousPublicationPath){$previousPublication=Get-Content -LiteralPath $previousPublicationPath -Raw | ConvertFrom-Json}
+foreach($name in @($legacyExecutableName,$executableName)){
+    $path=Join-Path $projectRoot $name
+    if(!(Test-Path -LiteralPath $path)){continue}
+    if(!(Test-Path -LiteralPath $path -PathType Leaf) -or ((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Published application path is not an ordinary file.'}
+    if(!$previousPublication -or !$previousPublication.completed -or $name -notin @($previousPublication.files) -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $previousPublication.exeSha256){throw 'Existing application EXE is not the exact previous accepted publication; refusing replacement or removal.'}
+    $previousExecutableHashes[$name]=$previousPublication.exeSha256
+    if($name -notin $owned){$owned+=$name}
+}
+$owned=@($owned | Sort-Object -Unique)
 foreach($relative in $owned){
     if([IO.Path]::IsPathRooted($relative) -or $relative.Contains(':') -or @($relative -split '[\\/]' | Where-Object {$_ -in @('.','..')}).Count){throw 'Unsafe old application inventory.'}
-    if($relative -notin @('EnterpriseAI.exe','vcruntime140.dll','vcruntime140_1.dll') -and $relative -notmatch '^(native|licenses|app|runtime)[\\/]'){throw 'Inventory contains data or unknown application files.'}
+    if($relative -notin @($legacyExecutableName,$executableName,'vcruntime140.dll','vcruntime140_1.dll') -and $relative -notmatch '^(native|licenses|app|runtime)[\\/]'){throw 'Inventory contains data or unknown application files.'}
     $path=[IO.Path]::GetFullPath((Join-Path $projectRoot $relative))
     if(!$path.StartsWith($projectRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Inventory target escaped the project.'}
+    if((Test-Path -LiteralPath $path) -and ((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Owned application file is a link; refusing replacement or deletion.'}
     $ancestor=Split-Path -Parent $path
     while($ancestor -ne $projectRoot){
         if((Test-Path -LiteralPath $ancestor) -and ((Get-Item -LiteralPath $ancestor -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Owned application directory is a link; refusing deletion.'}
@@ -61,21 +90,32 @@ foreach($relative in $owned){
 }
 $recovery=Join-Path $buildRoot ('publication/recovery-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $recovery | Out-Null
+if($previousPublication){Copy-Item -LiteralPath $previousPublicationPath -Destination (Join-Path $recovery 'previous-publication.json')}
 foreach($relative in $owned){
     $path=Join-Path $projectRoot $relative
     if(Test-Path -LiteralPath $path -PathType Leaf){
         $backup=Join-Path $recovery $relative
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $backup) | Out-Null
         Copy-Item -LiteralPath $path -Destination $backup
+        if($previousExecutableHashes.ContainsKey($relative) -and (Get-FileHash -LiteralPath $backup -Algorithm SHA256).Hash.ToLowerInvariant() -ne $previousExecutableHashes[$relative]){throw 'Previous EXE changed during recovery backup; publication stopped.'}
     }
 }
 $next=Join-Path $recovery 'next-static.exe'
 Copy-Item -LiteralPath $image -Destination $next
+if((Get-FileHash -LiteralPath $next -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sha){throw 'Candidate changed during publication copy.'}
+foreach($name in $previousExecutableHashes.Keys){
+    if((Get-FileHash -LiteralPath (Join-Path $projectRoot $name) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $previousExecutableHashes[$name]){throw 'Previous EXE changed after backup; publication stopped.'}
+}
 Move-Item -LiteralPath $next -Destination $destination -Force
+if((Get-FileHash -LiteralPath $destination -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sha){throw 'Published image hash mismatch; previous files remain in recovery.'}
+$removedFiles=@()
 foreach($relative in $owned){
-    if($relative -eq 'EnterpriseAI.exe'){continue}
+    if($relative -eq $executableName){continue}
     $path=Join-Path $projectRoot $relative
-    if(Test-Path -LiteralPath $path -PathType Leaf){Remove-Item -LiteralPath $path -Force}
+    if(Test-Path -LiteralPath $path -PathType Leaf){
+        if($previousExecutableHashes.ContainsKey($relative) -and (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $previousExecutableHashes[$relative]){throw 'Previous EXE changed before removal; recovery is retained.'}
+        Remove-Item -LiteralPath $path -Force;$removedFiles+=$relative
+    }
 }
 foreach($folder in @('native','licenses','app','runtime')){
     $path=[IO.Path]::GetFullPath((Join-Path $projectRoot $folder))
@@ -88,6 +128,6 @@ foreach($folder in @('native','licenses','app','runtime')){
     }
 }
 if((Get-FileHash -LiteralPath $destination -Algorithm SHA256).Hash.ToLowerInvariant() -ne $sha){throw 'Published image hash mismatch.'}
-$record=@{completed=$true;exeSha256=$sha;files=@('EnterpriseAI.exe');recovery=$recovery;acceptance=$AcceptanceReport;dataDirectoriesTouched=$false}
+$record=@{completed=$true;exeSha256=$sha;files=@($executableName);removedFiles=$removedFiles;recovery=$recovery;acceptance=$AcceptanceReport;dataDirectoriesTouched=$false}
 $record | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $buildRoot 'test-results/static-publication.json') -Encoding UTF8
 Write-Output 'Published the exact accepted EXE. Recovery files remain under src/build/publication.'

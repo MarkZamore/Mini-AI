@@ -90,14 +90,14 @@ def main():
                  "sources": [{"path": name, "bytes": path.stat().st_size, "sha256": digest(path), **pin} for name, path, pin in archives],
                  "recipes": [{"path": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()} for name, data in recipe_data.items()],
                  "notices": [{"path": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()} for name, data in sorted(text_files.items())]}
-    explanation = ("EnterpriseAI dependency materials\n\n"
+    explanation = ("миниИИ dependency materials\n\n"
                    "GraalVM Community/OpenJDK: GPLv2 with Classpath Exception and component notices.\n"
                    "SWT 3.135.0: EPL 2.0; unmodified upstream sources and EnterpriseAI changes are included.\n"
                    "Microsoft CRT: statically linked, no redistributable DLL is supplied.\n"
                    "Optional component notices are included only for present modules.\n"
                    "No licence for the owner's complete application is inferred from dependency licences.\n"
                    "Model workers and weights are separate distributions with their own provenance.\n\n"
-                   "Complete corresponding source ZIP is embedded. Run EnterpriseAI.exe --third-party-source-stdout\n"
+                   "Complete corresponding source ZIP is embedded. Run миниИИ.exe --third-party-source-stdout\n"
                    "to stream it without extraction. The calling program may save the output explicitly.\n"
                    "The ZIP contains pinned upstream source archives, all applied patch/build recipes,\n"
                    "the included module sources, component licence texts and SHA-256 inventory.\n")
@@ -117,10 +117,9 @@ def main():
     inventory["correspondingSource"] = {"path": "corresponding-source.zip", "bytes": archive_path.stat().st_size, "sha256": digest(archive_path)}
     (OUTPUT / "notices.txt").write_text(notices, encoding="utf-8", newline="\n")
     (OUTPUT / "catalog.json").write_text(json.dumps(inventory, ensure_ascii=False, sort_keys=True, indent=2), encoding="utf-8", newline="\n")
-    changes = "EnterpriseAI source and static-build modifications\n\n" + "".join(
-        "\n\n===== " + name + " =====\n" + data.decode("utf-8-sig")
-        for name, data in recipe_data.items() if Path(name).suffix in {".java", ".c", ".cpp", ".h", ".py", ".ps1", ".sh", ".kts", ".json"})
-    (OUTPUT / "changes.txt").write_text(changes, encoding="utf-8", newline="\n")
+    # The removed legal GUI was the only reader of this redundant text resource.
+    # Corresponding sources and all applied changes remain in the streamed ZIP.
+    (OUTPUT / "changes.txt").unlink(missing_ok=True)
     print(json.dumps({"sourceBytes": archive_path.stat().st_size, "sourceSha256": inventory["correspondingSource"]["sha256"], "modules": module_ids}))
 
 

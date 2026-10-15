@@ -12,9 +12,9 @@ public final class GraphLayout {
                                                Collection<GraphGeometry.Link> links,
                                                BooleanSupplier cancelled) {
         GraphPhysics physics = new GraphPhysics(documentIds, links);
-        for (int i = 0; i < 600 && !physics.sleeping(); i++) {
+        for (int i = 0; i < GraphPhysics.MAX_SETTLE_STEPS && !physics.sleeping(); i++) {
             if (cancelled.getAsBoolean()) throw new java.util.concurrent.CancellationException();
-            physics.step(1.0 / 60.0, cancelled);
+            physics.step(GraphPhysics.STEP_SECONDS, cancelled);
         }
         return physics.snapshot();
     }

@@ -1,10 +1,10 @@
 # Приёмка портативной сборки
 
-Эти проверки выполняет разработчик/тестировщик. Трассы и отчёты сохраняются в `src/build/test-results`, не в `docs/db/model`. Приложение запускается обычным пользователем; наблюдатель Process Monitor может иметь отдельные необходимые права.
+Эти проверки выполняет разработчик/тестировщик. Трассы и отчёты сохраняются в `src/build/test-results`, не в `docs/db/model`. Приложение запускается обычным пользователем. По решению пользователя Process Monitor исключён из будущего конвейера: UAC, загрузка его драйвера и настройка PMC для сборки, испытаний и публикации не требуются. Отсутствие временных записей и изменений реестра этим конвейером не подтверждается.
 
 ## Граница проверок
 
-Ноль попыток изменения файлов и реестра со стороны EnterpriseAI, его DLL и контролируемого worker — обязательный критерий. Даже ACCESS DENIED означает дефект. Не путать CreateFile для GENERIC_READ/OPEN_EXISTING с созданием файла. Проверять access/disposition, WriteFile, изменение размеров, rename/delete и записи реестра. Системные действия Windows/AV/драйверов, пользовательский внешний просмотрщик и инструменты испытаний классифицируются отдельно по PID **и стеку**. Не скрывать все события системных DLL автоматически: запись, вызванная собственным кешем приложения, остаётся дефектом.
+Требование к приложению сохраняется: оно и контролируемый worker не должны создавать временные файлы, распаковывать библиотеки или записывать настройки в реестр. После исключения Process Monitor будущий конвейер не измеряет все такие операции; отсутствие записей не объявляется подтверждённым. Контрольные суммы доказывают только неизменность проверенных файлов. Windows, защитное ПО, драйверы и внешние просмотрщики находятся за пределами гарантии приложения.
 
 ## Матрица
 
@@ -18,13 +18,9 @@
 - История отсутствует после перезапуска; при переполнении бюджета не удаляется молча.
 - Встраивание двух независимых экземпляров с раздельными сеансами, повторное использование второго после закрытия первого; отдельная проверка SWT-host.
 
-## Process Monitor
+## Сохранность данных и границы проверки
 
-1. Не фильтровать только папку приложения: сохранять файловые, реестровые, сетевые и процессные события всего периода.
-2. Выделить EnterpriseAI.exe, поставленные DLL и worker внутри Job Object. Отдельно отметить Explorer, Open With, просмотрщик, Windows, защитное ПО и инструменты испытаний.
-3. Искать изменения, включая временные SQLite-файлы `-journal`, `-wal`, `-shm`, `sqlite-temp`, извлечение JNI-библиотек, `.swt`, `hsperfdata`, `hs_err`, дампы памяти и пользовательские кеши.
-4. Сохранить PML и классификацию в `src/build/test-results` с версией и хешами приложения, Windows и описанием сценария.
-5. Сравнить `data-before.json` через `audit_data.py check`. Не запускать `db/validate.py`: он меняет существующие отчёты и каталог.
+Сравнить контрольные суммы исходных данных до и после испытаний через `audit_data.py check`. Не запускать `db/validate.py`: он меняет существующие отчёты и каталог. Снимки файлов не обнаруживают кратковременное создание и удаление файлов, отказанные попытки записи или изменения реестра. Исторические трассы и инструменты сохраняются отдельно и не являются этапом будущего конвейера.
 
 Внешний OpenWith не гарантирует переход к странице/ячейке. Выбранная программа может писать кеши и редактировать файл; приложение не выдаёт этот процесс за контролируемый read-only renderer.
 
@@ -54,13 +50,19 @@ long EXE paths. `-SkipUi` queues GUI tests; later `-SkipBuild` runs the same
 already-built variants. The Java matrix accepts a third report-name argument
 `static-java-module-removal.json` to retain earlier-profile evidence.
 
-Prepare ProcMon with `procmon_audit.ps1 -Mode Prepare -Profile static
--Executable <frozen EXE> -AdditionalScenariosJson <mock-worker scenarios>`.
-Preparation neither elevates nor starts ProcMon. The existing approved
-all-events PMC and an ordinary coordinator are still required for Capture.
-The static fixtures contain no DLL/CRT copies and use physical index copies.
-An optional `-FatalProbeExecutable` must itself pass the static PE gate and
-accept `fatal`/`oom` arguments. Keep each raw PML/XML/CSV run and manually review
-operating-system stacks, controlled worker process lifetimes, IPC and all
-candidate mutations before claiming scoped no-write acceptance.
+Worker lifecycle fixtures are prepared by `../static-worker/prepare-scenarios.ps1`;
+its `worker-scenarios.json` contains all twelve native protocol, OOM, crash and
+cancellation cases. Preparation and execution require no Process Monitor,
+PMC configuration, driver installation or elevation. Original-data checks and
+all other functional, module, import and licence gates remain mandatory.
+
+# Dusty yellow UI / миниИИ observers
+
+Use `static-acceptance.ps1 -Executable <frozen миниИИ.exe> -ReportPrefix <fresh dusty-yellow-run-id> -IncludeGraph` for the new UI. The basename is preserved in every physical relocation/worker fixture. The prefix must be unique for each frozen candidate; existing worker fixture directories are deliberately rejected rather than rewritten. Historical static/D91 reports remain independent.
+
+The native suite includes `native_branding_observer.py` (caption, icon, theme, removed Help chrome), `native_assistant_observer.py` (Enter, Shift+Enter, missing-model error, mock inference citation rejection, and the single Send/Stop control), and the graph observer. Observers dismiss only visible error dialogs belonging to their exact newly launched process; they never target another application's controls. Unexpected asynchronous errors fail the test; dismissing their dialog does not make the application pass.
+
+The graph observer identifies all 64 purple degree shades and their seven documented white-highlight levels; it excludes edges from node components. It checks a single-click full-title footer, selection-ring drag target, pulse pause while dragging, pan/zoom, and double-click source failure only in fixtures without `docs`. After settling it observes at least 30 seconds, requires pixel-exact unchanged geometry/background/strokes with only the documented globally shared 0–6% node/edge color highlight, observes multiple cycles near the 8-second cadence, and records CPU including observer-induced paints. `PrintWindow` itself requests painting, so exact world/frame inactivity and the 5 DIP gap are verified separately by continuous degree-weighted gravity and GraphCanvas/GraphPulse tests. The actual dataset checks cloud occupancy, link lengths and the absence of forced rings; it does not promise a planar graph or zero empty space at every scale. No generic pixel-jitter exemption is used.
+
+The former `static_legal_ui.py` is retained solely for historical builds. The new UI has no Help/licence dialog. Licence and corresponding-source CLI checks remain part of the separate distribution audit.
 

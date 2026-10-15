@@ -56,10 +56,10 @@ public final class ModuleRemovalTest {
     private record Module(String id, Path folder, Map<String, Object> manifest) {}
 
     private ModuleRemovalTest(Path root, List<Path> jars, String reportName) throws IOException {
-        require(reportName.matches("[A-Za-z0-9_.-]+\\.json"), "Report must be a JSON basename");
+        require(reportName.matches("[A-Za-z0-9][A-Za-z0-9_.-]*\\.json"), "Report must be a JSON basename");
         this.reportName = reportName;
         sourceRoot = root.toRealPath();
-        workRoot = sourceRoot.resolve("build/module-removal");
+        workRoot = sourceRoot.resolve("build").resolve(reportName.substring(0,reportName.length()-5));
         Files.createDirectories(workRoot);
         compiler = ToolProvider.getSystemJavaCompiler();
         require(compiler != null, "Run the test with a JDK, not an application runtime");
@@ -83,7 +83,7 @@ public final class ModuleRemovalTest {
             jars = java.util.Arrays.stream(args[1].split(Pattern.quote(java.io.File.pathSeparator)))
                     .filter(s -> !s.isBlank()).map(s -> Path.of(s).toAbsolutePath()).toList();
         } else jars = dependencyJars(src);
-        ModuleRemovalTest test = new ModuleRemovalTest(src, jars, args.length > 2 ? args[2] : "module-removal.json");
+        ModuleRemovalTest test = new ModuleRemovalTest(src, jars, args.length > 2 ? args[2] : "pink-module-removal.json");
         long started = System.nanoTime();
         Throwable failure = null;
         try {
@@ -291,7 +291,7 @@ public final class ModuleRemovalTest {
                           Class<?> moduleSpi, Path folder) throws Exception {
         Class<?> platformType = loader.loadClass("ai.enterprise.contracts.Api$Platform");
         Object platform = Proxy.newProxyInstance(loader, new Class<?>[]{platformType}, (proxy, method, args) -> switch (method.getName()) {
-            case "executablePath" -> folder.resolve("missing-input/EnterpriseAI.exe");
+            case "executablePath" -> folder.resolve("missing-input/миниИИ.exe");
             case "availableMemoryBytes" -> 32L * 1024 * 1024 * 1024;
             case "cpuSupports" -> true;
             case "close" -> null;
@@ -421,6 +421,16 @@ public final class ModuleRemovalTest {
         var dependencyHashes = new LinkedHashMap<String, String>();
         for (Path jar : jars) dependencyHashes.put(jar.getFileName().toString(), java.util.HexFormat.of().formatHex(digest(jar)));
         document.put("dependencySha256", dependencyHashes);
+        var sourceHashes = new LinkedHashMap<String,String>();
+        var verifiedSources = new ArrayList<>(coreSources);
+        for (Module module : originals) {
+            verifiedSources.addAll(javaFiles(module.folder.resolve("service")));
+            verifiedSources.addAll(javaFiles(module.folder.resolve("ui")));
+        }
+        for (Path source : verifiedSources.stream().distinct().sorted().toList())
+            sourceHashes.put(sourceRoot.relativize(source).toString().replace('\\','/'),java.util.HexFormat.of().formatHex(digest(source)));
+        document.put("sourceSha256",sourceHashes);
+        document.put("executableName","миниИИ.exe");
         document.put("checks", List.of("128 independent Java compilations", "generated service and pane factories",
                 "isolated factory classloading", "removed implementations absent", "registration with missing data",
                 "commands match retained modules", "GUI-independent services", "actual deletion in copied folders"));

@@ -101,7 +101,7 @@ val moduleJars=moduleFolders.map { folder ->
     }
 }
 tasks.register("moduleArtifacts") { dependsOn(moduleJars) }
-tasks.register<Jar>("coreArtifact") { dependsOn(tasks.classes); archiveBaseName.set("enterpriseai-core"); destinationDirectory.set(layout.buildDirectory.dir("modules")); from(sourceSets.main.get().output) { include("ai/enterprise/contracts/**","ai/enterprise/bootstrap/EnterpriseAIComponent*","ai/enterprise/shell/**","ai/enterprise/platform/**") } }
+tasks.register<Jar>("coreArtifact") { dependsOn(tasks.classes); archiveBaseName.set("enterpriseai-core"); destinationDirectory.set(layout.buildDirectory.dir("modules")); from(sourceSets.main.get().output) { include("ai/enterprise/contracts/**","ai/enterprise/bootstrap/EnterpriseAIComponent*","ai/enterprise/shell/**","ai/enterprise/platform/**","enterpriseai/ui/**") } }
 tasks.register<Jar>("contractsArtifact") { dependsOn(tasks.classes); archiveBaseName.set("enterpriseai-contracts"); destinationDirectory.set(layout.buildDirectory.dir("modules")); from(sourceSets.main.get().output) { include("ai/enterprise/contracts/**") } }
 val splitModuleJars=moduleFolders.flatMap { folder ->
     val id=(JsonSlurper().parse(File(folder,"module.json")) as Map<*,*>)["id"].toString()

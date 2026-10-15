@@ -35,6 +35,15 @@ public final class SourcesServiceTest {
             Files.writeString(original, "changed", StandardCharsets.UTF_8);
             result = service.openDocument("other:1", token).toCompletableFuture().join();
             check(!result.success() && result.error().code().equals("SOURCE_VERSION_CHANGED") && platform.opened == null, "Altered source was opened");
+            Files.delete(original);
+            result = service.openDocument("other:1", token).toCompletableFuture().join();
+            check(!result.success() && result.error().code().equals("SOURCE_UNAVAILABLE")
+                && result.error().message().contains(original.toString()) && platform.opened == null, "Missing original needs its path and must not open a viewer");
+            Files.delete(docs);
+            result = service.openDocument("other:1", token).toCompletableFuture().join();
+            check(!result.success() && result.error().code().equals("DOCS_FOLDER_MISSING")
+                && result.error().message().contains(docs.toString()) && platform.opened == null, "Missing docs needs an understandable folder error");
+            Files.createDirectory(docs); Files.write(original, content);
             fake.document = new Api.DocumentSummary("other:1", "Escape", sha, "../outside.txt", "documents/1.json", "complete", List.of(), List.of());
             Files.write(root.resolve("outside.txt"), content);
             result = service.openDocument("other:1", token).toCompletableFuture().join();

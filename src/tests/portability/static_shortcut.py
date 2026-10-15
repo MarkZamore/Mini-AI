@@ -46,11 +46,13 @@ def create_shortcut(shortcut,exe,working):
         ole.CoUninitialize()
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--exe',type=Path,required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--exe',type=Path,required=True);parser.add_argument("--report-prefix",default="dusty-yellow");args=parser.parse_args()
     exe=args.exe.resolve();imports=assert_static_imports(exe)
     build=Path(__file__).resolve().parents[2]/'build/test-results'
-    folder=build/'static-shortcut'/uuid.uuid4().hex;folder.mkdir(parents=True)
-    shortcut=folder/'EnterpriseAI перенос Қазақ.lnk';working=folder/'другая рабочая папка';working.mkdir()
+    prefix=args.report_prefix
+    if not prefix.isascii() or not prefix.replace('-', '').isalnum():raise ValueError('Invalid report prefix')
+    folder=build/(prefix+'-shortcut')/uuid.uuid4().hex;folder.mkdir(parents=True)
+    shortcut=folder/(exe.stem+' перенос Қазақ.lnk');working=folder/'другая рабочая папка';working.mkdir()
     create_shortcut(shortcut,exe,working)
     if not shortcut.exists():raise AssertionError('Observer could not create shortcut')
     shell=C.WinDLL('shell32',use_last_error=True);kernel=C.WinDLL('kernel32',use_last_error=True)
@@ -71,8 +73,8 @@ def main():
         assert_static_modules(exe,modules)
     finally:kernel.CloseHandle(info.hProcess)
     with exe.open('rb') as stream: digest=hashlib.file_digest(stream,'sha256').hexdigest()
-    report={'success':True,'exe':str(exe),'exeSha256':digest,'shortcut':str(shortcut),'workingDirectory':str(working),'arguments':['--ui-smoke'],'exitCode':code.value,'imports':imports,'loadedModules':sorted(modules),'limitations':['Shortcut is created by the observer; its writes are excluded from the application no-write guarantee.','Actual GUI startup/exit and loaded executable are verified; ProcMon separately classifies Shell/Windows operations.']}
-    (build/'static-shortcut.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+    report={'success':True,'exe':str(exe),'exeSha256':digest,'shortcut':str(shortcut),'workingDirectory':str(working),'arguments':['--ui-smoke'],'exitCode':code.value,'imports':imports,'loadedModules':sorted(modules),'limitations':['Shortcut is created by the observer; its writes are excluded from the application no-write guarantee.','Actual GUI startup/exit and loaded executable are verified; Shell/Windows filesystem and registry operations are outside this test evidence.']}
+    (build/(prefix+'-shortcut.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     print('PASS actual Windows shortcut, different working directory, static SWT startup/exit and OS-only loaded modules')
 
 if __name__=='__main__':main()

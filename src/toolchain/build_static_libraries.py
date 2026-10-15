@@ -6,6 +6,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
@@ -14,6 +15,34 @@ jdk = build / "graalvm-static"
 out = build / "application-native"
 out.mkdir(parents=True, exist_ok=True)
 swt = build / "sources/swt/library"
+
+
+def build_icon_resource():
+    application_icon = root / "core/shell/resources/enterpriseai/ui/application.ico"
+    if not application_icon.is_file():
+        raise FileNotFoundError("The application's single source icon is missing")
+    # Resource 101 is the first EXE icon and retains SWT's search-icon ABI.
+    # The window reads this same source through its embedded Java resource.
+    icon_files = [application_icon, swt / "cancel.ico", swt / "search_darktheme.ico", swt / "cancel_darktheme.ico"]
+    resource = out / "swt-icons.rc"
+    resource.write_text('#pragma code_page(65001)\n' + "\n".join(f'{101+i} ICON "{file.as_posix()}"'
+        for i, file in enumerate(icon_files)), encoding="utf-8")
+    resource_binary = out / "swt-icons.res"
+    resource_compiler = Path("C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/rc.exe")
+    subprocess.run([str(resource_compiler), "/nologo", "/fo", str(resource_binary), str(resource)], check=True)
+    inventory = {"path": str(resource_binary), "sha256": hashlib.sha256(resource_binary.read_bytes()).hexdigest(),
+        "sourcePath": "core/shell/resources/enterpriseai/ui/application.ico",
+        "sourceSha256": hashlib.sha256(application_icon.read_bytes()).hexdigest(), "resourceGroup": 101}
+    (out / "swt-icons.json").write_text(json.dumps(inventory, indent=2), encoding="utf-8")
+    return inventory
+
+
+if len(sys.argv) > 1:
+    if sys.argv[1:] != ["--resources-only"]:
+        raise SystemExit("Usage: build_static_libraries.py [--resources-only]")
+    print(json.dumps({"completed": True, "resource": build_icon_resource()}))
+    raise SystemExit(0)
+
 with zipfile.ZipFile(root / "build/dependencies/swt-3.135.0-sources.jar") as archive:
     for member in archive.namelist():
         if member.startswith("library/"):
@@ -95,9 +124,6 @@ for name, files in objects.items():
         raise RuntimeError(f"Missing builtin JNI initializer for {name}")
     reports.append({"name": name, "path": str(archive), "sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
         "crt": "/MT", "exports": exports})
-resource = out / "swt-icons.rc"
-resource.write_text('#include <windows.h>\n' + "\n".join(f'{101+i} ICON "{(swt / name).as_posix()}"'
-    for i, name in enumerate(["search.ico", "cancel.ico", "search_darktheme.ico", "cancel_darktheme.ico"])))
-subprocess.run([str(sdk / f"bin/{sdk_version}/x64/rc.exe"), "/nologo", "/fo", str(out / "swt-icons.res"), str(resource)], env=env, check=True)
+resource_inventory = build_icon_resource()
 (out / "inventory.json").write_text(json.dumps(reports, indent=2))
-print(json.dumps({"completed": True, "archives": [p["name"] for p in reports], "crt": "/MT"}))
+print(json.dumps({"completed": True, "archives": [p["name"] for p in reports], "crt": "/MT", "resource": resource_inventory}))

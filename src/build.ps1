@@ -1,4 +1,4 @@
-param(
+﻿param(
     [ValidateSet('build','clean','test','native-libraries','native-image','static-image','stage-native','app-image','publish')][string]$Action='build',
     [string]$JdkHome='',
     [ValidateSet('native','static','jvm')][string]$Profile='static',
@@ -9,6 +9,8 @@ $ProgressPreference='SilentlyContinue'
 $sourceRoot=$PSScriptRoot
 $projectRoot=Split-Path -Parent $sourceRoot
 $buildRoot=Join-Path $sourceRoot 'build'
+$applicationName='миниИИ'
+$executableName=$applicationName+'.exe'
 Set-Location -LiteralPath $sourceRoot
 New-Item -ItemType Directory -Force -Path $buildRoot,(Join-Path $buildRoot 'dependencies'),(Join-Path $buildRoot 'tools'),(Join-Path $buildRoot 'tmp') | Out-Null
 $env:TEMP=Join-Path $buildRoot 'tmp'
@@ -146,7 +148,7 @@ function BuildNativeImage {
     & (Join-Path $javaRoot 'bin/javac.exe') -classpath ($cp+';'+$svm) -d $buildClasses 'build-logic/NativeMetadata.java' 'build-logic/NoFileLogFeature.java' 'build-logic/NoFileLogHandler.java' 'build-logic/WindowsLibraryLoaderSubstitution.java';CheckExit 'Native Image build helpers'
     $metadata=Join-Path $buildRoot 'native-metadata'
     & (Join-Path $javaRoot 'bin/java.exe') -classpath ($buildClasses+';'+$cp) NativeMetadata (Join-Path $buildRoot 'dependencies/swt-3.135.0-patched.jar') $metadata;CheckExit 'SWT JNI metadata'
-    $arguments=@('--no-fallback','--enable-native-access=ALL-UNNAMED','-O2','-march=x86-64','-R:MaxHeapSize=1073741824','-H:+UnlockExperimentalVMOptions','--features=ai.enterprise.build.NoFileLogFeature','--initialize-at-build-time=ai.enterprise.build.NoFileLogHandler','--initialize-at-run-time=org.eclipse.swt,ai.enterprise.platform.WindowsPlatform',('--class-path='+$buildClasses+';'+$cp),('-H:Path='+$image),'-H:Name=EnterpriseAI',('-H:JNIConfigurationFiles='+(Join-Path $metadata 'jni-config.json')),('-H:ReflectionConfigurationFiles='+(Join-Path $metadata 'reflect-config.json')),'-H:NativeLinkerOption=/SUBSYSTEM:WINDOWS','-H:NativeLinkerOption=/ENTRY:mainCRTStartup','-J-Xmx8g','-J-XX:-UsePerfData','ai.enterprise.bootstrap.Main')
+    $arguments=@('--no-fallback','--enable-native-access=ALL-UNNAMED','-O2','-march=x86-64','-R:MaxHeapSize=1073741824','-H:+UnlockExperimentalVMOptions','--features=ai.enterprise.build.NoFileLogFeature','--initialize-at-build-time=ai.enterprise.build.NoFileLogHandler','--initialize-at-run-time=org.eclipse.swt,ai.enterprise.platform.WindowsPlatform',('--class-path='+$buildClasses+';'+$cp),('-H:Path='+$image),'-H:Name=EnterpriseAI',('-H:JNIConfigurationFiles='+(Join-Path $metadata 'jni-config.json')),('-H:ReflectionConfigurationFiles='+(Join-Path $metadata 'reflect-config.json')),'-H:IncludeResources=enterpriseai/(legal|ui)/.*','-H:NativeLinkerOption=/SUBSYSTEM:WINDOWS','-H:NativeLinkerOption=/ENTRY:mainCRTStartup','-J-Xmx8g','-J-XX:-UsePerfData','ai.enterprise.bootstrap.Main')
     $arguments=@('-J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.windows.headers=ALL-UNNAMED')+$arguments
     & (Join-Path $javaRoot 'bin/native-image.cmd') @arguments;CheckExit 'Native Image'
     StageNativeImage
@@ -154,7 +156,7 @@ function BuildNativeImage {
 function StageNativeImage {
     $image=Join-Path $buildRoot 'native-image'
     if(!(Test-Path -LiteralPath (Join-Path $image 'EnterpriseAI.exe'))){throw 'No compiled native executable to stage'}
-    $stage=ResetStage;Copy-Item -LiteralPath (Join-Path $image 'EnterpriseAI.exe') -Destination $stage;StageNative $stage
+    $stage=ResetStage;Copy-Item -LiteralPath (Join-Path $image 'EnterpriseAI.exe') -Destination (Join-Path $stage $executableName);StageNative $stage
     Set-Content -LiteralPath (Join-Path $stage 'licenses/distribution-profile.txt') -Value 'native-image Java25 / GraalVM CE25.0.2; runtime write qualification requires acceptance tests.' -Encoding UTF8
 }
 function BuildAppImage {
@@ -163,20 +165,26 @@ function BuildAppImage {
     Copy-Item -LiteralPath (Join-Path $buildRoot 'libs/EnterpriseAI-1.0.0.jar') -Destination $input
     Copy-Item -Path (Join-Path $buildRoot 'runtime-libs/*.jar') -Destination $input
     $stage=ResetStage;$parent=Split-Path -Parent $stage;Remove-Item -LiteralPath $stage -Force
-    $options=@('--type','app-image','--name','EnterpriseAI','--dest',$parent,'--input',$input,'--main-jar','EnterpriseAI-1.0.0.jar','--main-class','ai.enterprise.bootstrap.Main','--app-version','1.0.0','--vendor','EnterpriseAI','--java-options','-Denterprise.root=$BINDIR','--java-options','-Xmx1g','--java-options','-Xlog:disable','--java-options','-XX:-UsePerfData','--java-options','-XX:+DisableAttachMechanism','--java-options','-XX:-CreateCoredumpOnCrash','--java-options','-XX:-HeapDumpOnOutOfMemoryError','--java-options','-XX:ErrorFile=NUL','--java-options','--enable-native-access=ALL-UNNAMED')
+    $generatedStage=[IO.Path]::GetFullPath((Join-Path $parent $applicationName))
+    if(Test-Path -LiteralPath $generatedStage){
+        if(!$generatedStage.StartsWith($buildRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or ((Get-Item -LiteralPath $generatedStage -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Unsafe generated app-image path'}
+        Remove-Item -LiteralPath $generatedStage -Recurse -Force
+    }
+    $options=@('--type','app-image','--name',$applicationName,'--dest',$parent,'--input',$input,'--main-jar','EnterpriseAI-1.0.0.jar','--main-class','ai.enterprise.bootstrap.Main','--app-version','1.0.0','--vendor',$applicationName,'--icon',(Join-Path $sourceRoot 'core/shell/resources/enterpriseai/ui/application.ico'),'--java-options','-Denterprise.root=$BINDIR','--java-options','-Xmx1g','--java-options','-Xlog:disable','--java-options','-XX:-UsePerfData','--java-options','-XX:+DisableAttachMechanism','--java-options','-XX:-CreateCoredumpOnCrash','--java-options','-XX:-HeapDumpOnOutOfMemoryError','--java-options','-XX:ErrorFile=NUL','--java-options','--enable-native-access=ALL-UNNAMED')
     & (Join-Path $javaRoot 'bin/jpackage.exe') @options;CheckExit 'Portable app-image'
+    Move-Item -LiteralPath $generatedStage -Destination $stage
     StageNative $stage
     Set-Content -LiteralPath (Join-Path $stage 'licenses/distribution-profile.txt') -Value 'jpackage app-image; bundled Java runtime. Runtime write qualification requires acceptance tests.' -Encoding UTF8
 }
 function Publish {
     $stage=Join-Path $buildRoot 'staging/EnterpriseAI'
-    if(!(Test-Path -LiteralPath (Join-Path $stage 'EnterpriseAI.exe'))){throw 'Build a complete staging image first.'}
+    if(!(Test-Path -LiteralPath (Join-Path $stage $executableName))){throw 'Build a complete staging image first.'}
     $files=@(Get-ChildItem -LiteralPath $stage -File -Recurse | ForEach-Object { $_.FullName.Substring($stage.Length+1) })
     $previous=Join-Path $projectRoot 'licenses/application-files.json'
     if(Test-Path -LiteralPath $previous){
         foreach($relative in (Get-Content -LiteralPath $previous -Raw | ConvertFrom-Json)){
             if($relative -in $files -or $relative -eq 'licenses\application-files.json'){continue}
-            if($relative -notin @('EnterpriseAI.exe','vcruntime140.dll','vcruntime140_1.dll') -and $relative -notmatch '^(native|licenses|app|runtime)[\\/]'){throw 'Invalid application inventory path'}
+            if($relative -notin @($executableName,'EnterpriseAI.exe','vcruntime140.dll','vcruntime140_1.dll') -and $relative -notmatch '^(native|licenses|app|runtime)[\\/]'){throw 'Invalid application inventory path'}
             $target=[IO.Path]::GetFullPath((Join-Path $projectRoot $relative))
             if(!$target.StartsWith($projectRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Unsafe application inventory target'}
             if(Test-Path -LiteralPath $target){if(!(Test-Path -LiteralPath $target -PathType Leaf)){throw 'Expected owned application file'};Remove-Item -LiteralPath $target -Force}

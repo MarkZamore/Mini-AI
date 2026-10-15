@@ -1,130 +1,142 @@
 package ai.enterprise.shell;
 
 import ai.enterprise.bootstrap.EnterpriseAIComponent;
-import ai.enterprise.bootstrap.LegalResources;
 import ai.enterprise.contracts.Api;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-/** Composition-only shell; it has no imports of optional module implementations. */
+/** Composition-only shell. Optional panels communicate through the UI host port. */
 public final class DesktopShell {
-    private DesktopShell() {}
-    public static void run(EnterpriseAIComponent component) {
-        run(component,0);
-    }
-    public static void run(EnterpriseAIComponent component,int smokeMilliseconds) {
-        run(component,smokeMilliseconds,"");
-    }
-    /** Standalone host supplies any process-local input limitation before creating Display. */
+    private DesktopShell() { }
+    public static void run(EnterpriseAIComponent component) { run(component,0); }
+    public static void run(EnterpriseAIComponent component,int smokeMilliseconds) { run(component,smokeMilliseconds,""); }
     public static void run(EnterpriseAIComponent component,int smokeMilliseconds,String inputNotice) {
+        Display.setAppName(UiTheme.NAME);
         var display=new Display();
         try {
-            var shell=new Shell(display);
-            shell.setText("EnterpriseAI — документы и локальный помощник");
-            shell.setLayout(new GridLayout(1,false));
-            var menu=new Menu(shell,SWT.BAR);
-            shell.setMenuBar(menu);
-            var help=new MenuItem(menu,SWT.CASCADE);help.setText("Справка");
-            var helpMenu=new Menu(shell,SWT.DROP_DOWN);help.setMenu(helpMenu);
-            var licenses=new MenuItem(helpMenu,SWT.PUSH);licenses.setText("Лицензии и исходники");
-            licenses.addListener(SWT.Selection,e->showLicenses(shell));
-            var header=new Label(shell,SWT.NONE);
-            header.setText("EnterpriseAI");
-            header.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-            if(inputNotice!=null && !inputNotice.isBlank()) {
-                var notice=new Label(shell,SWT.WRAP);
-                notice.setText(inputNotice);
-                notice.setToolTipText(inputNotice);
-                notice.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-                notice.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-                notice.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-                notice.setData("enterpriseai.input.notice",inputNotice);
-            }
-            Composite content=compose(shell,component.context(),component.panels());
-            content.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-            var footer=new Label(shell,SWT.WRAP);
-            footer.setText("Данные открыты только для чтения • История этого сеанса хранится в памяти");
-            footer.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+            var theme=UiTheme.get(display);
+            var shell=new Shell(display);theme.decorate(shell);shell.setText(UiTheme.NAME);
+            var layout=new GridLayout(1,false);layout.marginWidth=12;layout.marginHeight=12;layout.verticalSpacing=8;shell.setLayout(layout);
+            var footer=new Label(shell,SWT.WRAP);theme.apply(footer);footer.setBackground(theme.background());
+            footer.setData("enterpriseai.ui.selected-document",Boolean.TRUE);
+            var footerData=new GridData(SWT.FILL,SWT.CENTER,true,false);footerData.exclude=true;footer.setLayoutData(footerData);footer.setVisible(false);
+            var reported=new LinkedHashSet<String>();
+            var host=new UiHost() {
+                public UiTheme theme() { return theme; }
+                public void error(String operation,Api.ServiceError error) {
+                    if(error==null||"CANCELLED".equals(error.code())||display.isDisposed())return;
+                    Runnable show=()->{
+                        if(shell.isDisposed())return;
+                        String key=error.code().startsWith("DB_")&&error.code().contains("MISSING")?"startup:database":operation;
+                        if(!reported.add(key))return;
+                        if(reported.size()>512)reported.remove(reported.iterator().next());
+                        UiHost.showError(shell,theme,error);
+                    };
+                    if(Display.getCurrent()==display)show.run();else display.asyncExec(show);
+                }
+                public void selectedDocument(String id,String title) {
+                    if(shell.isDisposed())return;
+                    String value=Objects.toString(title,"");footer.setText(value);footer.setToolTipText(value.isBlank()?null:value);
+                    footer.setData("enterpriseai.ui.selected-document-id",id);
+                    footerData.exclude=value.isBlank();footer.setVisible(!value.isBlank());shell.layout(true,true);
+                }
+            };
+            UiHost.install(shell,host);
+            var content=compose(shell,component.context(),component.panels());
+            content.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));content.moveAbove(footer);
             var area=display.getPrimaryMonitor().getClientArea();
             shell.setSize(Math.min(1440,area.width-40),Math.min(920,area.height-60));
             shell.setLocation(area.x+(area.width-shell.getSize().x)/2,area.y+(area.height-shell.getSize().y)/2);
-            shell.addListener(SWT.Close,e->component.close());
-            shell.open();
+            shell.addListener(SWT.Close,e->component.close());shell.open();
+            display.asyncExec(()->{
+                if(shell.isDisposed())return;
+                checkDataFolders(component.context(),host);
+                if(inputNotice!=null&&!inputNotice.isBlank())host.error("startup:input",new Api.ServiceError("INPUT_LIMITATION",inputNotice));
+            });
             if(smokeMilliseconds>0) {
-                display.timerExec(800,()-> { if(!shell.isDisposed()) smokeInput(shell); });
-                display.timerExec(smokeMilliseconds,()-> { if(!shell.isDisposed()) shell.close(); });
+                display.timerExec(800,()->{if(!shell.isDisposed())smokeInput(shell);});
+                display.timerExec(smokeMilliseconds,()->{if(!shell.isDisposed())shell.close();});
             }
-            while(!shell.isDisposed()) if(!display.readAndDispatch()) display.sleep();
-        } finally { if(!display.isDisposed()) display.dispose(); }
+            while(!shell.isDisposed())if(!display.readAndDispatch())display.sleep();
+        }finally{if(!display.isDisposed())display.dispose();}
     }
-    private static void smokeInput(Composite container) {
-        for(var child:container.getChildren()) {
-            if(child instanceof Text input && (input.getStyle() & SWT.READ_ONLY)==0 && input.isEnabled()) input.setText("Проверка отсутствующей локальной модели");
-            if(child instanceof Composite nested) smokeInput(nested);
+    private static void checkDataFolders(Api.Context context,UiHost host) {
+        if(context.find(Api.DatabaseServiceV1.class).isPresent()) {
+            var db=context.environment().db();
+            if(!Files.isDirectory(db))host.error("startup:database",new Api.ServiceError("DB_FOLDER_MISSING","Не найдена папка db рядом с миниИИ.exe:\n"+db+"\nВерните папку с существующей базой. Приложение не создаёт её автоматически."));
+            else if(!Files.isRegularFile(db.resolve("index.sqlite")))host.error("startup:database",new Api.ServiceError("DB_MISSING","Не найден индекс базы:\n"+db.resolve("index.sqlite")+"\nВерните существующий файл базы."));
         }
-        for(var child:container.getChildren()) {
-            if(child instanceof Button button && button.getText().contains("Отправить") && button.isEnabled()) button.notifyListeners(SWT.Selection,new Event());
-        }
+        if(context.find(Api.SourceViewerServiceV1.class).isPresent()&&!Files.isDirectory(context.environment().docs()))
+            host.error("startup:documents",new Api.ServiceError("DOCS_FOLDER_MISSING","Не найдена папка оригиналов docs:\n"+context.environment().docs()+"\nГраф и поиск по имеющейся базе остаются доступны; открытие оригиналов требует папку docs."));
     }
-    private static void showLicenses(Shell parent) {
-        var window=new Shell(parent,SWT.DIALOG_TRIM|SWT.RESIZE);
-        window.setText("EnterpriseAI — лицензии и исходники");
-        window.setLayout(new GridLayout(1,false));
-        var tabs=new TabFolder(window,SWT.NONE);
-        tabs.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        var notices=new TabItem(tabs,SWT.NONE);notices.setText("Лицензии");
-        var text=new Text(tabs,SWT.MULTI|SWT.READ_ONLY|SWT.V_SCROLL|SWT.H_SCROLL|SWT.BORDER);
-        notices.setControl(text);
-        text.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-        try {text.setText(LegalResources.notices()+"\n\nСостав сборки и контрольные суммы:\n"+LegalResources.inventory());}
-        catch(java.io.IOException error){text.setText(error.getMessage());}
-        var sources=new TabItem(tabs,SWT.NONE);sources.setText("Исходники и изменения");
-        var sourceText=new Text(tabs,SWT.MULTI|SWT.READ_ONLY|SWT.V_SCROLL|SWT.H_SCROLL|SWT.BORDER);
-        sources.setControl(sourceText);sourceText.setText("Выберите эту вкладку для просмотра исходников изменений.");
-        tabs.addListener(SWT.Selection,event->{
-            if(tabs.getSelectionIndex()==1 && sourceText.getData("loaded")==null){
-                try {sourceText.setText(LegalResources.changes());sourceText.setData("loaded",Boolean.TRUE);}
-                catch(java.io.IOException error){sourceText.setText(error.getMessage());}
-            }
-        });
-        var sourceNotice=new Label(window,SWT.WRAP);
-        sourceNotice.setText("Полный архив соответствующих исходников встроен в EXE. Параметр --third-party-source-stdout передаёт ZIP в стандартный вывод без распаковки. Сохранение вывода выполняет вызывающая программа.");
-        sourceNotice.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-        window.setSize(850,640);window.open();
+    private static void smokeInput(Composite parent) {
+        for(var c:parent.getChildren()) {
+            if(c instanceof Text input&&Boolean.TRUE.equals(input.getData("enterpriseai.ui.query")))input.setText("Проверка отсутствующей локальной модели");
+            if(c instanceof Composite nested)smokeInput(nested);
+        }
+        for(var c:parent.getChildren())if(Boolean.TRUE.equals(c.getData("enterpriseai.ui.send"))&&c.isEnabled())c.notifyListeners(SWT.Selection,new Event());
     }
     public static Composite compose(Composite parent,Api.Context context,List<PanelFactory> factories) {
-        var container=new Composite(parent,SWT.NONE);
-        container.setLayout(new FillLayout());
+        var theme=UiTheme.get(parent.getDisplay());
+        var container=new Composite(parent,SWT.NONE);theme.apply(container);container.setLayout(new FillLayout());
         var sorted=new ArrayList<>(factories);
-        sorted.sort(Comparator.comparingInt(p->p.slot().equals("assistant")?0:p.slot().equals("graph")?2:1));
+        sorted.sort(Comparator.comparingInt(p->p.slot().equals("assistant")||p.slot().equals("left")?0:p.slot().equals("graph")?2:1));
         if(sorted.isEmpty()) {
-            var empty=new Label(container,SWT.CENTER|SWT.WRAP);
-            empty.setText("EnterpriseAI\nФункциональные модули не включены в эту сборку.");
-            return container;
+            container.setLayout(new GridLayout(1,false));
+            var empty=new Label(container,SWT.CENTER);theme.apply(empty);empty.setFont(theme.brandFont());empty.setText(UiTheme.NAME);
+            empty.setLayoutData(new GridData(SWT.CENTER,SWT.CENTER,true,true));return container;
         }
-        if(sorted.size()==1) createPanel(container,context,sorted.getFirst());
+        if(sorted.size()==1)createPanel(container,context,sorted.getFirst());
         else {
-            var split=new SashForm(container,SWT.HORIZONTAL|SWT.SMOOTH);
-            split.setSashWidth(7);
-            for(var factory:sorted) createPanel(split,context,factory);
-            if(sorted.size()==2) split.setWeights(45,55);
-            else split.setWeights(sorted.stream().mapToInt(p->100).toArray());
+            var split=new SashForm(container,SWT.HORIZONTAL|SWT.SMOOTH);theme.apply(split);split.setSashWidth(10);
+            for(var factory:sorted)createPanel(split,context,factory);
+            if(sorted.size()==2)split.setWeights(45,55);else split.setWeights(sorted.stream().mapToInt(p->100).toArray());
+            installSashStyle(split,theme,context);
         }
         return container;
     }
+    private static void installSashStyle(SashForm split,UiTheme theme,Api.Context context) {
+        var closed=new AtomicBoolean();context.own(()->closed.set(true));
+        boolean[] queued={false};
+        Runnable update=()->{
+            queued[0]=false;
+            if(closed.get()||split.isDisposed())return;
+            for(var child:split.getChildren())if(child instanceof Sash sash)styleSash(sash,theme);
+        };
+        Runnable schedule=()->{
+            if(!closed.get()&&!split.isDisposed()&&!queued[0]) {
+                queued[0]=true;split.getDisplay().asyncExec(update);
+            }
+        };
+        // SashForm creates its Sash controls only after receiving a nonzero area.
+        // Defer until its layout completes; also style any subsequently created Sash.
+        split.addListener(SWT.Resize,event->schedule.run());schedule.run();
+    }
+    private static void styleSash(Sash sash,UiTheme theme) {
+        if(Boolean.TRUE.equals(sash.getData("enterpriseai.ui.splitter")))return;
+        sash.setBackground(theme.separator());sash.setCursor(sash.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE));
+        sash.setData("enterpriseai.ui.splitter",Boolean.TRUE);
+        sash.addListener(SWT.MouseEnter,e->{sash.setBackground(theme.separatorHover());sash.redraw();});
+        sash.addListener(SWT.MouseExit,e->{sash.setBackground(theme.separator());sash.redraw();});
+        sash.addPaintListener(e->{var size=sash.getSize();e.gc.setAdvanced(false);e.gc.setBackground(sash.getBackground());e.gc.fillRectangle(0,0,size.x,size.y);e.gc.setBackground(theme.accent());for(int y=-9;y<=9;y+=9)e.gc.fillOval(size.x/2-2,size.y/2+y-2,4,4);});
+    }
     private static void createPanel(Composite parent,Api.Context context,PanelFactory factory) {
-        try { factory.create(parent,context); }
-        catch(Throwable error) { context.diagnostic("Панель "+factory.id()+": "+error); var fallback=new Label(parent,SWT.WRAP); fallback.setText(factory.title()+"\n"+Api.failure(error).error().message()); }
+        try{factory.create(parent,context);}
+        catch(Throwable error){context.diagnostic("Панель "+factory.id()+": "+error);UiHost.find(parent).error("panel:"+factory.id(),Api.failure(error).error());var fallback=new Composite(parent,SWT.NONE);UiTheme.get(parent.getDisplay()).apply(fallback);}
     }
     public static void showStartupError(String message) {
         Display display=null;
-        try { display=new Display(); var shell=new Shell(display); var box=new MessageBox(shell,SWT.ICON_ERROR|SWT.OK); box.setText("EnterpriseAI"); box.setMessage(message); box.open(); shell.dispose(); }
-        catch(Throwable ignored) { System.err.println("EnterpriseAI: "+message); }
-        finally { if(display!=null && !display.isDisposed()) display.dispose(); }
+        try {
+            display=new Display();var theme=UiTheme.get(display);var parent=new Shell(display);theme.decorate(parent);
+            UiHost.showError(parent,theme,new Api.ServiceError("STARTUP",message));
+            while(display.getShells().length>1)if(!display.readAndDispatch())display.sleep();parent.dispose();
+        }catch(Throwable ignored){System.err.println("миниИИ: "+message);}
+        finally{if(display!=null&&!display.isDisposed())display.dispose();}
     }
 }

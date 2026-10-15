@@ -19,9 +19,6 @@ public final class LegalResources {
     public static String inventory() throws IOException {
         try(var input=open("catalog.json")) { return new String(input.readAllBytes(),StandardCharsets.UTF_8); }
     }
-    public static String changes() throws IOException {
-        try(var input=open("changes.txt")) { return new String(input.readAllBytes(),StandardCharsets.UTF_8); }
-    }
     public static long streamSources(OutputStream output) throws IOException {
         try(var input=open("corresponding-source.zip")) { return input.transferTo(output); }
     }

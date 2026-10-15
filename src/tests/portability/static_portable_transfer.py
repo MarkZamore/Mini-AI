@@ -50,14 +50,18 @@ def inventory(directory: Path) -> dict:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--exe", required=True)
+    parser.add_argument("--report-prefix", default="dusty-yellow")
     args = parser.parse_args()
     original_exe = Path(args.exe).absolute()
+    exe_name = original_exe.name
+    prefix = args.report_prefix
+    if not prefix.isascii() or not prefix.replace("-", "").isalnum(): raise ValueError("Invalid report prefix")
     original_db = ROOT / "db" / "index.sqlite"
-    base = BUILD / "static-portable-transfer" / ("session-" + uuid.uuid4().hex)
+    base = BUILD / (prefix + "-portable-transfer") / ("session-" + uuid.uuid4().hex)
     base.mkdir(parents=True, exist_ok=False)
     if not base.is_relative_to(BUILD):
         raise RuntimeError("Fixture path escaped the allowed build directory")
-    report_file = BUILD / "static-portable-transfer.json"
+    report_file = BUILD / (prefix + "-portable-transfer.json")
     results = []
     report = {"completed": False, "cases": results, "fixtureRoot": str(base), "peImports": assert_static_imports(original_exe)}
     original_hashes = {"exe": sha256(original_exe), "index.sqlite": sha256(original_db)}
@@ -95,7 +99,7 @@ def main():
     def fixture(name: str | Path, database: str):
         folder = base / name
         os.makedirs(extended(folder), exist_ok=False)
-        shutil.copyfile(extended(original_exe), extended(folder / "EnterpriseAI.exe"))
+        shutil.copyfile(extended(original_exe), extended(folder / exe_name))
         if database != "absent":
             os.mkdir(extended(folder / "db"))
             if database == "normal":
@@ -108,18 +112,18 @@ def main():
         normal = fixture("Перенос с пробелами Қазақ ә ғ ң 😀", "normal")
         reference = {}
         for query in ("академическая политика", "Қазақстан", "құжат"):
-            hits, _ = run(normal / "EnterpriseAI.exe", ["--search", query])
+            hits, _ = run(normal / exe_name, ["--search", query])
             if not hits: raise AssertionError("Reference query has no results: " + query)
             reference[query] = hits
         tail = Path("Длинный путь перенос Қазақ с пробелами")
-        while len(str(base / tail / "EnterpriseAI.exe")) <= 340:
+        while len(str(base / tail / exe_name)) <= 340:
             tail /= "Следующая папка длинного пути 0123456789"
         long = fixture(tail, "normal")
         missing = fixture("отсутствуют docs db model", "absent")
         corrupt = fixture("повреждён индекс без docs model", "corrupt")
         before = inventory(base)
         for label, folder in (("unicode-space", normal), ("long-path", long)):
-            exe = folder / "EnterpriseAI.exe"
+            exe = folder / exe_name
             status, ms = run(exe, ["--status"])
             if canonical(status["root"]) != canonical(folder):
                 raise AssertionError("Application did not resolve its actual copied EXE directory")
@@ -147,7 +151,7 @@ def main():
                 "statusMs": ms, "graphMs": graph_ms, "uiSmokeMs": smoke_ms, "documents": 599, "confirmedEdges": 647,
                 "missingDocsError": opened["error"], "missingModelError": model["error"], "inputNotice":smoke.get("inputNotice", ""), "observerLoadedModules":smoke.get("observerLoadedModules")})
         for label, folder in (("missing-data", missing), ("corrupt-db", corrupt)):
-            exe = folder / "EnterpriseAI.exe"
+            exe = folder / exe_name
             status, _ = run(exe, ["--status"])
             if not status["diagnostics"] or status["panels"] != ["assistant", "graph"]:
                 raise AssertionError("Failure state lost the independent shell/panels")
@@ -176,7 +180,7 @@ def main():
     finally:
         report["limitations"] = ["Runs on the current Windows installation, not a clean VM",
             "PATH and Java/Python environment isolation do not emulate every absent installed program",
-            "File snapshots cannot detect transient create/delete operations or registry writes; Process Monitor remains required",
+            "File snapshots cannot detect transient create/delete operations or registry writes; those operations remain unverified by this release pipeline",
             "External viewers are not launched; documents are intentionally absent in copied fixtures",
             "Model/weights are absent; real inference quality, memory, timing and GPU remain untested",
             "Windows, security software and drivers can create their own records outside the fixture inventory"]

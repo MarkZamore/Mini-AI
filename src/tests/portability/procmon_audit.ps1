@@ -1,4 +1,4 @@
-param(
+﻿param(
     [ValidateSet('Prepare','Capture','Observer','Analyze')][string]$Mode='Prepare',
     [string]$SourceRoot=(Split-Path -Parent (Split-Path -Parent $PSScriptRoot)),
     [string]$RunDirectory,
@@ -7,6 +7,7 @@ param(
     [string]$Executable,
     [string]$AdditionalScenariosJson,
     [string]$FatalProbeExecutable,
+    [string]$InteractiveGraphExecutable,
     [switch]$ConfigurationVerified,
     [switch]$AcceptSysinternalsLicense,
     [int]$CoordinatorPid=0,
@@ -45,7 +46,7 @@ if($Mode -eq 'Prepare'){
     if(Test-Path -LiteralPath $run){throw 'Use a new audit run directory; existing evidence is never overwritten by Prepare.'}
     New-Item -ItemType Directory -Force -Path $run,(Join-Path $run 'working')|Out-Null
     $verifiedTool=VerifyTool
-    $exe=if($Executable){[IO.Path]::GetFullPath($Executable)}else{Join-Path $project 'EnterpriseAI.exe'};if(!(Test-Path -LiteralPath $exe)){throw 'Build and review the actual EnterpriseAI.exe before preparing the observer run.'}
+    $exe=if($Executable){[IO.Path]::GetFullPath($Executable)}else{Join-Path $project 'миниИИ.exe'};if(!(Test-Path -LiteralPath $exe)){throw 'Build and review the actual executable before preparing the observer run.'};$exeName=[IO.Path]::GetFileName($exe)
     if($Profile -eq 'static'){
         $peObserver=Join-Path $PSScriptRoot 'static_pe.py'
         $python=Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'
@@ -56,7 +57,7 @@ if($Mode -eq 'Prepare'){
     foreach($name in @('missing-all','corrupt-db','missing-model-folder')){
         $fixture=Join-Path $fixtures $name
         New-Item -ItemType Directory -Force -Path $fixture|Out-Null
-        Copy-Item -LiteralPath $exe -Destination (Join-Path $fixture 'EnterpriseAI.exe')
+        Copy-Item -LiteralPath $exe -Destination (Join-Path $fixture $exeName)
         if($Profile -eq 'native'){
         New-Item -ItemType Directory -Force -Path (Join-Path $fixture 'native')|Out-Null
         foreach($crt in @('VCRUNTIME140.dll','VCRUNTIME140_1.dll')){
@@ -78,15 +79,15 @@ if($Mode -eq 'Prepare'){
     }
     # An un-published static image has no adjacent data. Exercise its identical
     # bytes in a physical read-only dataset fixture, never an originals junction.
-    $dataExe=if($Profile -eq 'static'){Join-Path $fixtures 'missing-model-folder/EnterpriseAI.exe'}else{$exe}
+    $dataExe=if($Profile -eq 'static'){Join-Path $fixtures ('missing-model-folder/'+$exeName)}else{$exe}
     $scenarios=@(
         @{name='native-status';exe=$dataExe;arguments=@('--status');timeoutSeconds=15;expectedExitCode=0},
         @{name='native-search';exe=$dataExe;arguments=@('--search','Академическая политика','10');timeoutSeconds=15;expectedExitCode=0},
         @{name='native-graph';exe=$dataExe;arguments=@('--graph');timeoutSeconds=20;expectedExitCode=0},
         @{name='native-ui-smoke-missing-worker';exe=$dataExe;arguments=@('--ui-smoke');timeoutSeconds=15;expectedExitCode=0},
-        @{name='missing-all-folders';exe=(Join-Path $fixtures 'missing-all/EnterpriseAI.exe');arguments=@('--ui-smoke');timeoutSeconds=15;expectedExitCode=0},
-        @{name='corrupt-db';exe=(Join-Path $fixtures 'corrupt-db/EnterpriseAI.exe');arguments=@('--search','документы','10');timeoutSeconds=15;expectedExitCode=1},
-        @{name='missing-model-folder';exe=(Join-Path $fixtures 'missing-model-folder/EnterpriseAI.exe');arguments=@('--ui-smoke');timeoutSeconds=15;expectedExitCode=0}
+        @{name='missing-all-folders';exe=(Join-Path $fixtures ('missing-all/'+$exeName));arguments=@('--ui-smoke');timeoutSeconds=15;expectedExitCode=0},
+        @{name='corrupt-db';exe=(Join-Path $fixtures ('corrupt-db/'+$exeName));arguments=@('--search','документы','10');timeoutSeconds=15;expectedExitCode=1},
+        @{name='missing-model-folder';exe=(Join-Path $fixtures ('missing-model-folder/'+$exeName));arguments=@('--ui-smoke');timeoutSeconds=15;expectedExitCode=0}
     )
     $fatal=Join-Path $build 'test-results/fatal-probe/CrashProbe.exe';$fatalDll=Join-Path $build 'test-results/fatal-probe/fatal-probe.dll'
     if($Profile -eq 'native' -and (Test-Path -LiteralPath $fatal) -and (Test-Path -LiteralPath $fatalDll)){
@@ -113,11 +114,32 @@ if($Mode -eq 'Prepare'){
         }
     }
     $codeFiles=@(Get-Item -LiteralPath $exe)
+    $interactiveGraph=$null
+    if($InteractiveGraphExecutable){
+        if($Profile -ne 'static'){throw 'Interactive graph audit requires the static profile'}
+        $graphExe=InBuild $InteractiveGraphExecutable
+        if(!(Test-Path -LiteralPath $graphExe -PathType Leaf) -or (Get-FileHash -LiteralPath $graphExe).Hash -ne (Get-FileHash -LiteralPath $exe).Hash){throw 'Interactive graph must be an exact physical copy of the reviewed EXE'}
+        if(Test-Path -LiteralPath (Join-Path (Split-Path -Parent $graphExe) 'docs')){throw 'Interactive graph fixture must omit docs so double-click cannot invoke an external viewer'}
+        $catalog=Join-Path $run 'interactive-graph-catalog.json'
+        $preparation=LaunchPipe $graphExe @('--graph') (Join-Path $run 'working')
+        try{
+            $graphOut=$preparation.StandardOutput.ReadToEndAsync();$graphErr=$preparation.StandardError.ReadToEndAsync()
+            if(!$preparation.WaitForExit(30000)){$preparation.Kill($true);throw 'Interactive graph catalog preparation timed out'}
+            $text=$graphOut.GetAwaiter().GetResult();$errorText=$graphErr.GetAwaiter().GetResult()
+            if($preparation.ExitCode -ne 0 -or $errorText){throw 'Interactive graph requires a readable existing physical SQLite fixture'}
+            $snapshot=$text|ConvertFrom-Json;if(!$snapshot.nodes -or $snapshot.nodes.Count -lt 1){throw 'Interactive graph catalog has no documents'}
+            [IO.File]::WriteAllText($catalog,$text,[Text.UTF8Encoding]::new($false))
+        }finally{$preparation.Dispose()}
+        $graphScript=Join-Path $source 'tests/visual/native_graph_observer.py'
+        $interactiveGraph=@{exe=$graphExe;exeSha256=(Get-FileHash -LiteralPath $graphExe).Hash.ToLowerInvariant();observerScript=$graphScript;observerScriptSha256=(Get-FileHash -LiteralPath $graphScript).Hash.ToLowerInvariant();observerPython=$python;observerPythonSha256=(Get-FileHash -LiteralPath $python).Hash.ToLowerInvariant();catalog=$catalog;catalogSha256=(Get-FileHash -LiteralPath $catalog).Hash.ToLowerInvariant();timeoutSeconds=140;scope='Python observer is not the application; exact child main PID and lifecycle are recorded from the completed report'}
+        $codeFiles+=Get-Item -LiteralPath $graphExe
+    }
     if($Profile -eq 'native'){$codeFiles+=@(Get-ChildItem -LiteralPath $project -File -Filter *.dll)+@(Get-ChildItem -LiteralPath (Join-Path $project 'native') -File -Filter *.dll)}
     foreach($scenario in $scenarios){$codeFiles+=Get-Item -LiteralPath $scenario.exe; $modelFolder=Join-Path (Split-Path -Parent $scenario.exe) 'model';if(Test-Path -LiteralPath $modelFolder){$codeFiles+=@(Get-ChildItem -LiteralPath $modelFolder -Recurse -File -Filter *.exe)}}
     $codeFiles=@($codeFiles|Sort-Object FullName -Unique)
     $applicationFiles=@($codeFiles|ForEach-Object {@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()}})
     $plan=@{schemaVersion=1;profile=$Profile;applicationExecutable=$exe;preparedAt=[DateTime]::UtcNow.ToString('o');windowsVersion=[Environment]::OSVersion.VersionString;applicationSha256=(Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant();applicationFiles=$applicationFiles;originalIndexSha256=(Get-FileHash -LiteralPath (Join-Path $project 'db/index.sqlite')).Hash.ToLowerInvariant();tool=$verifiedTool;scenarios=$scenarios;captured=$false;acceptance='NOT_RUN';ordinaryAppParentRequired=$true;mandatoryManualReview=@('Capture classes enabled, Drop Filtered Events off and stacks captured','Process tree plus PID lifetime','Each candidate write stack including operating-system code inside an application PID','Interactive graph drag/zoom/divider and external viewer tested separately','Real model weights, memory use and throughput remain untested until model prepared')}
+    $plan.interactiveGraph=$interactiveGraph
     SaveJson (Join-Path $run 'plan.json') $plan
     Write-Output "Prepared only; Procmon and UAC were not invoked. Evidence directory: $run"
     exit 0
@@ -135,7 +157,7 @@ if($Mode -eq 'Capture'){
     }
     $verifiedTool=VerifyTool
     if($verifiedTool.sha256 -ne $plan.tool.sha256){throw 'Procmon changed since preparation.'}
-    $reviewedExe=if($plan.applicationExecutable){$plan.applicationExecutable}else{Join-Path $project 'EnterpriseAI.exe'}
+    $reviewedExe=if($plan.applicationExecutable){$plan.applicationExecutable}else{Join-Path $project 'миниИИ.exe'}
     if((Get-FileHash -LiteralPath $reviewedExe).Hash.ToLowerInvariant() -ne $plan.applicationSha256){throw 'The reviewed application changed; prepare a fresh run.'}
     if(!$plan.applicationFiles){throw 'Prepare a fresh run with the complete EXE/DLL code inventory.'}
     foreach($codeFile in $plan.applicationFiles){if(!(Test-Path -LiteralPath $codeFile.path -PathType Leaf) -or (Get-FileHash -LiteralPath $codeFile.path).Hash.ToLowerInvariant() -ne $codeFile.sha256){throw 'An application/native/runtime DLL changed; prepare a fresh run.'}}
@@ -172,6 +194,23 @@ if($Mode -eq 'Capture'){
             }
             SaveJson (Join-Path $run 'cases.json') $cases;$p.Dispose();$runningApplication=$null
             if(!(Get-Process -Id $observerReady.pid -ErrorAction SilentlyContinue)){throw 'Observer capture ended during an application scenario; retain the partial evidence and prepare a fresh longer run.'}
+        }
+        if($plan.interactiveGraph){
+            $graph=$plan.interactiveGraph
+            foreach($pair in @(@($graph.observerScript,$graph.observerScriptSha256),@($graph.observerPython,$graph.observerPythonSha256),@($graph.catalog,$graph.catalogSha256))){if((Get-FileHash -LiteralPath $pair[0]).Hash.ToLowerInvariant() -ne $pair[1]){throw 'Interactive graph observer/catalog changed after preparation'}}
+            if(!(Get-Process -Id $observerReady.pid -ErrorAction SilentlyContinue)){throw 'Capture ended before interactive graph'}
+            $graphOutput=Join-Path $run 'interactive-graph'
+            $p=LaunchPipe $graph.observerPython @('-B',$graph.observerScript,'--exe',$graph.exe,'--catalog-json',$graph.catalog,'--output',$graphOutput) (Join-Path $run 'working')
+            $runningApplication=$p;$out=$p.StandardOutput.ReadToEndAsync();$err=$p.StandardError.ReadToEndAsync()
+            if(!$p.WaitForExit([int]$graph.timeoutSeconds*1000)){$p.Kill($true);$p.WaitForExit();throw 'Interactive graph observer timed out; preserve partial trace'}
+            $observerStdout=$out.GetAwaiter().GetResult();$observerStderr=$err.GetAwaiter().GetResult();$observerExit=$p.ExitCode
+            SaveJson (Join-Path $run 'interactive-graph-observer.json') @{pid=$p.Id;category='observer/tool';exitCode=$observerExit;stdout=$observerStdout;stderr=$observerStderr}
+            $report=Get-Content -LiteralPath (Join-Path $graphOutput 'report.json') -Raw|ConvertFrom-Json
+            if($report.ordinaryParentPid -ne $p.Id -or $report.exeSha256 -ne $graph.exeSha256 -or !$report.ownedPid){throw 'Interactive graph report does not identify the planned exact main process'}
+            $row=@{name='interactive-graph-heartbeat';pid=$report.ownedPid;processName=[IO.Path]::GetFileName($graph.exe);exe=$graph.exe;arguments=@();startedAt=$report.applicationStartedUtc;finishedAt=$report.applicationFinishedUtc;ordinaryParentPid=$report.ordinaryParentPid;ordinaryParentElevated=$false;kind='application';exitCode=$report.childExitCode;stdout=$report.stdout;stderr=$report.stderr;interactiveReport=(Join-Path $graphOutput 'report.json');expectedOutcome=($observerExit -eq 0 -and !$observerStderr -and $report.completed -and $report.childExitCode -eq 0 -and !$report.stderr -and $report.dividerDragVerified -and $report.doubleClickSourceErrorObserved -and $report.nativeIdleGeometryStable -and $report.pulsePausedDuringDragObserved)}
+            $cases+=$row;SaveJson (Join-Path $run 'cases.json') $cases;$p.Dispose();$runningApplication=$null
+            if(!$row.expectedOutcome){throw 'Interactive graph did not pass; trace retained, no acceptance'}
+            if(!(Get-Process -Id $observerReady.pid -ErrorAction SilentlyContinue)){throw 'Capture ended during interactive graph lifecycle'}
         }
     } catch {
         SaveJson (Join-Path $run 'coordinator-failure.json') @{failedAt=[DateTime]::UtcNow.ToString('o');error=$_.ToString()}

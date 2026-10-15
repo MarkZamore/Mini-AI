@@ -209,7 +209,7 @@ def main():
     finally:
         report["limitations"] = ["Runs on the current Windows installation, not a clean VM",
             "PATH and Java/Python environment isolation do not emulate every absent installed program",
-            "File snapshots cannot detect transient create/delete operations or registry writes; Process Monitor remains required",
+            "File snapshots cannot detect transient create/delete operations or registry writes; absence of such operations remains unverified",
             "External viewers are not launched; documents are intentionally absent in copied fixtures",
             "Model/weights are absent; real inference quality, memory, timing and GPU remain untested",
             "Windows, security software and drivers can create their own records outside the fixture inventory"]

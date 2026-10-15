@@ -21,7 +21,7 @@ public final class ReadOnlyDatabase implements Api.DatabaseServiceV1 {
         var environment=context.environment();
         try {
             Path path=environment.db().resolve("index.sqlite");
-            if(!Files.isRegularFile(path)) throw new Api.ServiceException("DB_MISSING","Не найдена база db\\index.sqlite рядом с EnterpriseAI.exe");
+            if(!Files.isRegularFile(path)) throw new Api.ServiceException("DB_MISSING","Не найден индекс базы:\n"+path+"\nВерните существующий файл index.sqlite в папку db рядом с приложением.");
             Path realRoot=environment.db().toRealPath();
             path=path.toRealPath();
             if(!path.startsWith(realRoot)) throw new Api.ServiceException("DB_PATH","Индекс расположен вне папки db");

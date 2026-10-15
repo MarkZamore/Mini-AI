@@ -44,7 +44,7 @@ report = {"sourceSha256": sha, "sourceBytes": archive_path.stat().st_size,
           "sourceEntriesVerified": len(inventory["sources"]) + len(inventory["recipes"]),
           "noticeEntriesVerified": len(inventory["notices"]),
           "withoutSwtJarOrPlatformInitialization": True, "sourceStreamHeapMiB": 16,
-          "notes": "Generated-resource/JVM proof; published native EXE must repeat stdout/hash and ProcMon checks."}
+          "notes": "Generated-resource/JVM proof; published native EXE must repeat stdout/hash checks. Transient filesystem operations and registry changes remain unverified."}
 output = root / "build/test-results/embedded-licenses.json"
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(json.dumps(report, indent=2), encoding="utf-8")

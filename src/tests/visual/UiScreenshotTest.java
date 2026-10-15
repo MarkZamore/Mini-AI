@@ -21,13 +21,16 @@ public final class UiScreenshotTest {
             var display=new Display();
             try {
                 var shell=new Shell(display);
-                shell.setText("EnterpriseAI — visual test"); shell.setLayout(new FillLayout());
+                shell.setText("миниИИ — visual test"); shell.setLayout(new FillLayout());
                 component.attach(shell);
                 var area=display.getPrimaryMonitor().getClientArea();
                 shell.setSize(Math.min(1440,area.width-40),Math.min(900,area.height-60));
                 shell.setLocation(area.x+20,area.y+30);
                 shell.open();
-                display.timerExec(1200,()-> { if(!shell.isDisposed())send(shell); });
+                // Empty-state visual is the default. Submission/error dialogs
+                // are exercised by the separate owned native keyboard observer.
+                if(args.length>2 && args[2].equals("--submit"))
+                    display.timerExec(1200,()-> { if(!shell.isDisposed())send(shell); });
                 display.timerExec(5000,()-> {
                     if(shell.isDisposed())return;
                     var bounds=shell.getClientArea(); var image=new Image(display,bounds.width,bounds.height);var gc=new GC(shell);
@@ -40,7 +43,7 @@ public final class UiScreenshotTest {
         System.out.println("UiScreenshotTest: PASS "+output);
     }
     private static void send(Composite parent) {
-        for(var control:parent.getChildren()) { if(control instanceof Text text&&(text.getStyle()&SWT.READ_ONLY)==0)text.setText("Академическая политика");if(control instanceof Composite composite)send(composite); }
-        for(var control:parent.getChildren())if(control instanceof Button button&&button.getText().contains("Отправить"))button.notifyListeners(SWT.Selection,new Event());
+        for(var control:parent.getChildren()) { if(control instanceof Text text&&control.getData("enterpriseai.ui.query")!=null)text.setText("Академическая политика");if(control instanceof Composite composite)send(composite); }
+        for(var control:parent.getChildren())if(control.getData("enterpriseai.ui.send")!=null)control.notifyListeners(SWT.Selection,new Event());
     }
 }
