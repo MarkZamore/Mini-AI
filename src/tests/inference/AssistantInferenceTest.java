@@ -79,8 +79,8 @@ public final class AssistantInferenceTest {
                     public Api.Result<Api.ProviderInfo> availability() { return Api.Result.ok(new Api.ProviderInfo("mock", "Q6_K", 8192, 1, 1)); }
                     public CompletionStage<Api.Result<Void>> generate(Api.GenerationRequest r, java.util.function.Consumer<Api.GenerationEvent> sink, Api.CancellationToken token) {
                         String prompt = r.messages().getLast().content();
-                        check(prompt.contains("needs_review") && prompt.contains("source_refs") && prompt.contains(FID), "exact context preserves warnings/source refs");
-                        sink.accept(new Api.GenerationEvent("token", r.requestId(), "Факт [source:" + (valid ? FID : HASH) + "]", null));
+                        check(prompt.contains("needs_review") && prompt.contains("source_refs") && prompt.contains("\"fragment_id\":\"1\""), "aliased context preserves warnings/source refs");
+                        sink.accept(new Api.GenerationEvent("token", r.requestId(), "Факт [source:" + (valid ? "1" : HASH) + "]", null));
                         return CompletableFuture.completedFuture(Api.Result.ok(null));
                     }
                 });
@@ -134,7 +134,7 @@ public final class AssistantInferenceTest {
                 simultaneous.countDown();
                 try { check(simultaneous.await(3, TimeUnit.SECONDS), "independent assistant generations overlap"); }
                 catch (InterruptedException error) { Thread.currentThread().interrupt(); throw new CompletionException(error); }
-                sink.accept(new Api.GenerationEvent("token", request.requestId(), "Факт [source:" + FID + "]", null));
+                sink.accept(new Api.GenerationEvent("token", request.requestId(), "Факт [source:1]", null));
                 return CompletableFuture.completedFuture(Api.Result.ok(null));
             }
         };

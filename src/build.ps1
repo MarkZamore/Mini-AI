@@ -118,7 +118,7 @@ function StageNative([string]$Stage) {
     $runtimeNotice|Set-Content -LiteralPath (Join-Path $runtimeLicenses 'NOTICE.txt') -Encoding UTF8
     Copy-Item -LiteralPath 'patches/org/eclipse/swt/internal/Library.java' -Destination (Join-Path $licenses 'SWT-Library-modified.java')
     Copy-Item -LiteralPath 'build/generated/module-inventory.json' -Destination (Join-Path $licenses 'module-inventory.json')
-    if(Test-Path -LiteralPath 'licenses'){Get-ChildItem -LiteralPath 'licenses' | ForEach-Object {Copy-Item -LiteralPath $_.FullName -Destination $licenses -Recurse}}
+    if(Test-Path -LiteralPath 'licenses'){Get-ChildItem -LiteralPath 'licenses' | ForEach-Object {Copy-Item -LiteralPath $_.FullName -Destination $licenses -Recurse -Force}}
     $graalLicense=Join-Path $licenses 'GraalVM-CE';New-Item -ItemType Directory -Force -Path $graalLicense | Out-Null
     foreach($name in @('LICENSE.txt','LICENSE_NATIVEIMAGE.txt','THIRD_PARTY_LICENSE.txt','GRAALVM-README.md')){if(Test-Path -LiteralPath (Join-Path $javaRoot $name)){Copy-Item -LiteralPath (Join-Path $javaRoot $name) -Destination $graalLicense}}
     Copy-Item -LiteralPath (Join-Path $javaRoot 'legal') -Destination $graalLicense -Recurse
@@ -150,7 +150,14 @@ function BuildNativeImage {
     & (Join-Path $javaRoot 'bin/java.exe') -classpath ($buildClasses+';'+$cp) NativeMetadata (Join-Path $buildRoot 'dependencies/swt-3.135.0-patched.jar') $metadata;CheckExit 'SWT JNI metadata'
     $arguments=@('--no-fallback','--enable-native-access=ALL-UNNAMED','-O2','-march=x86-64','-R:MaxHeapSize=1073741824','-H:+UnlockExperimentalVMOptions','--features=ai.enterprise.build.NoFileLogFeature','--initialize-at-build-time=ai.enterprise.build.NoFileLogHandler','--initialize-at-run-time=org.eclipse.swt,ai.enterprise.platform.WindowsPlatform',('--class-path='+$buildClasses+';'+$cp),('-H:Path='+$image),'-H:Name=EnterpriseAI',('-H:JNIConfigurationFiles='+(Join-Path $metadata 'jni-config.json')),('-H:ReflectionConfigurationFiles='+(Join-Path $metadata 'reflect-config.json')),'-H:IncludeResources=enterpriseai/(legal|ui)/.*','-H:NativeLinkerOption=/SUBSYSTEM:WINDOWS','-H:NativeLinkerOption=/ENTRY:mainCRTStartup','-J-Xmx8g','-J-XX:-UsePerfData','ai.enterprise.bootstrap.Main')
     $arguments=@('-J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.windows.headers=ALL-UNNAMED')+$arguments
-    & (Join-Path $javaRoot 'bin/native-image.cmd') @arguments;CheckExit 'Native Image'
+    # Freeze linkage during image generation: arbitrary build-time system properties
+    # are not guaranteed to remain runtime defaults in Native Image.
+    $arguments=@('-Denterprise.nativeDlls=true','--initialize-at-build-time=ai.enterprise.contracts.NativeLinkage')+$arguments
+    # cmd.exe interprets the resource regex's pipe unless all arguments go through
+    # Native Image's argument file (also avoids Windows command-line length limits).
+    $argumentFile=Join-Path $image 'native-image.args'
+    $arguments | ForEach-Object {'"'+$_.Replace('\','\\').Replace('"','\"')+'"'} | Set-Content -LiteralPath $argumentFile -Encoding ASCII
+    & (Join-Path $javaRoot 'bin/native-image.cmd') ('@'+$argumentFile);CheckExit 'Native Image'
     StageNativeImage
 }
 function StageNativeImage {

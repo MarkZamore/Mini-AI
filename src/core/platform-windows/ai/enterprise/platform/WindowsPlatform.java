@@ -23,7 +23,7 @@ public final class WindowsPlatform implements Api.Platform {
         this.root=root.toAbsolutePath().normalize();
         synchronized(WindowsPlatform.class) {
             if(!loaded) {
-                if(ImageInfo.inImageRuntimeCode()) System.loadLibrary("enterpriseai_platform");
+                if(ImageInfo.inImageRuntimeCode()&&ai.enterprise.contracts.NativeLinkage.builtin()) System.loadLibrary("enterpriseai_platform");
                 else {
                     Path library=this.root.resolve("native/enterpriseai-platform.dll");
                     if(!Files.isRegularFile(library)) throw new Api.ServiceException("NATIVE_MISSING","Не найдена библиотека: "+library.getFileName());

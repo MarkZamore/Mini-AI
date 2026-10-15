@@ -33,12 +33,20 @@ public final class SearchModule implements Api.ModuleFactory {
         public Search(Api.Context context){this.context=context;}
         public CompletionStage<Api.Result<List<Api.SearchHit>>> search(String query,int limit,List<String> documentIds,List<String> sections,Api.CancellationToken token) {
             return context.async(token,()-> {
-                String expression=QueryNormalizer.matchExpression(query);if(expression.isEmpty())return List.of();
+                var plan=QuestionQuery.plan(query);
+                String expression=plan.map(QuestionQuery.Plan::expression).orElseGet(()->QueryNormalizer.matchExpression(query));
+                if(expression.isEmpty())return List.of();
                 var params=new ArrayList<Object>();params.add(expression);
                 var sql=new StringBuilder("SELECT c.*,bm25(chunks_fts,6.0,10.0,1.0,0.5) AS score FROM chunks_fts JOIN chunks c ON c.rowid=chunks_fts.rowid WHERE chunks_fts MATCH ?");
+                // Name evidence must contain enough text to identify the owner rather than
+                // an isolated OCR word or a table heading such as 'Полное наименование'.
+                if(plan.isPresent()&&plan.get().organizationIdentity())sql.append(" AND length(c.text)>=80");
                 if(documentIds!=null&&!documentIds.isEmpty()){sql.append(" AND c.document_id IN (").append(placeholders(documentIds.size())).append(')');params.addAll(documentIds);}
                 if(sections!=null&&!sections.isEmpty()){sql.append(" AND c.document_id IN (SELECT document_id FROM document_sections WHERE section IN (").append(placeholders(sections.size())).append("))");params.addAll(sections);}
-                sql.append(" ORDER BY score,c.rowid LIMIT ?");params.add(Math.min(100,Math.max(1,limit)));
+                // A name question needs a few corroborating passages, not ten repetitive
+                // OCR headers that slow the laptop model and crowd out the actual name.
+                int maximum=plan.isPresent()&&plan.get().organizationIdentity()?3:100;
+                sql.append(" ORDER BY score,c.rowid LIMIT ?");params.add(Math.min(maximum,Math.max(1,limit)));
                 return context.require(Api.DatabaseServiceV1.class).query(sql.toString(),params,token).stream().map(row->{var fields=fragmentFields(row);double score=Double.parseDouble(Json.string(fields.remove("score")));return new Api.SearchHit(new Api.Fragment(fields),score);}).toList();
             });
         }

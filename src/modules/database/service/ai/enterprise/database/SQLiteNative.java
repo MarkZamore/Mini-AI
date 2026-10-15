@@ -7,7 +7,7 @@ import org.graalvm.nativeimage.ImageInfo;
 public final class SQLiteNative {
     private SQLiteNative() {}
     public static void load(Path dll) {
-        if(ImageInfo.inImageRuntimeCode()) System.loadLibrary("enterpriseai_sqlite");
+        if(ImageInfo.inImageRuntimeCode()&&ai.enterprise.contracts.NativeLinkage.builtin()) System.loadLibrary("enterpriseai_sqlite");
         else System.load(dll.toAbsolutePath().normalize().toString());
     }
     public static native long open(String path);

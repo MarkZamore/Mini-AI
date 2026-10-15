@@ -8,6 +8,10 @@
 /EnterpriseAI.exe
 /миниИИ.exe
 /Mini-AI.exe
+/native/
+/licenses/
+/vcruntime140.dll
+/vcruntime140_1.dll
 /docs/
 /db/_runtime/
 /db/artifacts/
