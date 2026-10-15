@@ -38,14 +38,15 @@ public final class AssistantPanelUiTest {
         Api.Context context = new Api.Context(new Api.Environment(source.resolve("build/assistant-ui-fixture"), executor, new ProbePlatform()));
         ProbeSession session = new ProbeSession(); context.register(Api.AssistantSessionServiceV1.class, session);
         ProbeViewer viewer = new ProbeViewer(); context.register(Api.SourceViewerServiceV1.class, viewer);
-        Map<String,Object> result = new LinkedHashMap<>(); result.put("suite", "миниИИ assistant real SWT behavior");
+        Map<String,Object> result = new LinkedHashMap<>(); result.put("suite", UiTheme.NAME + " assistant real SWT behavior");
         result.put("scope", "Developer UI only; no actual model, documents, SQLite or no-write claim");
         Display display = null;
         try {
             display = new Display(); Shell shell = new Shell(display); UiTheme theme = UiTheme.get(display);
-            theme.decorate(shell); shell.setLayout(new FillLayout());
+            theme.decorate(shell); shell.setText(UiTheme.NAME); shell.setLayout(new FillLayout());
             RecordingHost host = new RecordingHost(theme); UiHost.install(shell, host);
             Composite panel = new AssistantPanel().create(shell, context);
+            check("Mini-AI".equals(UiTheme.NAME) && new AssistantPanel().title().equals(UiTheme.NAME), "assistant and owned window share the single Mini-AI branding name");
             shell.setSize(700, 800); shell.open(); pump(display, () -> shell.isVisible());
             Text query = (Text) marked(panel, "query"), transcript = (Text) marked(panel, "transcript");
             SoftButton send = (SoftButton) marked(panel, "send"); Control empty = marked(panel, "empty");
@@ -279,7 +280,7 @@ public final class AssistantPanelUiTest {
         public CompletionStage<Api.Result<Void>> openSource(Api.SourceRef source, Api.CancellationToken cancellation) { return openDocument("document-1", cancellation); }
     }
     private static final class ProbePlatform implements Api.Platform {
-        public Path executablePath() { return Path.of("миниИИ.exe"); }
+        public Path executablePath() { return Path.of(UiTheme.NAME + ".exe"); }
         public long availableMemoryBytes() { throw new AssertionError("No model memory probe expected"); }
         public void openWith(Path path) { throw new AssertionError("No actual external viewer expected"); }
         public Process launchWorker(Path executable, Path directory, long limit) { throw new AssertionError("No actual inference process expected"); }

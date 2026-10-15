@@ -1,5 +1,5 @@
 ﻿param([switch]$SkipJavaBuild,[string]$OutputDirectory='',[string]$SourceDirectory='',
-    [ValidatePattern('^[^\\/:*?"<>|]+\.exe$')][string]$ExecutableName='миниИИ.exe')
+    [ValidatePattern('^[^\\/:*?"<>|]+\.exe$')][string]$ExecutableName='Mini-AI.exe')
 $ErrorActionPreference='Stop'
 $toolSourceRoot=Split-Path -Parent $PSScriptRoot
 $sourceRoot=if($SourceDirectory){[IO.Path]::GetFullPath($SourceDirectory)}else{$toolSourceRoot}

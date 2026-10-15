@@ -5,6 +5,7 @@ import ai.enterprise.assistant.AssistantPanel;
 import ai.enterprise.bootstrap.EnterpriseAIComponent;
 import ai.enterprise.contracts.Api;
 import ai.enterprise.contracts.Json;
+import ai.enterprise.shell.UiTheme;
 import java.nio.file.*;
 import java.time.Instant;
 import java.util.*;
@@ -46,7 +47,7 @@ public final class EmbeddingUiTest {
         boolean[] completed = {false};
         try {
             display = new Display();
-            Shell shell = new Shell(display); shell.setText("миниИИ — проверка двух встроенных компонентов"); shell.setLayout(new GridLayout(2, true));
+            Shell shell = new Shell(display); shell.setText(UiTheme.NAME + " — проверка двух встроенных компонентов"); shell.setLayout(new GridLayout(2, true));
             Composite host1 = new Composite(shell, SWT.BORDER), host2 = new Composite(shell, SWT.BORDER);
             host1.setLayout(new FillLayout()); host2.setLayout(new FillLayout());
             host1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true)); host2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -173,7 +174,7 @@ public final class EmbeddingUiTest {
     private static final class ProbePlatform implements Api.Platform {
         final Path root; final AtomicInteger closes = new AtomicInteger(), nativeCalls = new AtomicInteger();
         ProbePlatform(Path root) { this.root = root; }
-        public Path executablePath() { return root.resolve("миниИИ.exe"); }
+        public Path executablePath() { return root.resolve(UiTheme.NAME + ".exe"); }
         public long availableMemoryBytes() { nativeCalls.incrementAndGet(); throw new AssertionError("No native memory probe in this UI fixture"); }
         public void openWith(Path path) { nativeCalls.incrementAndGet(); throw new AssertionError("No external viewer in this UI fixture"); }
         public Process launchWorker(Path executable, Path directory, long limit) { nativeCalls.incrementAndGet(); throw new AssertionError("No inference worker in this UI fixture"); }

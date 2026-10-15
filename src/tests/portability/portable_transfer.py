@@ -50,7 +50,7 @@ def inventory(directory: Path) -> dict:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--exe", default=str(ROOT / "EnterpriseAI.exe"))
+    parser.add_argument("--exe", default=str(ROOT / "Mini-AI.exe"))
     args = parser.parse_args()
     original_exe = Path(args.exe).absolute()
     original_db = ROOT / "db" / "index.sqlite"
@@ -112,7 +112,7 @@ def main():
     def fixture(name: str | Path, database: str):
         folder = base / name
         os.makedirs(extended(folder), exist_ok=False)
-        shutil.copyfile(extended(original_exe), extended(folder / "EnterpriseAI.exe"))
+        shutil.copyfile(extended(original_exe), extended(folder / "Mini-AI.exe"))
         for library in original_exe.parent.glob("vcruntime*.dll"):
             shutil.copyfile(extended(library), extended(folder / library.name))
         native = folder / "native"
@@ -136,19 +136,19 @@ def main():
             reference[query] = hits
         normal = fixture("Перенос с пробелами Қазақ ә ғ ң 😀", "normal")
         tail = Path("Длинный путь перенос Қазақ с пробелами")
-        while len(str(base / tail / "EnterpriseAI.exe")) <= 340:
+        while len(str(base / tail / "Mini-AI.exe")) <= 340:
             tail /= "Следующая папка длинного пути 0123456789"
         long = fixture(tail, "normal")
         missing = fixture("отсутствуют docs db model", "absent")
         corrupt = fixture("повреждён индекс без docs model", "corrupt")
         native_missing = base / "нет native DLL"
         native_missing.mkdir()
-        shutil.copyfile(extended(original_exe), extended(native_missing / "EnterpriseAI.exe"))
+        shutil.copyfile(extended(original_exe), extended(native_missing / "Mini-AI.exe"))
         for library in original_exe.parent.glob("vcruntime*.dll"):
             shutil.copyfile(extended(library), extended(native_missing / library.name))
         before = inventory(base)
         for label, folder in (("unicode-space", normal), ("long-path", long)):
-            exe = folder / "EnterpriseAI.exe"
+            exe = folder / "Mini-AI.exe"
             status, ms = run(exe, ["--status"])
             if canonical(status["root"]) != canonical(folder):
                 raise AssertionError("Application did not resolve its actual copied EXE directory")
@@ -176,7 +176,7 @@ def main():
                 "statusMs": ms, "graphMs": graph_ms, "uiSmokeMs": smoke_ms, "documents": 599, "confirmedEdges": 647,
                 "missingDocsError": opened["error"], "missingModelError": model["error"], "inputNotice":smoke.get("inputNotice", ""), "observerLoadedRuntime":smoke.get("observerLoadedRuntime")})
         for label, folder in (("missing-data", missing), ("corrupt-db", corrupt)):
-            exe = folder / "EnterpriseAI.exe"
+            exe = folder / "Mini-AI.exe"
             status, _ = run(exe, ["--status"])
             if not status["diagnostics"] or status["panels"] != ["assistant", "graph"]:
                 raise AssertionError("Failure state lost the independent shell/panels")
@@ -188,7 +188,7 @@ def main():
             if smoke.get("uiSmoke") is not True:
                 raise AssertionError("Failure state UI was not live")
             results.append({"case": label, "passed": True, "diagnostics": status["diagnostics"], "searchError": search["error"]})
-        failure, _ = run(native_missing / "EnterpriseAI.exe", ["--status"], expected_code=1)
+        failure, _ = run(native_missing / "Mini-AI.exe", ["--status"], expected_code=1)
         if failure["success"] or failure["error"]["code"] != "NATIVE_MISSING":
             raise AssertionError("Missing native DLL did not fail directly")
         results.append({"case": "missing-native-no-extraction", "passed": True, "error": failure["error"]})

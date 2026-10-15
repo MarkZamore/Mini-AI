@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.*;
 
 /** Display-owned visual resources. Nothing is extracted or persisted. */
 public final class UiTheme implements AutoCloseable {
-    public static final String NAME = "миниИИ";
+    public static final String NAME = "Mini-AI";
     private static final String KEY = "enterpriseai.ui.theme.v1";
     private final Display display;
     private final List<Color> owned = new ArrayList<>();
@@ -68,7 +68,7 @@ public final class UiTheme implements AutoCloseable {
             if (createdBrand != null) createdBrand.dispose();
             if (createdBody != null) createdBody.dispose();
             owned.forEach(Color::dispose);
-            throw new IllegalStateException("Не удалось загрузить встроенную иконку миниИИ", error);
+            throw new IllegalStateException("Не удалось загрузить встроенную иконку " + NAME, error);
         }
         bodyFont = createdBody; brandFont = createdBrand; icons = createdIcons;
     }

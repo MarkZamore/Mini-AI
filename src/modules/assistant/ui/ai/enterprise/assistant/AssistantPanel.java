@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.*;
 public final class AssistantPanel implements PanelFactory {
     private static final AtomicLong UI_OPERATION_IDS = new AtomicLong();
     public String id() { return "assistant"; }
-    public String title() { return "миниИИ"; }
+    public String title() { return UiTheme.NAME; }
     public String slot() { return "left"; }
 
     public Composite create(Composite parent, Api.Context context) {
@@ -35,8 +35,8 @@ public final class AssistantPanel implements PanelFactory {
         empty.setData("enterpriseai.ui.empty", Boolean.TRUE);
         empty.addPaintListener(event -> {
             event.gc.setFont(theme.brandFont()); event.gc.setForeground(theme.accent());
-            Point size = event.gc.textExtent("миниИИ"); var bounds = empty.getClientArea();
-            event.gc.drawText("миниИИ", Math.max(0, (bounds.width - size.x) / 2),
+            Point size = event.gc.textExtent(UiTheme.NAME); var bounds = empty.getClientArea();
+            event.gc.drawText(UiTheme.NAME, Math.max(0, (bounds.width - size.x) / 2),
                 Math.max(0, (bounds.height - size.y) / 2), true);
         });
         Text transcript = new Text(historyArea, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);

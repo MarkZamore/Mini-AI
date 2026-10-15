@@ -2,6 +2,7 @@ import ai.enterprise.bootstrap.EnterpriseAIComponent;
 import ai.enterprise.contracts.Api;
 import ai.enterprise.generated.GeneratedCatalog;
 import ai.enterprise.platform.WindowsPlatform;
+import ai.enterprise.shell.UiTheme;
 import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import org.eclipse.swt.SWT;
@@ -21,7 +22,7 @@ public final class UiScreenshotTest {
             var display=new Display();
             try {
                 var shell=new Shell(display);
-                shell.setText("миниИИ — visual test"); shell.setLayout(new FillLayout());
+                shell.setText(UiTheme.NAME + " — visual test"); shell.setLayout(new FillLayout());
                 component.attach(shell);
                 var area=display.getPrimaryMonitor().getClientArea();
                 shell.setSize(Math.min(1440,area.width-40),Math.min(900,area.height-60));

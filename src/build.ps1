@@ -9,7 +9,7 @@ $ProgressPreference='SilentlyContinue'
 $sourceRoot=$PSScriptRoot
 $projectRoot=Split-Path -Parent $sourceRoot
 $buildRoot=Join-Path $sourceRoot 'build'
-$applicationName='миниИИ'
+$applicationName='Mini-AI'
 $executableName=$applicationName+'.exe'
 Set-Location -LiteralPath $sourceRoot
 New-Item -ItemType Directory -Force -Path $buildRoot,(Join-Path $buildRoot 'dependencies'),(Join-Path $buildRoot 'tools'),(Join-Path $buildRoot 'tmp') | Out-Null

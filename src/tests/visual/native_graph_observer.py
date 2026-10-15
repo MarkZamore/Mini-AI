@@ -205,7 +205,7 @@ def main():
         while time.monotonic()<deadline and process.poll() is None:
             own=windows(pid)
             if own:
-                choices=[hwnd for hwnd in own if label(hwnd).startswith('миниИИ')] or own
+                choices=[hwnd for hwnd in own if label(hwnd).startswith('Mini-AI')] or own
                 top=max(choices,key=lambda hwnd:(rect(hwnd).right-rect(hwnd).left)*(rect(hwnd).bottom-rect(hwnd).top))
                 try:canvas=graph_canvas(top,pid);break
                 except RuntimeError:pass

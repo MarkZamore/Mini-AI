@@ -69,7 +69,7 @@ public final class DesktopShell {
     private static void checkDataFolders(Api.Context context,UiHost host) {
         if(context.find(Api.DatabaseServiceV1.class).isPresent()) {
             var db=context.environment().db();
-            if(!Files.isDirectory(db))host.error("startup:database",new Api.ServiceError("DB_FOLDER_MISSING","Не найдена папка db рядом с миниИИ.exe:\n"+db+"\nВерните папку с существующей базой. Приложение не создаёт её автоматически."));
+            if(!Files.isDirectory(db))host.error("startup:database",new Api.ServiceError("DB_FOLDER_MISSING","Не найдена папка db рядом с "+UiTheme.NAME+".exe:\n"+db+"\nВерните папку с существующей базой. Приложение не создаёт её автоматически."));
             else if(!Files.isRegularFile(db.resolve("index.sqlite")))host.error("startup:database",new Api.ServiceError("DB_MISSING","Не найден индекс базы:\n"+db.resolve("index.sqlite")+"\nВерните существующий файл базы."));
         }
         if(context.find(Api.SourceViewerServiceV1.class).isPresent()&&!Files.isDirectory(context.environment().docs()))
@@ -136,7 +136,7 @@ public final class DesktopShell {
             display=new Display();var theme=UiTheme.get(display);var parent=new Shell(display);theme.decorate(parent);
             UiHost.showError(parent,theme,new Api.ServiceError("STARTUP",message));
             while(display.getShells().length>1)if(!display.readAndDispatch())display.sleep();parent.dispose();
-        }catch(Throwable ignored){System.err.println("миниИИ: "+message);}
+        }catch(Throwable ignored){System.err.println(UiTheme.NAME+": "+message);}
         finally{if(display!=null&&!display.isDisposed())display.dispose();}
     }
 }

@@ -47,7 +47,7 @@ public final class UiDpiTest {
         Path output=source.resolve("build/test-results/"+reportPrefix+"-"+scale+".json");
         System.setProperty("swt.library.path",source.resolve("build/native").toString());
         var executor=Executors.newFixedThreadPool(2);var environment=new Api.Environment(source.resolve("build/pink-dpi-fixture"),executor,new Api.Platform(){
-            public Path executablePath(){return source.resolve("build/pink-dpi-fixture/миниИИ.exe");}
+            public Path executablePath(){return source.resolve("build/pink-dpi-fixture").resolve(UiTheme.NAME+".exe");}
             public long availableMemoryBytes(){return 32L<<30;}
             public void openWith(Path path){throw new AssertionError("No external viewer in scale fixture");}
             public Process launchWorker(Path path,Path dir,long budget){throw new AssertionError("No worker in scale fixture");}
@@ -55,7 +55,7 @@ public final class UiDpiTest {
         var report=new LinkedHashMap<String,Object>();var errors=new ArrayList<String>();
         Display display=null;
         try(var component=EnterpriseAIComponent.create(environment,List.of(new AssistantModule()),List.of(new AssistantPanel(),new GraphPanelFactory()))) {
-            display=new Display();UiTheme theme=UiTheme.get(display);Shell shell=new Shell(display);theme.decorate(shell);shell.setText("миниИИ — DPI "+scale);shell.setLayout(new FillLayout());
+            display=new Display();UiTheme theme=UiTheme.get(display);Shell shell=new Shell(display);theme.decorate(shell);shell.setText(UiTheme.NAME+" — DPI "+scale);shell.setLayout(new FillLayout());
             UiHost.install(shell,new UiHost(){public UiTheme theme(){return theme;}public void error(String id,Api.ServiceError error){errors.add(error.code());}public void selectedDocument(String id,String title){}});
             component.attach(shell);shell.setSize(1280,800);shell.open();
             long until=System.nanoTime()+TimeUnit.MILLISECONDS.toNanos(450);

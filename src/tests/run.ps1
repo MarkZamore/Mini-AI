@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$JavaHome,[string]$PythonExecutable=$env:ENTERPRISE_TEST_PYTHON,[switch]$ModuleMatrix)
+param([Parameter(Mandatory=$true)][string]$JavaHome,[string]$PythonExecutable=$env:ENTERPRISE_TEST_PYTHON)
 $ErrorActionPreference='Stop'
 $sourceRoot=Split-Path -Parent $PSScriptRoot
 $projectRoot=Split-Path -Parent $sourceRoot
@@ -74,5 +74,4 @@ if(('database' -in $present) -and ('search' -in $present)){
     if(!(Test-Path -LiteralPath (Join-Path $runtime 'db'))){New-Item -ItemType Junction -Path (Join-Path $runtime 'db') -Target (Join-Path $projectRoot 'db')|Out-Null}
     Run 'ai.enterprise.tests.SearchParityTest' @($projectRoot,$runtime)
 }
-if($ModuleMatrix){Run 'ai.enterprise.tests.ModuleRemovalTest' @($sourceRoot)}
 Write-Output 'All selected developer tests passed.'

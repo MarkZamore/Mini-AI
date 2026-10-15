@@ -1,4 +1,4 @@
-"""Observe the owned native миниИИ window and icon; observer artifacts only."""
+"""Observe the owned native Mini-AI window and icon; observer artifacts only."""
 import argparse, ctypes as C, hashlib, importlib.util, json, os, subprocess, time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,10 +20,10 @@ def main():
     try:
         deadline=time.monotonic()+4;top=None
         while time.monotonic()<deadline and child.poll() is None:
-            top=next((h for h in ui.windows(child.pid) if ui.label(h)=='миниИИ' and not ui.u.GetWindow(h,4)),None)
+            top=next((h for h in ui.windows(child.pid) if ui.label(h)=='Mini-AI' and not ui.u.GetWindow(h,4)),None)
             if top:break
             time.sleep(.04)
-        if not top:raise AssertionError('Expected native window caption миниИИ missing')
+        if not top:raise AssertionError('Expected native window caption Mini-AI missing')
         time.sleep(.3)
         items=[{'class':ui.classname(h),'text':ui.label(h)} for h in ui.children(top,child.pid)]
         obsolete=[v for v in items if any(x in v['text'] for x in ['Лицензии и исходники','EnterpriseAI —','Документов:','Перетаскивайте'])]
@@ -38,7 +38,7 @@ def main():
         if np.count_nonzero(yellow)<100 or np.count_nonzero(purple)<20:raise AssertionError('Pastel-yellow surface and purple graph theme pixels must both be present')
         stdout,stderr=child.communicate(timeout=12)
         if child.returncode or stderr:raise AssertionError('Branding UI failed: '+repr(stderr))
-        report={'success':True,'pid':child.pid,'ordinaryParentPid':os.getpid(),'exe':str(exe),'exeSha256':hashlib.file_digest(exe.open('rb'),'sha256').hexdigest(),'startedUtc':started,'completedUtc':datetime.now(timezone.utc).isoformat(),'exitCode':child.returncode,'stdout':stdout.decode('utf-8'),'mainCaption':'миниИИ','windowIconPresent':True,'pastelYellowPixels':int(np.count_nonzero(yellow)),'purpleNodePixels':int(np.count_nonzero(purple)),'obsoleteChromeAbsent':True,'controls':items,'ownedWindowScreenshot':str(screenshot),'limitations':['Checks the actual owned HWND icon, not Start-menu icon cache.','Native pixels complement, rather than replace, UI/layout and embedded icon resource tests.','This icon and theme observer does not verify filesystem or registry operations.']}
+        report={'success':True,'pid':child.pid,'ordinaryParentPid':os.getpid(),'exe':str(exe),'exeSha256':hashlib.file_digest(exe.open('rb'),'sha256').hexdigest(),'startedUtc':started,'completedUtc':datetime.now(timezone.utc).isoformat(),'exitCode':child.returncode,'stdout':stdout.decode('utf-8'),'mainCaption':'Mini-AI','windowIconPresent':True,'pastelYellowPixels':int(np.count_nonzero(yellow)),'purpleNodePixels':int(np.count_nonzero(purple)),'obsoleteChromeAbsent':True,'controls':items,'ownedWindowScreenshot':str(screenshot),'limitations':['Checks the actual owned HWND icon, not Start-menu icon cache.','Native pixels complement, rather than replace, UI/layout and embedded icon resource tests.','This icon and theme observer does not verify filesystem or registry operations.']}
         output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     finally:
         if child.poll() is None:

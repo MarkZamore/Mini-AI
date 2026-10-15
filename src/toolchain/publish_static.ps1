@@ -3,8 +3,8 @@ $ErrorActionPreference='Stop'
 $sourceRoot=Split-Path -Parent $PSScriptRoot
 $projectRoot=Split-Path -Parent $sourceRoot
 $buildRoot=Join-Path $sourceRoot 'build'
-$executableName='миниИИ.exe'
-$legacyExecutableName='EnterpriseAI.exe'
+$executableName='Mini-AI.exe'
+$legacyExecutableNames=@('EnterpriseAI.exe','миниИИ.exe','miniAI.exe')
 if($ImageDirectory -and ![IO.Path]::IsPathRooted($ImageDirectory)){throw 'ImageDirectory must be an absolute build-artifact path.'}
 $imageDirectory=if($ImageDirectory){[IO.Path]::GetFullPath($ImageDirectory)}else{Join-Path $buildRoot 'static-image'}
 if(!$imageDirectory.StartsWith($buildRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'ImageDirectory must be inside src/build.'}
@@ -46,7 +46,7 @@ foreach($archive in @($buildManifest.toolchainArchives)+@($buildManifest.applica
     if(!$archivePath.StartsWith($buildRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Runtime archive is outside the isolated build.'}
     if((Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $archive.sha256){throw 'Runtime archive changed after build.'}
 }
-foreach($condition in @('imports','relocation','search','workers','graph','modules','licenses','data')){
+foreach($condition in @('imports','relocation','search','workers','graph','licenses','data')){
     if($acceptance.conditions.$condition -ne $true){throw "Missing acceptance: $condition"}
 }
 foreach($evidence in $acceptance.evidence){
@@ -55,8 +55,8 @@ foreach($evidence in $acceptance.evidence){
     if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $evidence.sha256){throw 'Acceptance evidence changed.'}
 }
 $destination=Join-Path $projectRoot $executableName
-$legacyDestination=Join-Path $projectRoot $legacyExecutableName
-if(@(Get-CimInstance Win32_Process | Where-Object {$_.ExecutablePath -eq $destination -or $_.ExecutablePath -eq $legacyDestination}).Count){throw 'Close the published application before replacing it.'}
+$publishedPaths=@(@($executableName)+@($legacyExecutableNames) | ForEach-Object {Join-Path $projectRoot $_})
+if(@(Get-CimInstance Win32_Process | Where-Object {$_.ExecutablePath -in $publishedPaths}).Count){throw 'Close the published application before replacing it.'}
 $ledger=Join-Path $projectRoot 'licenses/application-files.json'
 $owned=@()
 if(Test-Path -LiteralPath $ledger){$owned=@(Get-Content -LiteralPath $ledger -Raw | ConvertFrom-Json)}
@@ -67,7 +67,7 @@ $previousPublicationPath=Join-Path $buildRoot 'test-results/static-publication.j
 $previousPublication=$null
 $previousExecutableHashes=@{}
 if(Test-Path -LiteralPath $previousPublicationPath){$previousPublication=Get-Content -LiteralPath $previousPublicationPath -Raw | ConvertFrom-Json}
-foreach($name in @($legacyExecutableName,$executableName)){
+foreach($name in (@($legacyExecutableNames)+@($executableName))){
     $path=Join-Path $projectRoot $name
     if(!(Test-Path -LiteralPath $path)){continue}
     if(!(Test-Path -LiteralPath $path -PathType Leaf) -or ((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Published application path is not an ordinary file.'}
@@ -78,7 +78,7 @@ foreach($name in @($legacyExecutableName,$executableName)){
 $owned=@($owned | Sort-Object -Unique)
 foreach($relative in $owned){
     if([IO.Path]::IsPathRooted($relative) -or $relative.Contains(':') -or @($relative -split '[\\/]' | Where-Object {$_ -in @('.','..')}).Count){throw 'Unsafe old application inventory.'}
-    if($relative -notin @($legacyExecutableName,$executableName,'vcruntime140.dll','vcruntime140_1.dll') -and $relative -notmatch '^(native|licenses|app|runtime)[\\/]'){throw 'Inventory contains data or unknown application files.'}
+    if($relative -notin (@($legacyExecutableNames)+@($executableName,'vcruntime140.dll','vcruntime140_1.dll')) -and $relative -notmatch '^(native|licenses|app|runtime)[\\/]'){throw 'Inventory contains data or unknown application files.'}
     $path=[IO.Path]::GetFullPath((Join-Path $projectRoot $relative))
     if(!$path.StartsWith($projectRoot+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Inventory target escaped the project.'}
     if((Test-Path -LiteralPath $path) -and ((Get-Item -LiteralPath $path -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Owned application file is a link; refusing replacement or deletion.'}

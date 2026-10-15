@@ -13,7 +13,7 @@
 - Перенос папки, ярлык, чужая рабочая папка; кириллица, казахские буквы, пробелы, путь длиннее 260 символов.
 - Отсутствие каждой папки данных, повреждение базы или DLL, побочные файлы SQLite, несовместимый manifest модели, нехватка памяти, авария и зависание worker.
 - Изменённый оригинал или артефакт, отсутствие файла, выход через относительный путь или junction наружу; проверка SHA-256 перед Open With.
-- Все 128 конфигураций функциональных модулей; нативная сборка полного состава, каждого одиночного удаления, отсутствия обеих панелей и минимального ядра.
+- Один текущий состав приложения: поиск, граф, помощник, источники, перенос и встраивание. По решению пользователя проверки разных составов модулей и версий приложения исключены из будущего конвейера.
 - Граф: 599 документов, 647 подтверждённых записей связей, 290 ненаправленных пар, 335 изолированных документов; 1579 неподтверждённых ссылок не являются рёбрами.
 - История отсутствует после перезапуска; при переполнении бюджета не удаляется молча.
 - Встраивание двух независимых экземпляров с раздельными сеансами, повторное использование второго после закрытия первого; отдельная проверка SWT-host.
@@ -43,22 +43,17 @@ load behavior, absence of installed software, or absence of transient writes.
 `msvcp_win.dll`, `msvcrt.dll` and `ucrtbase.dll` are Windows inbox components;
 redistributable `vcruntime140*.dll` and `msvcp140*.dll` remain forbidden.
 
-For module deletion, `../module-removal/static-native-variants.ps1` physically
-copies source folders into `src/build`, deletes omitted modules there, performs
-clean Gradle/native builds, and tests nine compositions at normal and Unicode
-long EXE paths. `-SkipUi` queues GUI tests; later `-SkipBuild` runs the same
-already-built variants. The Java matrix accepts a third report-name argument
-`static-java-module-removal.json` to retain earlier-profile evidence.
+Historical module-removal matrices and alternative application builds are retained as historical evidence only. Future acceptance checks one current application EXE; module-combination and application-version tests are excluded by user instruction.
 
 Worker lifecycle fixtures are prepared by `../static-worker/prepare-scenarios.ps1`;
 its `worker-scenarios.json` contains all twelve native protocol, OOM, crash and
 cancellation cases. Preparation and execution require no Process Monitor,
 PMC configuration, driver installation or elevation. Original-data checks and
-all other functional, module, import and licence gates remain mandatory.
+all other functional, import, source-integrity and licence gates remain mandatory.
 
-# Dusty yellow UI / миниИИ observers
+# Dusty yellow UI / Mini-AI observers
 
-Use `static-acceptance.ps1 -Executable <frozen миниИИ.exe> -ReportPrefix <fresh dusty-yellow-run-id> -IncludeGraph` for the new UI. The basename is preserved in every physical relocation/worker fixture. The prefix must be unique for each frozen candidate; existing worker fixture directories are deliberately rejected rather than rewritten. Historical static/D91 reports remain independent.
+Use `static-acceptance.ps1 -Executable <frozen Mini-AI.exe> -ReportPrefix <fresh dusty-yellow-run-id> -IncludeGraph` for the new UI. The basename is preserved in every physical relocation/worker fixture. The prefix must be unique for each frozen candidate; existing worker fixture directories are deliberately rejected rather than rewritten. Historical static/D91 reports remain independent.
 
 The native suite includes `native_branding_observer.py` (caption, icon, theme, removed Help chrome), `native_assistant_observer.py` (Enter, Shift+Enter, missing-model error, mock inference citation rejection, and the single Send/Stop control), and the graph observer. Observers dismiss only visible error dialogs belonging to their exact newly launched process; they never target another application's controls. Unexpected asynchronous errors fail the test; dismissing their dialog does not make the application pass.
 

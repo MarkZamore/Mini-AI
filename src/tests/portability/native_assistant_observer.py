@@ -119,11 +119,11 @@ def main():
     try:
         deadline=time.monotonic()+4;top=None
         while time.monotonic()<deadline and process.poll() is None:
-            choices=[h for h in ui.windows(process.pid) if ui.label(h)=='миниИИ' and not ui.u.GetWindow(h,4)]
+            choices=[h for h in ui.windows(process.pid) if ui.label(h)=='Mini-AI' and not ui.u.GetWindow(h,4)]
             top=max(choices,key=lambda h:(ui.rect(h).right-ui.rect(h).left)*(ui.rect(h).bottom-ui.rect(h).top)) if choices else None
             if top:break
             time.sleep(.03)
-        if not top:raise AssertionError('Native миниИИ main window missing')
+        if not top:raise AssertionError('Native Mini-AI main window missing')
         time.sleep(.15);report['startupDialogsDismissed']=ui.dismiss_owned_dialogs(process.pid)
         controls=ui.children(top,process.pid)
         editors=[h for h in controls if ui.classname(h).lower()=='edit' and not ui.u.GetWindowLongPtrW(h,-16)&0x800]
