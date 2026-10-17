@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.DPIUtil;
@@ -52,6 +53,10 @@ public final class AssistantPanelUiTest {
             SoftButton send = (SoftButton) marked(panel, "send"); Control empty = marked(panel, "empty");
             Composite composer = (Composite) marked(panel, "composer"); Control sources = marked(panel, "sources");
             Label sourceTitle = (Label) marked(panel, "sources-title");
+            Composite activity = (Composite) marked(panel, "activity");
+            Label activityStage = (Label) marked(panel, "activity-stage");
+            Label elapsed = (Label) marked(panel, "activity-elapsed");
+            check(!activity.isVisible() && ((GridData)activity.getLayoutData()).exclude, "idle activity row is hidden and excluded from layout");
             var dpi = display.getDPI(); String requestedScale = System.getProperty("swt.autoScale", "default");
             result.put("dpi", Map.of("requestedSwtScale", requestedScale, "deviceZoom", DPIUtil.getDeviceZoom(),
                 "effectiveSwtScale", DPIUtil.getEffectiveAutoScaleValue(), "shellNativeZoom", shell.getZoom(),
@@ -98,6 +103,12 @@ public final class AssistantPanelUiTest {
             check(query.getText().isEmpty() && send.isEnabled() && send.isStopMode()
                 && send.getAccessibleName().equals("Остановить") && send.getToolTipText().equals("Остановить"),
                 "processing consumes input and changes the same enabled circle to stop");
+            check(activity.isVisible() && elapsed.getText().equals("· 00:00")
+                && activityStage.getText().equals("Обработка запроса…"), "activity and elapsed time appear immediately before service events");
+            elapsed.setText("· 01:00:01");
+            check(elapsed.getSize().x >= elapsed.computeSize(SWT.DEFAULT, SWT.DEFAULT).x,
+                "elapsed label reserves enough width for hours at the active DPI");
+            elapsed.setText("· 00:00");
             ImageData stopImage = snapshot(send);
             check(pixel(arrowImage, 0, 6).equals(glyph) && !pixel(arrowImage, 4, 4).equals(glyph)
                 && pixel(stopImage, 4, 4).equals(glyph) && !pixel(stopImage, 0, 6).equals(glyph),
@@ -108,8 +119,33 @@ public final class AssistantPanelUiTest {
             check(sources.isVisible() && !((GridData)sources.getLayoutData()).exclude,
                 "starting a request preserves the visible empty sources block");
             check(!empty.isVisible() && transcript.getText().contains("Первая строка"), "submitted history replaces the centered brand");
-            Operation first = session.operations.getFirst(); first.emit("token", "Черновик ответа", List.of(), null);
+            Operation first = session.operations.getFirst();
+            first.emit("state", "Подготовка модели и ожидание ответа…", List.of(), null);
+            pump(display, () -> activityStage.getText().equals("Подготовка модели и ожидание ответа…"));
+            pump(display, () -> !elapsed.getText().equals("· 00:00"));
+            check(!transcript.getText().contains("Черновик ответа") && activity.isVisible(), "elapsed time advances while awaiting the first token");
+            shell.setSize(360, 800); shell.layout(true, true);
+            Rectangle stageBounds = activityStage.getBounds();
+            Rectangle elapsedBounds = elapsed.getBounds();
+            check(stageBounds.width > 80 && stageBounds.x + stageBounds.width <= elapsedBounds.x
+                && elapsedBounds.x + elapsedBounds.width <= activity.getClientArea().width,
+                "long stage wraps without overlapping elapsed time in the narrow panel");
+            check(activityStage.getSize().y >= activityStage.computeSize(activityStage.getSize().x, SWT.DEFAULT).y,
+                "wrapped stage height fits its full text");
+            Path screenshot = source.resolve("build/test-results/activity-ui-" + requestedScale + ".png");
+            Files.createDirectories(screenshot.getParent());
+            ImageLoader loader = new ImageLoader(); loader.data = new ImageData[] {snapshot(panel)};
+            loader.save(screenshot.toString(), SWT.IMAGE_PNG);
+            result.put("activityScreenshot", screenshot.toString());
+            result.put("activityGeometry", Map.of("stage", rectangle(stageBounds), "elapsed", rectangle(elapsedBounds)));
+            shell.setSize(700, 800); shell.layout(true, true);
+            first.emit("state", "Формирование ответа…", List.of(), null);
+            first.emit("token", "Черновик", List.of(), null);
+            pump(display, () -> transcript.getText().contains("Черновик") && activityStage.getText().equals("Формирование ответа…"));
+            check(!first.future.isDone(), "first streamed fragment is visible before completion");
+            first.emit("token", " ответа", List.of(), null);
             pump(display, () -> transcript.getText().contains("Черновик ответа"));
+            check(transcript.getText().contains("предварительный ответ") && !first.future.isDone(), "multiple fragments form a provisional answer before completion");
             query.setText("Следующий запрос");
             Event busyEnter = key(SWT.CR, 0); query.notifyListeners(SWT.KeyDown, busyEnter);
             check(!busyEnter.doit && session.operations.size() == 1 && !first.token.cancelled() && send.isStopMode(),
@@ -120,11 +156,16 @@ public final class AssistantPanelUiTest {
             Event up = new Event(); up.button = 1; up.x = down.x; up.y = down.y; send.notifyListeners(SWT.MouseUp, up);
             check(first.token.cancelled() && !send.isEnabled() && cancellations[0] == 1,
                 "clicking the stop square cancels once and disables repeated activation");
+            check(activity.isVisible() && activityStage.getText().equals("Отмена…"), "cancellation remains visible until acknowledged");
+            first.emit("state", "Запоздалый этап", List.of(), null);
+            pump(display, () -> true);
+            check(activityStage.getText().equals("Отмена…"), "late stages cannot replace cancellation");
             send.notifyListeners(SWT.Selection, new Event());
             check(cancellations[0] == 1 && session.operations.size() == 1,
                 "repeated stop selection cannot create a request or recancel");
             first.fail("CANCELLED", "Генерация отменена", List.of());
             pump(display, () -> !send.isStopMode());
+            check(!activity.isVisible(), "acknowledged cancellation hides activity");
             check(host.errors.isEmpty() && send.isEnabled() && send.getAccessibleName().equals("Отправить"),
                 "cancelled event and future restore the send arrow without an error dialog");
 
@@ -134,6 +175,7 @@ public final class AssistantPanelUiTest {
             check(!((GridData)sources.getLayoutData()).exclude && labels((Composite)sources).stream().anyMatch(t -> t.contains("ручной сверкой")), "real source locators and extraction warnings are visible");
             second.fail("MODEL_MISSING", "Не найден model\\inference-worker.exe", List.of(fragment));
             pump(display, () -> host.errors.size() == 1 && !send.isStopMode());
+            check(!activity.isVisible(), "model failure hides activity");
             check(host.errors.size() == 1 && host.errors.getFirst().message().contains("inference-worker.exe"), "event and unsuccessful future share one understandable error report");
             check(!send.isEnabled() && !send.isStopMode() && query.getText().isEmpty()
                 && send.getToolTipText().equals("Отправить"), "failure restores a safely disabled blank send arrow");
@@ -152,21 +194,33 @@ public final class AssistantPanelUiTest {
 
             query.setText("Будущий ответ"); send.notifyListeners(SWT.Selection, new Event());
             Operation third = session.operations.getLast();
+            second.emit("state", "НЕДОПУСТИМЫЙ СТАРЫЙ ЭТАП", List.of(), null);
             second.emit("token", "НЕДОПУСТИМЫЙ СТАРЫЙ ЧЕРНОВИК", List.of(), null);
             third.emit("token", "Новый черновик", List.of(), null);
             pump(display, () -> transcript.getText().contains("Новый черновик"));
             check(!transcript.getText().contains("НЕДОПУСТИМЫЙ СТАРЫЙ ЧЕРНОВИК"), "late old request tokens cannot leak into a newer request");
+            check(!activityStage.getText().contains("НЕДОПУСТИМЫЙ"), "late old request stages cannot replace current activity");
             third.future.completeExceptionally(new Api.ServiceException("WORKER_EXITED", "Локальный движок завершился"));
             pump(display, () -> host.errors.size() == 3 && !send.isStopMode());
+            check(!activity.isVisible(), "exceptional future stops activity even without a terminal event");
             check(host.errors.getLast().code().equals("WORKER_EXITED"), "exceptional future without an error event is reported");
 
             session.throwOnNext = true; query.setText("Синхронная ошибка"); send.notifyListeners(SWT.Selection, new Event());
             check(host.errors.size() == 4 && !send.isStopMode(), "synchronous service failure recovers the send arrow and reports once");
+            check(!activity.isVisible(), "synchronous failure stops activity");
             query.setText("Успешный ответ"); send.notifyListeners(SWT.Selection, new Event());
-            Operation successful = session.operations.getLast(); successful.succeed("Подтверждённый ответ", List.of(fragment));
+            Operation successful = session.operations.getLast();
+            successful.emit("token", "Предварительный текст", List.of(), null);
+            pump(display, () -> transcript.getText().contains("Предварительный текст"));
+            successful.emit("state", "Проверка ответа и ссылок…", List.of(), null);
+            pump(display, () -> activityStage.getText().equals("Проверка ответа и ссылок…"));
+            successful.succeed("Подтверждённый ответ", List.of(fragment));
             pump(display, () -> !send.isStopMode());
             check(!send.isEnabled() && host.errors.size() == 4 && transcript.getText().contains("Подтверждённый ответ"),
                 "successful completion restores the disabled blank send arrow and keeps the answer");
+            check(!activity.isVisible() && !transcript.getText().contains("Предварительный текст")
+                && transcript.getText().indexOf("Подтверждённый ответ") == transcript.getText().lastIndexOf("Подтверждённый ответ"),
+                "final answer replaces the draft once and stops activity");
             query.setText("Остановка клавишей"); send.notifyListeners(SWT.Selection, new Event());
             Operation keyboardStop = session.operations.getLast();
             send.setFocus();

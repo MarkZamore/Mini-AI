@@ -59,6 +59,7 @@ public final class SearchParityTest {
             }
             var cancelled=new Api.CancellationToken();cancelled.cancel();
             require(!search.search("качество",10,List.of(),List.of(),cancelled).toCompletableFuture().join().success(),"Cancelled search accepted");
+            require(!search.searchForAssistant("Найди документ об академической мобильности",10,List.of(),List.of(),cancelled).toCompletableFuture().join().success(),"Cancelled assistant search accepted");
             // Interrupt a deliberately expensive recursive read; it must not hold up other operations.
             var interrupt=new Api.CancellationToken();
             var task=environment.executor().submit(()->database.query("WITH RECURSIVE counter(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM counter WHERE x<100000000) SELECT sum(x) FROM counter",List.of(),interrupt));

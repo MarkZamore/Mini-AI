@@ -140,6 +140,10 @@ public final class Api {
     }
     public interface SearchServiceV1 {
         CompletionStage<Result<List<SearchHit>>> search(String query,int limit,List<String> documentIds,List<String> sections,CancellationToken cancellation);
+        /** Conversational retrieval; existing providers retain their exact-search behavior by default. */
+        default CompletionStage<Result<List<SearchHit>>> searchForAssistant(String query,int limit,List<String> documentIds,List<String> sections,CancellationToken cancellation) {
+            return search(query,limit,documentIds,sections,cancellation);
+        }
         CompletionStage<Result<Fragment>> getFragment(String fragmentId,CancellationToken cancellation);
     }
     public interface DocumentAccessServiceV1 {

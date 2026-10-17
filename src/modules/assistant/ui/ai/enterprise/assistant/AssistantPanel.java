@@ -53,6 +53,7 @@ public final class AssistantPanel implements PanelFactory {
         Composite sourceContent = new Composite(scroller, SWT.NONE); theme.apply(sourceContent);
         sourceContent.setLayout(new GridLayout(1, false)); scroller.setContent(sourceContent);
 
+        RequestActivity activity = new RequestActivity(panel, theme);
         Composite composer = new Composite(panel, SWT.DOUBLE_BUFFERED); theme.apply(composer);
         composer.setBackground(theme.field()); composer.setData("enterpriseai.ui.composer", Boolean.TRUE);
         GridLayout composerLayout = new GridLayout(1, false);
@@ -104,7 +105,7 @@ public final class AssistantPanel implements PanelFactory {
             }
             Request current = active[0];
             if (current != null) synchronized (current.draft) {
-                if (!current.draft.isEmpty()) text.append("Помощник — ответ проверяется:\n").append(current.draft);
+                if (!current.draft.isEmpty()) text.append("Помощник — предварительный ответ:\n").append(current.draft);
             }
             transcript.setText(text.toString()); transcript.setSelection(transcript.getCharCount());
             Control visible = text.isEmpty() ? empty : transcript;
@@ -150,9 +151,12 @@ public final class AssistantPanel implements PanelFactory {
             if (session.isEmpty() || active[0] != null || query.getText().isBlank()) return;
             String question = query.getText(); Request request = new Request("assistant-request-" + UI_OPERATION_IDS.incrementAndGet());
             active[0] = request; query.setText(""); updateActions.run();
+            activity.start(request);
             showSources.accept(List.of());
             try {
                 session.get().send(question, event -> {
+                    boolean terminal = event.type().equals("done") || event.type().equals("error");
+                    if (terminal ? !request.finished.compareAndSet(false, true) : request.finished.get()) return;
                     if (event.type().equals("token")) {
                         if (!request.token.cancelled()) synchronized (request.draft) { request.draft.append(event.text()); }
                         queueRedraw.run(); return;
@@ -162,8 +166,13 @@ public final class AssistantPanel implements PanelFactory {
                     if (!display.isDisposed()) display.asyncExec(() -> {
                         if (panel.isDisposed() || active[0] != request) return;
                         switch (event.type()) {
-                            case "sources", "done" -> showSources.accept(event.sources());
+                            case "state" -> {
+                                if (!request.token.cancelled()) activity.stage(request, event.text());
+                            }
+                            case "sources" -> showSources.accept(event.sources());
+                            case "done" -> { activity.stop(request); showSources.accept(event.sources()); }
                             case "error" -> {
+                                activity.stop(request);
                                 showSources.accept(event.sources());
                                 reportError.accept(request, event.error() == null
                                     ? new Api.ServiceError("FAILED", event.text()) : event.error());
@@ -175,6 +184,7 @@ public final class AssistantPanel implements PanelFactory {
                 }, request.token).whenComplete((result, error) -> {
                     if (!display.isDisposed()) display.asyncExec(() -> {
                         if (panel.isDisposed() || active[0] != request) return;
+                        request.finished.set(true); activity.stop(request);
                         if (error != null) reportError.accept(request, Api.failure(error).error());
                         else if (result == null) reportError.accept(request,
                             new Api.ServiceError("FAILED", "Помощник не вернул результат обработки"));
@@ -184,6 +194,7 @@ public final class AssistantPanel implements PanelFactory {
                     });
                 });
             } catch (Throwable error) {
+                request.finished.set(true); activity.stop(request);
                 active[0] = null; reportError.accept(request, Api.failure(error).error());
                 synchronized (request.draft) { request.draft.setLength(0); } updateActions.run(); redraw.run(); query.setFocus();
             }
@@ -192,7 +203,7 @@ public final class AssistantPanel implements PanelFactory {
         send.addListener(SWT.Selection, event -> {
             Request request = active[0];
             if (request != null) {
-                if (!request.token.cancelled()) { request.token.cancel(); updateActions.run(); }
+                if (!request.token.cancelled()) { request.token.cancel(); activity.stage(request, "Отмена…"); updateActions.run(); }
             } else submit.run();
         });
         query.addListener(SWT.Modify, event -> updateActions.run());
@@ -262,7 +273,82 @@ public final class AssistantPanel implements PanelFactory {
     private static final class Request {
         final String id; final Api.CancellationToken token = new Api.CancellationToken();
         final AtomicBoolean errorShown = new AtomicBoolean();
+        final AtomicBoolean finished = new AtomicBoolean();
         final StringBuilder draft = new StringBuilder(); Request(String id) { this.id = id; }
+    }
+
+    /** One UI-thread timer belongs to the current request and never survives its row. */
+    private static final class RequestActivity {
+        final Composite row;
+        final Canvas spinner;
+        final Label stage, elapsed;
+        final Display display;
+        final Runnable tick;
+        Request owner;
+        long started, seconds = -1;
+        int frame;
+
+        RequestActivity(Composite parent, UiTheme theme) {
+            display = parent.getDisplay();
+            row = new Composite(parent, SWT.NONE); theme.apply(row);
+            row.setData("enterpriseai.ui.activity", Boolean.TRUE);
+            GridLayout layout = new GridLayout(3, false);
+            layout.marginWidth = 0; layout.marginHeight = 0; layout.horizontalSpacing = 8;
+            row.setLayout(layout);
+            GridData size = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            size.exclude = true; row.setLayoutData(size); row.setVisible(false);
+            spinner = new Canvas(row, SWT.DOUBLE_BUFFERED); theme.apply(spinner);
+            spinner.setData("enterpriseai.ui.activity-spinner", Boolean.TRUE);
+            spinner.setLayoutData(new GridData(18, 18));
+            spinner.addPaintListener(event -> {
+                var bounds = spinner.getClientArea();
+                for (int dot = 0; dot < 8; dot++) {
+                    double angle = dot * Math.PI / 4;
+                    event.gc.setBackground(dot == frame ? theme.accent() : theme.muted());
+                    event.gc.fillOval((int)Math.round(bounds.width / 2.0 + 6 * Math.cos(angle)) - 2,
+                        (int)Math.round(bounds.height / 2.0 + 6 * Math.sin(angle)) - 2, 3, 3);
+                }
+            });
+            stage = new Label(row, SWT.WRAP); theme.apply(stage);
+            stage.setData("enterpriseai.ui.activity-stage", Boolean.TRUE);
+            GridData stageSize = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            stageSize.widthHint = 0; stage.setLayoutData(stageSize);
+            elapsed = new Label(row, SWT.RIGHT); theme.apply(elapsed);
+            elapsed.setData("enterpriseai.ui.activity-elapsed", Boolean.TRUE);
+            elapsed.setText("· 00:00:00");
+            GridData timeSize = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
+            timeSize.widthHint = elapsed.computeSize(SWT.DEFAULT, SWT.DEFAULT).x; elapsed.setLayoutData(timeSize);
+            tick = () -> {
+                if (row.isDisposed() || owner == null) return;
+                long value = Math.max(0, (System.nanoTime() - started) / 1_000_000_000L);
+                if (seconds != value) {
+                    seconds = value;
+                    elapsed.setText("· " + (value < 3600
+                        ? String.format(Locale.ROOT, "%02d:%02d", value / 60, value % 60)
+                        : String.format(Locale.ROOT, "%02d:%02d:%02d", value / 3600, value / 60 % 60, value % 60)));
+                }
+                frame = (frame + 1) % 8; spinner.redraw();
+                display.timerExec(100, tickTask());
+            };
+            row.addListener(SWT.Dispose, event -> { owner = null; display.timerExec(-1, tick); });
+        }
+        private Runnable tickTask() { return tick; }
+        void start(Request request) {
+            display.timerExec(-1, tick); owner = request; started = System.nanoTime(); seconds = -1; frame = 0;
+            stage.setText("Обработка запроса…");
+            ((GridData)row.getLayoutData()).exclude = false; row.setVisible(true);
+            tick.run(); row.getParent().layout(true, true);
+        }
+        void stage(Request request, String text) {
+            if (owner != request || row.isDisposed()) return;
+            stage.setText(text); row.getParent().layout(true, true);
+        }
+        void stop(Request request) {
+            if (owner != request || row.isDisposed()) return;
+            owner = null; display.timerExec(-1, tick);
+            row.setVisible(false); ((GridData)row.getLayoutData()).exclude = true;
+            row.getParent().layout(true, true);
+        }
     }
     private static String locator(Api.SourceRef ref) {
         Map<String,Object> f = ref.fields();

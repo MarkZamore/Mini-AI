@@ -9,7 +9,11 @@ public final class SearchModule implements Api.ModuleFactory {
     public String id(){return "search";}
     public void register(Api.Context context) {
         var search=new Search(context);context.register(Api.SearchServiceV1.class,search);
-        context.command("search",args->{
+        context.command("search",args->searchCommand(search,args,false));
+        context.command("assistant-search",args->searchCommand(search,args,true));
+        context.command("get-fragment",args->{if(args.isEmpty())throw new Api.ServiceException("ARGUMENT","Укажите ID фрагмента");return Api.await(search.getFragment(args.getFirst(),new Api.CancellationToken()));});
+    }
+    private static Object searchCommand(Search search,List<String> args,boolean conversational) {
             if(args.isEmpty())throw new Api.ServiceException("ARGUMENT","Укажите запрос");
             int limit=10;var documents=new ArrayList<String>();var sections=new ArrayList<String>();
             for(int i=1;i<args.size();i++) {
@@ -24,15 +28,20 @@ public final class SearchModule implements Api.ModuleFactory {
                     default -> throw new Api.ServiceException("ARGUMENT","Неизвестный параметр поиска: "+option);
                 }
             }
-            return Api.await(search.search(args.getFirst(),limit,documents,sections,new Api.CancellationToken()));
-        });
-        context.command("get-fragment",args->{if(args.isEmpty())throw new Api.ServiceException("ARGUMENT","Укажите ID фрагмента");return Api.await(search.getFragment(args.getFirst(),new Api.CancellationToken()));});
+            return Api.await(conversational
+                ? search.searchForAssistant(args.getFirst(),limit,documents,sections,new Api.CancellationToken())
+                : search.search(args.getFirst(),limit,documents,sections,new Api.CancellationToken()));
     }
     public static final class Search implements Api.SearchServiceV1 {
         private final Api.Context context;
         public Search(Api.Context context){this.context=context;}
         public CompletionStage<Api.Result<List<Api.SearchHit>>> search(String query,int limit,List<String> documentIds,List<String> sections,Api.CancellationToken token) {
-            return context.async(token,()-> {
+            return context.async(token,()->exact(query,limit,documentIds,sections,token));
+        }
+        public CompletionStage<Api.Result<List<Api.SearchHit>>> searchForAssistant(String query,int limit,List<String> documentIds,List<String> sections,Api.CancellationToken token) {
+            return context.async(token,()->new AssistantSearch(context,this).find(query,limit,documentIds,sections,token));
+        }
+        List<Api.SearchHit> exact(String query,int limit,List<String> documentIds,List<String> sections,Api.CancellationToken token) {
                 var plan=QuestionQuery.plan(query);
                 String expression=plan.map(QuestionQuery.Plan::expression).orElseGet(()->QueryNormalizer.matchExpression(query));
                 if(expression.isEmpty())return List.of();
@@ -48,7 +57,6 @@ public final class SearchModule implements Api.ModuleFactory {
                 int maximum=plan.isPresent()&&plan.get().organizationIdentity()?3:100;
                 sql.append(" ORDER BY score,c.rowid LIMIT ?");params.add(Math.min(maximum,Math.max(1,limit)));
                 return context.require(Api.DatabaseServiceV1.class).query(sql.toString(),params,token).stream().map(row->{var fields=fragmentFields(row);double score=Double.parseDouble(Json.string(fields.remove("score")));return new Api.SearchHit(new Api.Fragment(fields),score);}).toList();
-            });
         }
         public CompletionStage<Api.Result<Api.Fragment>> getFragment(String fragmentId,Api.CancellationToken token) {
             return context.async(token,()-> {
@@ -57,7 +65,7 @@ public final class SearchModule implements Api.ModuleFactory {
                 return new Api.Fragment(fragmentFields(rows.getFirst()));
             });
         }
-        private static LinkedHashMap<String,Object> fragmentFields(Map<String,Object> row){var result=new LinkedHashMap<>(row);result.remove("rowid");result.remove("stemmed");result.remove("codes");return result;}
+        static LinkedHashMap<String,Object> fragmentFields(Map<String,Object> row){var result=new LinkedHashMap<>(row);result.remove("rowid");result.remove("stemmed");result.remove("codes");return result;}
         private static String placeholders(int n){return String.join(",",Collections.nCopies(n,"?"));}
     }
 }
