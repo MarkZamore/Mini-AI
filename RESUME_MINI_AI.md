@@ -2,6 +2,39 @@
 
 ## Возобновление после перезапуска — актуальный статус
 
+### ЗАВЕРШЕНИЕ: комплект и отчёт опубликованы, публичная доставка проверена
+
+- Публичный экспериментальный prerelease:
+  https://github.com/MarkZamore/Mini-AI/releases/tag/v2026.10.24-local-ai .
+  Release ID422387026, draft=false, prerelease=true. Source/tag commit
+  `cbd15cd875bfe3444cb2522df8af89cc19e4105b`; последующие изменения только MD.
+- Все 11 assets (9 приложения + ZIP отчёта и его sidecar) по API совпали
+  по имени, размеру и SHA. `release-preparation/github-published-foundation.json`.
+  Независимые public checks: все 16 HTTP Range, точные pinned URL и полный SHA
+  setup/SHA256SUMS PASS. Receipt `github-public-check-v1/verification.json`,
+  SHA `b7669013f0652181dc4b1413eeef69740855d76f4a0cdc85ffec84dfca812a6c`.
+  Отчёт ZIP и его sidecar полностью скачаны без авторизации и SHA-проверены:
+  `github-public-report-check-v1.json`. Большие части повторно целиком не скачивались.
+- Markdown-отчёт на Desktop завершён: 2321 слово, 256 относительных ссылок PASS,
+  пять baseline и пять actual foundation GUI ответов дословно, 50 карточек,
+  18 финальных raw +18 точных crops. ZIP 29160553 B, 670 entries CRC+SHA PASS;
+  SHA `4a7f3c97353d632f964a45b21374754a7d6e8c04ac9dceb53cd1064e423a5369`.
+  Локальный ZIP `report-release-v1/Mini-AI-research.zip`, опубликован тем же файлом.
+  Веса и канонический корпус в отчёте не дублировались. Замороженные Desktop/ZIP
+  не менять; поздние квитанции публикации сохраняются отдельно.
+- ROOT EXE160219…, manifest91eef…, SQLite58d6…, userinstructions958d… после GUI
+  и CPU совпадают с утверждёнными SHA. Все Mini-AI/workers завершены, lease снят.
+  Старые модели/checkpoints, исходные документы и обе резервные конфигурации целы.
+- Исследовательский план завершён с отрицательным результатом приёмки качества:
+  FT поиска улучшил retrieval, но не доказал прирост качества полных ответов.
+  Поставлен frozen foundation operational fallback. Нормативная надёжность
+  НЕ доказана. Все пять GUI имеют warning неполноты; название организации
+  потеряно в первом, в пятом оборван пункт. Не исправлялись по открытому final.
+  Нет проверки человеком, настоящего звонка Teams и запуска на целевом ноутбуке.
+  Это ограничения результата, а не выполненные проверки.
+
+Ниже — сохранённая история. При противоречии действует этот верхний блок.
+
 ### Актуально: foundation уже в корне, архив проверен, завершается демонстрация и публикация
 
 - ROOT успешно переведён на `mini-ai-20261024-4b-base-e5-foundation-fallback-v1`.
@@ -13,18 +46,30 @@
   все 6811 файлов и девять publication assets PASS. Публиковать ТОЛЬКО его
   `publication-assets.json`, SHA `549511b24c076eae23289dc373e820e86dc907d32121a10bfd614e305c8636b0`.
   Setup SHA `ba2c95809c0ffe5a73de1985ec6e32252023a5dbc126d4938dcb7b954d0ea2f8`.
-- generator_rag — единственный Windows UI owner, выполняет пять настоящих
-  финальных foundation-демонстраций. Guardian `final-gui-foundation-session-v1`,
-  PID 25736, exec session 80714. После закрытия им всех приложений root создаёт
-  `finish-requested`, ждёт выхода guard и только затем даёт CPU GO.
-- source_portability подготовил точный foundation CPU runtime и frozen full-seven
-  harness. ЕДИНСТВЕННЫЙ запуск после GUI: `cpu-foundation-probe-v1/run.py --go`.
+- generator_rag завершил все пять настоящих final foundation GUI-диалогов,
+  50 карточек, 18 raw и 18 точных crops. Desktop final/demo-01..05.json готовы;
+  все пять показывают предупреждение неполноты. Ошибки не скрывать. Все приложения
+  закрыты; guardian `final-gui-foundation-session-v1` session80714 exit0,
+  `complete.json` подтверждает lease_released, gpu.lock отсутствует.
+- source_portability завершил ровно один точный foundation CPU full-seven запрос,
+  exit0. First nonempty 174.8650608 s, full 203.5852019 s, 2199 chars/10 sources,
+  качество unknown и warning неполноты. Peak tree RSS 5121536000 B, минимум
+  свободной RAM 16913657856 B. Live ONNX+ggml-cpu, без CUDA. Teams idle, звонка нет.
+  Worker profile SHA3217e5… и frozen control manifest91eef… unchanged, workers=[],
+  lease отсутствует. Артефакты `cpu-foundation-probe-v1/run`. Не повторять.
   Старые 174/224 секунды относятся к отклонённому trained-кандидату.
 - Markdown-отчёт на настоящем Desktop: 2284 слова, девять приложений, 183 ссылки
   проверены. report_finish добавит пять GUI, точный CPU и публикацию, затем ZIP.
-- GitHub ещё не изменён; начинается source commit и draft prerelease
-  `v2026.10.24-local-ai`. 19 устаревших runtime файлов model убраны только из
-  Git index (git rm --cached); реальные файлы и резервные копии сохранены.
+- Исходники уже опубликованы: commit `cbd15cd875bfe3444cb2522df8af89cc19e4105b`,
+  main и codex branch, annotated tag `v2026.10.24-local-ai`. Draft prerelease
+  ID `422387026` (пока не public), setup уже uploaded/digest PASS. Root uploader
+  exec session `39944`, журнал `release-preparation/github-upload-foundation.jsonl`;
+  два параллельных streaming uploads, без clobber. Дождаться всех девяти assets,
+  сверить API SHA/size, затем report ZIP и только после этого publish.
+  API lookup draft через releases/422387026, не releases/tags (возвращает 404).
+  19 устаревших runtime файлов model убраны только из Git index (git rm --cached);
+  реальные файлы и резервные копии сохранены. Проверка source commit/tree,
+  frozen source/JAR, секретов и quality claims: source-publication-audit-v1.json PASS.
 - C свободно около 23.6 GB, D около 1.57 GB. Никаких новых больших копий.
   Четыре части старого trained-архива сохранены на C, остальные на D согласно
   `retained-trained-archive-v1/retained-layout.json`; ни один байт не потерян.
