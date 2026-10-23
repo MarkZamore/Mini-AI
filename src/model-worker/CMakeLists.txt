@@ -1,0 +1,52 @@
+cmake_minimum_required(VERSION 3.28)
+cmake_policy(SET CMP0091 NEW)
+set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded CACHE STRING "Static wrapper CRT" FORCE)
+project(MiniAIModelWorker LANGUAGES C CXX)
+if(NOT MSVC OR NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+  message(FATAL_ERROR "Windows x64 MSVC required")
+endif()
+set(CMAKE_CXX_STANDARD 17)
+set(ENGINE_SOURCE "" CACHE PATH "Exact pinned upstream source")
+set(ENGINE_LIBS "" CACHE PATH "Import libraries generated from the matching official DLLs")
+if(NOT EXISTS "${ENGINE_SOURCE}/include/llama.h")
+  message(FATAL_ERROR "Run Prepare.ps1 first")
+endif()
+add_library(worker-template STATIC
+  ${ENGINE_SOURCE}/common/json.cpp ${ENGINE_SOURCE}/common/unicode.cpp
+  ${ENGINE_SOURCE}/common/jinja/lexer.cpp ${ENGINE_SOURCE}/common/jinja/parser.cpp
+  ${ENGINE_SOURCE}/common/jinja/runtime.cpp ${ENGINE_SOURCE}/common/jinja/string.cpp
+  ${ENGINE_SOURCE}/common/jinja/value.cpp)
+target_include_directories(worker-template PUBLIC ${ENGINE_SOURCE}/common ${ENGINE_SOURCE}/vendor
+  ${ENGINE_SOURCE}/include ${ENGINE_SOURCE}/ggml/include ${ENGINE_SOURCE}/src)
+target_compile_definitions(worker-template PUBLIC LLAMA_SHARED GGML_SHARED)
+add_executable(inference-worker worker.cpp package.cpp worker.manifest)
+target_link_libraries(inference-worker PRIVATE worker-template
+  "${ENGINE_LIBS}/llama.lib" "${ENGINE_LIBS}/ggml.lib" "${ENGINE_LIBS}/ggml-base.lib" bcrypt delayimp)
+target_compile_definitions(inference-worker PRIVATE _WIN32_WINNT=0x0A00 WINVER=0x0A00
+  WORKER_ENGINE_REVISION="620d2225cc436ab0b001e3200e590e3b286ef9ab+b11669-win-cuda12.4-wrapper-v2")
+target_compile_options(inference-worker PRIVATE /utf-8 /W4 /guard:cf)
+target_compile_options(worker-template PRIVATE /utf-8 /EHsc)
+target_link_options(inference-worker PRIVATE /INCREMENTAL:NO /OPT:REF /OPT:ICF /guard:cf
+  /DELAYLOAD:llama.dll /DELAYLOAD:ggml.dll /DELAYLOAD:ggml-base.dll)
+option(WORKER_ENABLE_EVIDENCE "Build the local evidence protocol" OFF)
+if(WORKER_ENABLE_EVIDENCE)
+  if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/evidence/evidence.cpp")
+    message(FATAL_ERROR "Evidence implementation missing")
+  endif()
+  target_sources(inference-worker PRIVATE evidence/evidence.cpp)
+  target_compile_definitions(inference-worker PRIVATE WORKER_HAS_EVIDENCE=1)
+  set(RESEARCH_DEPENDENCIES "${CMAKE_CURRENT_SOURCE_DIR}/../build/research-20261024/dependencies" CACHE PATH "Pinned local dependencies")
+  set(ORT_ROOT "${RESEARCH_DEPENDENCIES}/onnxruntime-win-x64-1.31.0")
+  target_include_directories(inference-worker PRIVATE "${ORT_ROOT}/include")
+  target_link_libraries(inference-worker PRIVATE "${ORT_ROOT}/lib/onnxruntime.lib")
+  target_link_options(inference-worker PRIVATE /DELAYLOAD:onnxruntime.dll)
+  set(SPM_ENABLE_SHARED OFF CACHE BOOL "Static tokenizer" FORCE)
+  set(SPM_ENABLE_MSVC_MT_BUILD ON CACHE BOOL "Static CRT tokenizer" FORCE)
+  set(SPM_BUILD_TEST OFF CACHE BOOL "No upstream tokenizer tests" FORCE)
+  set(SPM_ENABLE_TCMALLOC OFF CACHE BOOL "No tcmalloc" FORCE)
+  set(ABSL_MSVC_STATIC_RUNTIME ON CACHE BOOL "Static CRT Abseil" FORCE)
+  add_subdirectory("${RESEARCH_DEPENDENCIES}/sentencepiece-0.2.2" sentencepiece EXCLUDE_FROM_ALL)
+  target_include_directories(inference-worker PRIVATE "${RESEARCH_DEPENDENCIES}/sentencepiece-0.2.2/src"
+    "${RESEARCH_DEPENDENCIES}/sentencepiece-0.2.2")
+  target_link_libraries(inference-worker PRIVATE sentencepiece-static)
+endif()

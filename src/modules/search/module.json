@@ -1,1 +1,1 @@
-{"id":"search","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.search.SearchModule","requires":["DatabaseServiceV1"],"provides":["SearchServiceV1"]}
+{"id":"search","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.search.SearchModule","requires":["DatabaseServiceV1"],"provides":["SearchServiceV1","CorpusIdentityServiceV1"]}

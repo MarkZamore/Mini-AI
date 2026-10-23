@@ -1,6 +1,8 @@
 package ai.enterprise.tests;
 
 import ai.enterprise.assistant.AssistantPanel;
+import ai.enterprise.assistant.MarkdownText;
+import ai.enterprise.assistant.SourcePresentation;
 import ai.enterprise.assistant.RoundedSourcesBlock;
 import ai.enterprise.contracts.Api;
 import ai.enterprise.contracts.Json;
@@ -13,6 +15,10 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ST;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -49,7 +55,8 @@ public final class AssistantPanelUiTest {
             Composite panel = new AssistantPanel().create(shell, context);
             check("Mini-AI".equals(UiTheme.NAME) && new AssistantPanel().title().equals(UiTheme.NAME), "assistant and owned window share the single Mini-AI branding name");
             shell.setSize(700, 800); shell.open(); pump(display, () -> shell.isVisible());
-            Text query = (Text) marked(panel, "query"), transcript = (Text) marked(panel, "transcript");
+            Text query = (Text) marked(panel, "query");
+            MarkdownText transcript = (MarkdownText) marked(panel, "transcript");
             SoftButton send = (SoftButton) marked(panel, "send"); Control empty = marked(panel, "empty");
             Composite composer = (Composite) marked(panel, "composer"); Control sources = marked(panel, "sources");
             Label sourceTitle = (Label) marked(panel, "sources-title");
@@ -135,16 +142,21 @@ public final class AssistantPanelUiTest {
             Path screenshot = source.resolve("build/test-results/activity-ui-" + requestedScale + ".png");
             Files.createDirectories(screenshot.getParent());
             ImageLoader loader = new ImageLoader(); loader.data = new ImageData[] {snapshot(panel)};
-            loader.save(screenshot.toString(), SWT.IMAGE_PNG);
-            result.put("activityScreenshot", screenshot.toString());
+            if (Boolean.parseBoolean(System.getProperty("enterpriseai.test.screenshots", "true"))) {
+                loader.save(screenshot.toString(), SWT.IMAGE_PNG); result.put("activityScreenshot", screenshot.toString());
+            }
             result.put("activityGeometry", Map.of("stage", rectangle(stageBounds), "elapsed", rectangle(elapsedBounds)));
             shell.setSize(700, 800); shell.layout(true, true);
             first.emit("state", "Формирование ответа…", List.of(), null);
-            first.emit("token", "Черновик", List.of(), null);
+            first.emit("token", "# Черновик", List.of(), null);
             pump(display, () -> transcript.getText().contains("Черновик") && activityStage.getText().equals("Формирование ответа…"));
             check(!first.future.isDone(), "first streamed fragment is visible before completion");
             first.emit("token", " ответа", List.of(), null);
             pump(display, () -> transcript.getText().contains("Черновик ответа"));
+            check(!transcript.getText().contains("# Черновик")
+                && transcript.getStyleRangeAtOffset(transcript.getText().indexOf("Черновик ответа")).font.getFontData()[0].getHeight()
+                    > theme.bodyFont().getFontData()[0].getHeight(),
+                "Markdown formatting updates while a heading arrives in multiple streamed fragments");
             check(transcript.getText().contains("предварительный ответ") && !first.future.isDone(), "multiple fragments form a provisional answer before completion");
             query.setText("Следующий запрос");
             Event busyEnter = key(SWT.CR, 0); query.notifyListeners(SWT.KeyDown, busyEnter);
@@ -172,7 +184,18 @@ public final class AssistantPanelUiTest {
             send.notifyListeners(SWT.Selection, new Event()); Operation second = session.operations.getLast();
             Api.Fragment fragment = fragment(); second.emit("sources", "", List.of(fragment), null);
             pump(display, sources::isVisible);
-            check(!((GridData)sources.getLayoutData()).exclude && labels((Composite)sources).stream().anyMatch(t -> t.contains("ручной сверкой")), "real source locators and extraction warnings are visible");
+            check(!((GridData)sources.getLayoutData()).exclude && labels((Composite)sources).stream().anyMatch(t -> t.contains("Стр. 2") && t.contains("требуется сверка")), "compact source location and readable quality notice are visible");
+            check(labels((Composite)sources).stream().noneMatch(t -> t.contains(fragment.fragmentId()) || t.contains("machine_extracted") || t.contains("bbox")),
+                "main source panel does not expose raw IDs or extraction payload");
+            String canonicalAnswer = "Условие 1 обязательно. Исключение 2 сохраняется. [source:" + fragment.fragmentId() + "]"
+                + "\n\nОграничения источников: OCR needs_review partial";
+            String displayedAnswer = SourcePresentation.answer(canonicalAnswer, List.of(fragment));
+            check(displayedAnswer.contains("Условие 1 обязательно. Исключение 2 сохраняется. [1]")
+                && !displayedAnswer.contains("needs_review") && displayedAnswer.contains("карточках источников")
+                && displayedAnswer.contains("извлечены не полностью"),
+                "citation presentation preserves substantive conditions and replaces service suffix with a readable note");
+            check(SourcePresentation.warningDetails(canonicalAnswer).contains("OCR needs_review partial") && fragment.fragmentId().equals("fragment-1"),
+                "full diagnostics and canonical source ID remain available without data mutation");
             second.fail("MODEL_MISSING", "Не найден model\\inference-worker.exe", List.of(fragment));
             pump(display, () -> host.errors.size() == 1 && !send.isStopMode());
             check(!activity.isVisible(), "model failure hides activity");
@@ -214,13 +237,66 @@ public final class AssistantPanelUiTest {
             pump(display, () -> transcript.getText().contains("Предварительный текст"));
             successful.emit("state", "Проверка ответа и ссылок…", List.of(), null);
             pump(display, () -> activityStage.getText().equals("Проверка ответа и ссылок…"));
-            successful.succeed("Подтверждённый ответ", List.of(fragment));
+            String markdown = "# Подтверждённый ответ\n\n**Жирный** и *курсив*, ~~удалённый~~, [ссылка](https://example.com).\n"
+                + "- Первый пункт\n1. Второй пункт\n> Цитата\n\n```java\n# не заголовок **код**\n```\n"
+                + "Экранирование: \\*текст\\*, переменная some_name_here, `**код**`.";
+            successful.succeed(markdown, List.of(fragment));
             pump(display, () -> !send.isStopMode());
             check(!send.isEnabled() && host.errors.size() == 4 && transcript.getText().contains("Подтверждённый ответ"),
                 "successful completion restores the disabled blank send arrow and keeps the answer");
             check(!activity.isVisible() && !transcript.getText().contains("Предварительный текст")
                 && transcript.getText().indexOf("Подтверждённый ответ") == transcript.getText().lastIndexOf("Подтверждённый ответ"),
                 "final answer replaces the draft once and stops activity");
+            check(transcript.getText().contains("Подтверждённый ответ") && !transcript.getText().contains("# Подтверждённый ответ")
+                && transcript.getText().contains("• Первый пункт") && !transcript.getText().contains("```"),
+                "Markdown headings, lists and fences render without source delimiters");
+            int headingOffset = transcript.getText().indexOf("Подтверждённый ответ");
+            var headingStyle = transcript.getStyleRangeAtOffset(headingOffset);
+            var boldStyle = transcript.getStyleRangeAtOffset(transcript.getText().indexOf("Жирный"));
+            check(headingStyle.font.getFontData()[0].getHeight() > theme.bodyFont().getFontData()[0].getHeight()
+                && (headingStyle.font.getFontData()[0].getStyle() & SWT.BOLD) != 0
+                && (boldStyle.font.getFontData()[0].getStyle() & SWT.BOLD) != 0,
+                "headings use larger bold type and inline emphasis uses bold type");
+            check(transcript.getText().contains("# не заголовок **код**") && transcript.getText().contains("some_name_here")
+                && transcript.getText().contains("Экранирование: *текст*"),
+                "code, escaped punctuation and underscores inside words remain literal");
+            Clipboard clipboard = new Clipboard(display);
+            Object previousClipboard = clipboard.getContents(TextTransfer.getInstance());
+            try {
+                transcript.setSelection(headingOffset, headingOffset + "Подтверждённый ответ".length());
+                transcript.invokeAction(ST.COPY);
+                check("# Подтверждённый ответ".equals(clipboard.getContents(TextTransfer.getInstance())),
+                    "standard copy action restores the Markdown heading prefix for a selected heading");
+                int boldOffset = transcript.getText().indexOf("Жирный");
+                transcript.setSelection(boldOffset, boldOffset + "Жирный".length()); transcript.copy();
+                check("**Жирный**".equals(clipboard.getContents(TextTransfer.getInstance())),
+                    "partial transcript copy restores inline Markdown delimiters");
+                transcript.selectAll(); transcript.copy();
+                check(((String)clipboard.getContents(TextTransfer.getInstance())).endsWith(markdown + "\n\n"),
+                    "copying the rendered answer preserves the exact original Markdown including code fences and link URLs");
+            } finally {
+                if (previousClipboard != null) clipboard.setContents(new Object[] {previousClipboard}, new Transfer[] {TextTransfer.getInstance()});
+                clipboard.dispose();
+            }
+            Path markdownScreenshot = source.resolve("build/test-results/markdown-ui-" + requestedScale + ".png");
+            transcript.setSelection(headingOffset); transcript.setTopIndex(transcript.getLineAtOffset(headingOffset));
+            ImageLoader markdownLoader = new ImageLoader(); markdownLoader.data = new ImageData[] {snapshot(panel)};
+            if (Boolean.parseBoolean(System.getProperty("enterpriseai.test.screenshots", "true"))) {
+                markdownLoader.save(markdownScreenshot.toString(), SWT.IMAGE_PNG); result.put("markdownScreenshot", markdownScreenshot.toString());
+            }
+            query.setText("Ответ с источником"); send.notifyListeners(SWT.Selection, new Event());
+            session.operations.getLast().succeed(canonicalAnswer, List.of(fragment));
+            pump(display, () -> !send.isStopMode() && transcript.getText().contains("сохраняется. [1]"));
+            check(!transcript.getText().contains("[source:fragment-1]") && !transcript.getText().contains("OCR needs_review partial")
+                && session.history().getLast().text().equals(canonicalAnswer),
+                "real transcript shows short citations while session retains the full canonical answer");
+            Link compactLink = controls((Composite)sources).stream().filter(c -> c instanceof Link).map(c -> (Link)c).findFirst().orElseThrow();
+            compactLink.notifyListeners(SWT.Selection, new Event());
+            Shell qualityCard = Arrays.stream(display.getShells()).filter(s -> s != shell && s.getText().startsWith("Источник:")).findFirst().orElseThrow();
+            Text qualityDetails = controls(qualityCard).stream().filter(c -> c instanceof Text).map(c -> (Text)c).findFirst().orElseThrow();
+            check(qualityDetails.getText().contains("OCR needs_review partial") && qualityDetails.getText().contains(fragment.fragmentId()),
+                "source card retains the full answer warning and canonical source identifier");
+            qualityCard.close();
             query.setText("Остановка клавишей"); send.notifyListeners(SWT.Selection, new Event());
             Operation keyboardStop = session.operations.getLast();
             send.setFocus();

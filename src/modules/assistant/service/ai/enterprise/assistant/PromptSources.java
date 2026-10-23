@@ -6,7 +6,9 @@ import java.util.*;
 /** Model-facing evidence projection; canonical fragments remain intact in the application. */
 final class PromptSources {
     private static final List<String> EVIDENCE_FIELDS = List.of(
-        "fragment_id", "document_id", "title", "text", "source_sha256");
+        "fragment_id", "document_id", "title", "text", "source_sha256",
+        "base_id", "content_version", "document_key", "fragment_key", "source_keys",
+        "section", "section_path", "revision", "edition", "effective_date", "publication_date", "language");
     private static final Set<String> GEOMETRY_AND_REPEATED_HASH = Set.of(
         "bbox", "page_size", "source_sha256");
 

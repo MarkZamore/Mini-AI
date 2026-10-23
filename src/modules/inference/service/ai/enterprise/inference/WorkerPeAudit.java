@@ -43,9 +43,23 @@ public final class WorkerPeAudit {
         "api-ms-win-crt-runtime-l1-1-0.dll", "api-ms-win-crt-stdio-l1-1-0.dll",
         "api-ms-win-crt-string-l1-1-0.dll", "api-ms-win-crt-time-l1-1-0.dll", "api-ms-win-crt-utility-l1-1-0.dll");
 
+    private static final Set<String> V2_API_SETS = Set.of(
+        "api-ms-win-core-debug-l1-1-0.dll", "api-ms-win-core-processenvironment-l1-1-0.dll",
+        "api-ms-win-core-winrt-error-l1-1-0.dll", "api-ms-win-core-winrt-l1-1-0.dll",
+        "api-ms-win-core-winrt-string-l1-1-0.dll", "api-ms-win-security-systemfunctions-l1-1-0.dll",
+        "api-ms-win-core-path-l1-1-0.dll", "dbghelp.dll", "dxgi.dll");
+    static boolean isSystemLibrary(String name) {
+        return INBOX.contains(name) || API_SETS.contains(name) || V2_API_SETS.contains(name) || name.equals("nvcuda.dll");
+    }
+
     public static List<String> verify(Path executable, BooleanSupplier cancelled) throws IOException {
+        return verify(executable, cancelled, Set.of(), false);
+    }
+    /** Version 2 explicitly permits only hashed package dependencies and named system driver DLLs. */
+    public static List<String> verify(Path executable, BooleanSupplier cancelled,
+                                      Set<String> dependencies, boolean library) throws IOException {
         try (var channel = FileChannel.open(executable, StandardOpenOption.READ)) {
-            return new Reader(channel, cancelled).verify();
+            return new Reader(channel, cancelled, dependencies, library).verify();
         } catch (InvalidPe e) {
             throw new Api.ServiceException("MODEL_PACKAGE_NOT_SELF_CONTAINED", e.getMessage(), e);
         }
@@ -56,10 +70,12 @@ public final class WorkerPeAudit {
     private record Section(long virtualAddress, long virtualSize, long rawOffset, long rawSize) {}
     private static final class Reader {
         final FileChannel file; final long length; final BooleanSupplier cancelled;
+        final Set<String> dependencies; final boolean library;
         final List<Section> sections = new ArrayList<>(); final LinkedHashSet<String> imports = new LinkedHashSet<>();
         long headers, imageBase;
-        Reader(FileChannel file, BooleanSupplier cancelled) throws IOException {
+        Reader(FileChannel file, BooleanSupplier cancelled, Set<String> dependencies, boolean library) throws IOException {
             this.file = file; this.length = file.size(); this.cancelled = cancelled;
+            this.dependencies = dependencies; this.library = library;
         }
         ByteBuffer read(long offset, int count) throws IOException {
             if (cancelled.getAsBoolean()) throw new java.util.concurrent.CancellationException();
@@ -78,7 +94,7 @@ public final class WorkerPeAudit {
             int count = Short.toUnsignedInt(coff.getShort(6)), optionalSize = Short.toUnsignedInt(coff.getShort(20));
             int characteristics = Short.toUnsignedInt(coff.getShort(22));
             if (count < 1 || count > 96 || optionalSize < 240 || optionalSize > 4096
-                || (characteristics & 0x0002) == 0 || (characteristics & 0x2000) != 0) bad("неверный заголовок EXE");
+                || (characteristics & 0x0002) == 0 || ((characteristics & 0x2000) != 0) != library) bad("неверный заголовок EXE/DLL");
             ByteBuffer optional = read(pe + 24, optionalSize);
             if (Short.toUnsignedInt(optional.getShort(0)) != 0x20b) bad("требуется PE32+");
             int subsystem = Short.toUnsignedInt(optional.getShort(68));
@@ -135,7 +151,8 @@ public final class WorkerPeAudit {
                 }
                 if (name == 0) bad("пустое имя импортируемой библиотеки");
                 String dll = dllName(name);
-                if (!INBOX.contains(dll) && !API_SETS.contains(dll))
+                if (!INBOX.contains(dll) && !API_SETS.contains(dll) && !dependencies.contains(dll)
+                    && !(dependencies.size()>0 && V2_API_SETS.contains(dll)))
                     bad("требуется внешняя библиотека " + dll);
                 imports.add(dll);
             }

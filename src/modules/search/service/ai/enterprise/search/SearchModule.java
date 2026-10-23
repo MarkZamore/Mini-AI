@@ -2,12 +2,14 @@ package ai.enterprise.search;
 
 import ai.enterprise.contracts.Api;
 import ai.enterprise.contracts.Json;
+import ai.enterprise.contracts.CorpusIdentityServiceV1;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 public final class SearchModule implements Api.ModuleFactory {
     public String id(){return "search";}
     public void register(Api.Context context) {
+        context.register(CorpusIdentityServiceV1.class,new CorpusIdentity(context.environment().db()));
         var search=new Search(context);context.register(Api.SearchServiceV1.class,search);
         context.command("search",args->searchCommand(search,args,false));
         context.command("assistant-search",args->searchCommand(search,args,true));

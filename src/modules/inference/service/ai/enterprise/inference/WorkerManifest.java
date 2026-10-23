@@ -18,9 +18,12 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
     public static WorkerManifest verify(Map<String, Object> value, Path modelRoot,
                                         Set<String> availableIsa, long availableMemory,
                                         BooleanSupplier cancelled) throws Exception {
-        if (!value.keySet().equals(KEYS)) throw new IllegalArgumentException("worker.json: неверный набор полей");
-        if (integer(value, "schemaVersion", 1, 1) != 1
-            || !"enterpriseai.inference.v1".equals(string(value, "protocol"))
+        int version = (int) integer(value, "schemaVersion", 1, 2);
+        var expected = new HashSet<>(KEYS);
+        if (version == 2) expected.addAll(Set.of("backend", "dependencies"));
+        if (version == 2 && value.containsKey("evidence")) expected.add("evidence");
+        if (!value.keySet().equals(expected)) throw new IllegalArgumentException("worker.json: неверный набор полей");
+        if (!"enterpriseai.inference.v1".equals(string(value, "protocol"))
             || !"windows-x64".equals(string(value, "architecture"))
             || !"inference-worker.exe".equals(string(value, "executable"))) {
             throw new IllegalArgumentException("Несовместимый протокол или архитектура модели");
@@ -58,6 +61,54 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
         FileSpec exe = inventory.get("inference-worker.exe");
         if (exe == null || !weights.equals(inventory.get(weights.path().toLowerCase(Locale.ROOT))))
             throw new IllegalArgumentException("worker.json: EXE и веса должны входить в files");
+        Map<String,Path> dependencies = new LinkedHashMap<>();
+        Set<String> permittedImports = new HashSet<>();
+        if (version == 2) {
+            var backend = object(value, "backend");
+            if (!backend.keySet().equals(Set.of("kind", "device", "gpuMemoryBudgetBytes", "reserveFreeGpuMemoryBytes")))
+                throw new IllegalArgumentException("worker.json: неверный backend");
+            String kind = string(backend, "kind");
+            long device = integer(backend, "device", 0, 15);
+            long budget = integer(backend, "gpuMemoryBudgetBytes", 0, 9_007_199_254_740_991L);
+            long reserve = integer(backend, "reserveFreeGpuMemoryBytes", 0, 9_007_199_254_740_991L);
+            if (!(kind.equals("cpu") && device == 0 && budget == 0 && reserve == 0)
+                && !(kind.equals("cuda") && budget > 0 && reserve >= 536_870_912L))
+                throw new IllegalArgumentException("worker.json: неверный профиль GPU/CPU");
+            if (kind.equals("cuda")) permittedImports.add("nvcuda.dll"); // Installed driver, resolved only in System32.
+            if (array(value, "dependencies").size() > 64) throw new IllegalArgumentException("Слишком много DLL");
+            for (Object item : array(value, "dependencies")) {
+                if (!(item instanceof Map<?,?> raw)) throw new IllegalArgumentException("Неверное описание DLL");
+                @SuppressWarnings("unchecked") var entry = spec((Map<String,Object>) raw);
+                String path = entry.path().toLowerCase(Locale.ROOT);
+                if (!entry.path().equals(path) || !path.matches("runtime/[a-z0-9_.-]+\\.dll") || !entry.equals(inventory.get(path)))
+                    throw new IllegalArgumentException("DLL должна входить в files и находиться в runtime/");
+                String name = path.substring("runtime/".length());
+                if (dependencies.putIfAbsent(name, contained(root, entry.path())) != null)
+                    throw new IllegalArgumentException("Повторное имя DLL");
+                if (WorkerPeAudit.isSystemLibrary(name) || name.startsWith("api-ms-") || name.startsWith("ext-ms-"))
+                    throw new IllegalArgumentException("Системную библиотеку нельзя подменять в комплекте");
+                permittedImports.add(name);
+            }
+            if (value.containsKey("evidence")) {
+                var evidence = object(value, "evidence");
+                var fields = new HashSet<>(Set.of("embedder", "tokenizerDirectory", "index"));
+                if (evidence.containsKey("reranker")) fields.add("reranker");
+                if (!evidence.keySet().equals(fields)) throw new IllegalArgumentException("Неверный раздел evidence");
+                for (String key : List.of("embedder", "reranker", "index")) {
+                    if (!evidence.containsKey(key)) continue;
+                    var asset = spec(object(evidence, key));
+                    if (!asset.equals(inventory.get(asset.path().toLowerCase(Locale.ROOT))))
+                        throw new IllegalArgumentException("Ресурс evidence должен входить в files");
+                }
+                String tokenizer = string(evidence, "tokenizerDirectory");
+                Path directory = contained(root, tokenizer);
+                if (!Files.isDirectory(directory)) throw new IllegalArgumentException("Отсутствует папка токенизатора");
+                try (var assets = Files.walk(directory)) {
+                    for (Path asset : assets.filter(Files::isRegularFile).toList())
+                        if (!resolved.containsKey(asset.toRealPath())) throw new IllegalArgumentException("Непроверенный ресурс токенизатора");
+                }
+            }
+        }
         // No library extraction or replaceable DLL backends: only one standalone EXE.
         try (var paths = Files.walk(root, java.nio.file.FileVisitOption.FOLLOW_LINKS)) {
             var iterator = paths.iterator();
@@ -70,7 +121,7 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
                 if (!path.toRealPath().startsWith(root)) throw new IllegalArgumentException("Ссылка указывает вне model");
                 if (!Files.isRegularFile(path)) continue;
                 String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
-                if (name.endsWith(".dll") || (name.endsWith(".exe")
+                if ((name.endsWith(".dll") && (version == 1 || !dependencies.containsValue(path.toRealPath()))) || (name.endsWith(".exe")
                     && !path.toRealPath().equals(contained(root, exe.path()))))
                     throw new ai.enterprise.contracts.Api.ServiceException("MODEL_PACKAGE_NOT_SELF_CONTAINED",
                         "Комплект модели содержит дополнительный EXE или DLL: " + root.relativize(path));
@@ -94,7 +145,16 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
                 throw new IllegalArgumentException("SHA-256 не совпадает: " + entry.getValue().path());
         }
         Arrays.fill(buffer, (byte) 0);
-        WorkerPeAudit.verify(contained(root, exe.path()), cancelled);
+        WorkerPeAudit.verify(contained(root, exe.path()), cancelled, permittedImports, false);
+        for (var dependency : dependencies.entrySet()) {
+            Set<String> libraryImports = permittedImports;
+            if (version == 2 && dependency.getKey().equals("ggml-cuda.dll")) {
+                // The one full package keeps its optional CUDA backend in CPU mode, without loading it.
+                // Its system-driver import does not grant the CPU executable that permission.
+                libraryImports = new HashSet<>(permittedImports); libraryImports.add("nvcuda.dll");
+            }
+            WorkerPeAudit.verify(dependency.getValue(), cancelled, libraryImports, true);
+        }
         return new WorkerManifest(contained(root, exe.path()), contained(root, weights.path()),
             boundedString(value, "engine", 256), boundedString(value, "revision", 512), boundedString(value, "precision", 128),
             context, threads, min, max);

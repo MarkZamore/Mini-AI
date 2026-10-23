@@ -26,6 +26,7 @@ public final class InferenceModule implements Api.ModuleFactory {
     public void register(Api.Context context) {
         var provider = new WorkerProvider(context);
         context.register(Api.InferenceServiceV1.class, provider);
+        context.register(ai.enterprise.contracts.EvidenceModelServiceV1.class, new EvidenceProvider(context));
         context.command("model-status", args -> {
             var result = provider.availability();
             if (!result.success()) return result;
@@ -71,6 +72,23 @@ public final class InferenceModule implements Api.ModuleFactory {
         });
         private final AtomicReference<Active> active = new AtomicReference<>();
         private final AtomicBoolean closed = new AtomicBoolean();
+        private Resident resident;
+        private record Resident(Active transport, WorkerManifest manifest, Path model, Map<String,Object> description) {}
+        private synchronized Resident takeResident(Path model, Map<String,Object> description) {
+            Resident previous = resident; resident = null;
+            if (previous == null) return null;
+            if (!closed.get() && previous.model().equals(model) && previous.description().equals(description)
+                && previous.transport().reusable()) return previous;
+            previous.transport().close(); return null;
+        }
+        private synchronized void retain(Active transport, WorkerManifest manifest, Path model, Map<String,Object> description) {
+            if (resident != null) resident.transport().close();
+            if (closed.get() || !transport.reusable()) { transport.close(); resident = null; }
+            else resident = new Resident(transport, manifest, model, description);
+        }
+        private synchronized void discardResident() {
+            if (resident != null) { resident.transport().close(); resident = null; }
+        }
         public WorkerProvider(Api.Context context) { this.context = context; }
 
         /** Called explicitly by Send/status only; registration never probes or loads a model. */
@@ -97,32 +115,43 @@ public final class InferenceModule implements Api.ModuleFactory {
                 return CompletableFuture.completedFuture(Api.Result.fail("BUSY", "Модель уже обрабатывает запрос"));
             cancellation.onCancel(() -> cancel(operation));
             return CompletableFuture.supplyAsync(() -> {
+                boolean completed = false, persistent = false;
+                Path model = null; Map<String,Object> raw = null; WorkerManifest manifest = null;
                 try {
                     cancellation.check();
                     Api.Result<Api.ProviderInfo> availability = availability();
                     if (!availability.success()) throw new Api.ServiceException(availability.error().code(), availability.error().message());
-                    Path model = context.environment().model().toRealPath();
-                    Map<String,Object> raw = readManifest(model);
-                    Set<String> availableIsa = new HashSet<>();
-                    Object isaRaw = raw.get("supportedIsa");
-                    if (isaRaw instanceof List<?> requirements) for (Object item : requirements)
-                        if (item instanceof String isa && context.environment().platform().cpuSupports(isa)) availableIsa.add(isa);
-                    WorkerManifest manifest = WorkerManifest.verify(raw, model, availableIsa,
-                        context.environment().platform().availableMemoryBytes(), cancellation::cancelled);
-                    validateRequest(request, manifest);
-                    cancellation.check();
-                    if (context.environment().platform().availableMemoryBytes() < manifest.minFreeMemoryBytes())
-                        throw new Api.ServiceException("OUT_OF_MEMORY", "Свободная память уменьшилась во время проверки модели");
-                    Process process = context.environment().platform().launchWorker(manifest.executable(), model, manifest.maxProcessMemoryBytes());
-                    operation.process.set(process);
-                    if (closed.get() || cancellation.cancelled()) { process.destroyForcibly(); cancellation.check(); throw new Api.ServiceException("PROVIDER_CLOSED", "Провайдер завершён"); }
-                    operation.startReaders();
-                    operation.write(Map.of("type", "hello", "protocol", PROTOCOL));
-                    Map<String,Object> ready = operation.read(180, cancellation);
-                    if ("error".equals(ready.get("type"))) throw workerError(ready, null);
-                    requireKeys(ready, Set.of("type", "protocol"));
-                    if (!"ready".equals(ready.get("type")) || !PROTOCOL.equals(ready.get("protocol")))
-                        throw new Api.ServiceException("PROTOCOL_ERROR", "Worker не подтвердил протокол");
+                    model = context.environment().model().toRealPath();
+                    raw = readManifest(model);
+                    persistent = Long.valueOf(2).equals(raw.get("schemaVersion"));
+                    Resident cached = takeResident(model, raw);
+                    if (cached != null) {
+                        operation.bind(cached.transport()); manifest = cached.manifest();
+                    }
+                    if (manifest == null) {
+                        Set<String> availableIsa = new HashSet<>();
+                        Object isaRaw = raw.get("supportedIsa");
+                        if (isaRaw instanceof List<?> requirements) for (Object item : requirements)
+                            if (item instanceof String isa && context.environment().platform().cpuSupports(isa)) availableIsa.add(isa);
+                        manifest = WorkerManifest.verify(raw, model, availableIsa,
+                            context.environment().platform().availableMemoryBytes(), cancellation::cancelled);
+                        validateRequest(request, manifest);
+                        cancellation.check();
+                        if (context.environment().platform().availableMemoryBytes() < manifest.minFreeMemoryBytes())
+                            throw new Api.ServiceException("OUT_OF_MEMORY", "Свободная память уменьшилась во время проверки модели");
+                        Process process = context.environment().platform().launchWorker(manifest.executable(), model, manifest.maxProcessMemoryBytes());
+                        operation.process.set(process);
+                        if (closed.get() || cancellation.cancelled()) { process.destroyForcibly(); cancellation.check(); throw new Api.ServiceException("PROVIDER_CLOSED", "Провайдер завершён"); }
+                        operation.startReaders();
+                        operation.write(Map.of("type", "hello", "protocol", PROTOCOL));
+                        Map<String,Object> ready = operation.read(180, cancellation);
+                        if ("error".equals(ready.get("type"))) throw workerError(ready, null);
+                        requireKeys(ready, Set.of("type", "protocol"));
+                        if (!"ready".equals(ready.get("type")) || !PROTOCOL.equals(ready.get("protocol")))
+                            throw new Api.ServiceException("PROTOCOL_ERROR", "Worker не подтвердил протокол");
+                    } else {
+                        validateRequest(request, manifest);
+                    }
                     cancellation.check();
                     operation.write(Map.of("type", "generate", "requestId", request.requestId(),
                         "messages", request.messages(), "maxTokens", request.maxTokens()));
@@ -142,6 +171,7 @@ public final class InferenceModule implements Api.ModuleFactory {
                                 requireKeys(frame, Set.of("type", "requestId"));
                                 cancellation.check();
                                 events.accept(new Api.GenerationEvent("done", request.requestId(), "", null));
+                                completed = true;
                                 return Api.Result.ok(null);
                             }
                             case "cancelled" -> {
@@ -153,6 +183,7 @@ public final class InferenceModule implements Api.ModuleFactory {
                         }
                     }
                 } catch (Throwable e) {
+                    discardResident();
                     Api.Result<Void> result = cancellation.cancelled()
                         ? Api.Result.fail("CANCELLED", "Генерация отменена")
                         : e instanceof WorkerManifest.InsufficientMemoryException ? Api.Result.fail("OUT_OF_MEMORY", e.getMessage())
@@ -160,7 +191,9 @@ public final class InferenceModule implements Api.ModuleFactory {
                     events.accept(new Api.GenerationEvent("error", request.requestId(), "", result.error()));
                     return result;
                 } finally {
-                    operation.close();
+                    if (completed && persistent && !cancellation.cancelled() && !closed.get())
+                        retain(operation.transport(), manifest, model, raw);
+                    else operation.close();
                     active.compareAndSet(operation, null);
                 }
             }, executor);
@@ -177,9 +210,10 @@ public final class InferenceModule implements Api.ModuleFactory {
             }
         }
         private void cancel(Active operation) {
+            if (active.get() != operation) return;
             if (!timer.isShutdown()) timer.schedule(operation::close, 2, TimeUnit.SECONDS);
             var writer = new Thread(() -> {
-                try { if (operation.process.get() != null) operation.write(Map.of("type", "cancel", "requestId", operation.id)); }
+                try { if (active.get() == operation && operation.transport().process.get() != null) operation.write(Map.of("type", "cancel", "requestId", operation.id)); }
                 catch (Exception ignored) {}
             }, "enterpriseai-worker-cancel-write");
             writer.setDaemon(true); writer.start();
@@ -187,6 +221,7 @@ public final class InferenceModule implements Api.ModuleFactory {
         public void close() {
             if (closed.compareAndSet(false, true)) {
                 Active operation = active.get(); if (operation != null) operation.close();
+                discardResident();
                 executor.shutdownNow(); timer.shutdownNow();
             }
         }
@@ -230,8 +265,17 @@ public final class InferenceModule implements Api.ModuleFactory {
             final ArrayBlockingQueue<Object> frames = new ArrayBlockingQueue<>(4);
             final StringBuilder stderr = new StringBuilder();
             final AtomicBoolean stopped = new AtomicBoolean();
+            private volatile Active delegate;
             Thread reader, diagnosticReader;
             Active(String id) { this.id = id; }
+            Active transport() { Active value = delegate; return value == null ? this : value.transport(); }
+            void bind(Active value) {
+                delegate = value.transport();
+                if (stopped.get()) delegate.close();
+            }
+            boolean reusable() {
+                return !stopped.get() && process.get() != null && process.get().isAlive() && frames.isEmpty();
+            }
             void startReaders() {
                 reader = new Thread(() -> {
                     try (InputStream input = new BufferedInputStream(process.get().getInputStream())) {
@@ -266,6 +310,7 @@ public final class InferenceModule implements Api.ModuleFactory {
                 diagnosticReader.setDaemon(true); diagnosticReader.start();
             }
             synchronized void write(Map<String,Object> message) throws IOException {
+                if (delegate != null) { delegate.write(message); return; }
                 byte[] bytes = Json.stringify(message).getBytes(StandardCharsets.UTF_8);
                 if (bytes.length > MAX_FRAME) throw new Api.ServiceException("CONTEXT_TOO_LARGE", "Запрос превышает 8 МиБ");
                 Process p = process.get();
@@ -273,6 +318,7 @@ public final class InferenceModule implements Api.ModuleFactory {
                 OutputStream output = p.getOutputStream(); output.write(bytes); output.write('\n'); output.flush();
             }
             @SuppressWarnings("unchecked") Map<String,Object> read(int seconds, Api.CancellationToken token) throws Exception {
+                if (delegate != null) return delegate.read(seconds, token);
                 Object frame = frames.poll(seconds, TimeUnit.SECONDS);
                 token.check();
                 if (frame == null) throw new Api.ServiceException("WORKER_TIMEOUT", "Worker не отвечает");
@@ -284,11 +330,13 @@ public final class InferenceModule implements Api.ModuleFactory {
                 return (Map<String,Object>) frame;
             }
             public void close() {
+                if (delegate != null) { stopped.set(true); delegate.close(); return; }
                 if (stopped.compareAndSet(false, true)) {
                     Process p = process.get();
                     if (p != null) {
-                        try { p.getOutputStream().close(); } catch (IOException ignored) {}
+                        // Terminate first: closing a pipe held by a blocked synchronous writer can otherwise wait forever.
                         if (p.isAlive()) p.destroyForcibly();
+                        try { p.getOutputStream().close(); } catch (IOException ignored) {}
                         try { p.getInputStream().close(); } catch (IOException ignored) {}
                         try { p.getErrorStream().close(); } catch (IOException ignored) {}
                     }

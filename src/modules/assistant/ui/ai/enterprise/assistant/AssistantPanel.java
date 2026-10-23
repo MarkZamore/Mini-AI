@@ -39,7 +39,7 @@ public final class AssistantPanel implements PanelFactory {
             event.gc.drawText(UiTheme.NAME, Math.max(0, (bounds.width - size.x) / 2),
                 Math.max(0, (bounds.height - size.y) / 2), true);
         });
-        Text transcript = new Text(historyArea, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        MarkdownText transcript = new MarkdownText(historyArea, theme);
         theme.apply(transcript); transcript.setData("enterpriseai.ui.transcript", Boolean.TRUE);
         historyStack.topControl = empty;
 
@@ -97,17 +97,23 @@ public final class AssistantPanel implements PanelFactory {
         };
         Runnable redraw = () -> {
             if (panel.isDisposed()) return;
-            StringBuilder text = new StringBuilder();
+            MarkdownText.Document text = new MarkdownText.Document();
             if (session.isPresent()) for (var message : session.get().history()) {
                 text.append(message.role().equals("user") ? "Вы" : "Помощник");
                 if (message.state().equals("error")) text.append(" — сообщение");
-                text.append(":\n").append(message.text()).append("\n\n");
+                text.append(":\n");
+                text.append(message.role().equals("assistant")
+                    ? SourcePresentation.answer(message.text(), message.sources()) : message.text(), message.role().equals("assistant"));
+                text.append("\n\n");
             }
             Request current = active[0];
             if (current != null) synchronized (current.draft) {
-                if (!current.draft.isEmpty()) text.append("Помощник — предварительный ответ:\n").append(current.draft);
+                if (!current.draft.isEmpty()) {
+                    text.append("Помощник — предварительный ответ:\n");
+                    text.append(SourcePresentation.answer(current.draft.toString(), current.sources), true);
+                }
             }
-            transcript.setText(text.toString()); transcript.setSelection(transcript.getCharCount());
+            transcript.setDocument(text); transcript.setSelection(transcript.getCharCount());
             Control visible = text.isEmpty() ? empty : transcript;
             if (historyStack.topControl != visible) { historyStack.topControl = visible; historyArea.layout(); }
         };
@@ -122,20 +128,24 @@ public final class AssistantPanel implements PanelFactory {
             int index = 0;
             for (Api.Fragment fragment : fragments) {
                 int number = ++index; Link link = new Link(sourceContent, SWT.WRAP); theme.apply(link);
-                link.setText("<a>" + escape(number + ". " + fragment.title()) + "</a>");
+                link.setText("<a>" + escape("[" + number + "] " + fragment.title()) + "</a>");
                 link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
                 Label locator = new Label(sourceContent, SWT.WRAP); theme.apply(locator);
-                String locatorText = fragment.sourceRefs().stream().map(AssistantPanel::locator).distinct()
-                    .reduce((a, b) -> a + "; " + b).orElse("Место не указано");
-                locator.setText("ID: " + fragment.fragmentId() + "\n" + locatorText);
+                locator.setText(SourcePresentation.locator(fragment));
                 locator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-                String warnings = String.join("; ", AssistantModule.Session.sourceWarnings(List.of(fragment)));
-                if (!warnings.isBlank()) {
-                    Label warning = new Label(sourceContent, SWT.WRAP); theme.apply(warning);
-                    warning.setText("Ограничения: " + warnings);
-                    warning.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-                }
-                link.addListener(SWT.Selection, event -> showSourceCard(panel, context, fragment));
+                link.addListener(SWT.Selection, event -> {
+                    String warnings = "";
+                    if (session.isPresent()) {
+                        var history = session.get().history();
+                        for (int i = history.size() - 1; i >= 0; i--) {
+                            var message = history.get(i);
+                            if (message.sources().stream().anyMatch(source -> source.fragmentId().equals(fragment.fragmentId()))) {
+                                warnings = SourcePresentation.warningDetails(message.text()); break;
+                            }
+                        }
+                    }
+                    showSourceCard(panel, context, fragment, warnings);
+                });
             }
             sourceContent.layout(true, true);
             scroller.setMinSize(sourceContent.computeSize(Math.max(200, scroller.getClientArea().width), SWT.DEFAULT));
@@ -157,6 +167,7 @@ public final class AssistantPanel implements PanelFactory {
                 session.get().send(question, event -> {
                     boolean terminal = event.type().equals("done") || event.type().equals("error");
                     if (terminal ? !request.finished.compareAndSet(false, true) : request.finished.get()) return;
+                    request.sources = List.copyOf(event.sources());
                     if (event.type().equals("token")) {
                         if (!request.token.cancelled()) synchronized (request.draft) { request.draft.append(event.text()); }
                         queueRedraw.run(); return;
@@ -220,7 +231,7 @@ public final class AssistantPanel implements PanelFactory {
         updateActions.run(); redraw.run(); return panel;
     }
 
-    private static void showSourceCard(Composite parent, Api.Context context, Api.Fragment fragment) {
+    private static void showSourceCard(Composite parent, Api.Context context, Api.Fragment fragment, String answerWarnings) {
         UiHost host = UiHost.find(parent); UiTheme theme = host.theme();
         Shell card = new Shell(parent.getShell(), SWT.DIALOG_TRIM | SWT.RESIZE); theme.decorate(card);
         Display cardDisplay = card.getDisplay(); card.setText("Источник: " + fragment.title());
@@ -233,7 +244,8 @@ public final class AssistantPanel implements PanelFactory {
             + "\n\nТочные привязки:\n" + Json.stringify(fragment.sourceRefs())
             + "\n\nspan:\n" + Json.stringify(fragment.fields().get("span"))
             + "\n\nКачество и предупреждения:\n" + Json.stringify(fragment.fields().get("quality"))
-            + "\n" + Json.stringify(fragment.fields().get("warnings")));
+            + "\n" + Json.stringify(fragment.fields().get("warnings"))
+            + (answerWarnings.isBlank() ? "" : "\n\nПолные ограничения ответа:\n" + answerWarnings));
         Label notice = new Label(card, SWT.WRAP); theme.apply(notice);
         notice.setText("Windows предложит программу для оригинала. Внешняя программа может создавать записи. Точное место остаётся в карточке; переход к нему не гарантируется.");
         notice.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -274,6 +286,7 @@ public final class AssistantPanel implements PanelFactory {
         final String id; final Api.CancellationToken token = new Api.CancellationToken();
         final AtomicBoolean errorShown = new AtomicBoolean();
         final AtomicBoolean finished = new AtomicBoolean();
+        volatile List<Api.Fragment> sources = List.of();
         final StringBuilder draft = new StringBuilder(); Request(String id) { this.id = id; }
     }
 
@@ -349,15 +362,6 @@ public final class AssistantPanel implements PanelFactory {
             row.setVisible(false); ((GridData)row.getLayoutData()).exclude = true;
             row.getParent().layout(true, true);
         }
-    }
-    private static String locator(Api.SourceRef ref) {
-        Map<String,Object> f = ref.fields();
-        return switch (ref.kind()) {
-            case "pdf_region" -> "страница " + f.get("page") + ", область " + f.get("bbox");
-            case "sheet_range" -> "лист " + f.get("sheet") + ", диапазон " + f.get("range");
-            case "ooxml_node", "drawing" -> "часть " + f.get("part") + ", XPath " + f.get("xpath") + " (для производного формата — в производном файле)";
-            default -> "артефакт " + ref.artifactId();
-        };
     }
     private static String escape(String value) {
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");

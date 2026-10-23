@@ -112,6 +112,7 @@ public final class AssistantInferenceTest {
                 session.close(); check(session.history().isEmpty(), "history cleared on close");
             }
         }
+        uncitedNormativeWithSources(fixtures);
         generalAnswers(fixtures);
         invalidGeneralAnswers(fixtures);
         legacyPromptMarkers(fixtures);
@@ -147,6 +148,30 @@ public final class AssistantInferenceTest {
         System.out.println("Assistant/inference checks passed: " + assertions);
     }
 
+    private static void uncitedNormativeWithSources(Path fixtures) throws Exception {
+        for (String output : List.of("", "Неподтверждённое правило.")) {
+            Path root = fixtures.resolve(output.isEmpty() ? "normative-empty" : "normative-uncited");
+            Files.createDirectories(root);
+            try (Api.Context context = context(root, new FakePlatform(root, "good"))) {
+                context.register(Api.SearchServiceV1.class, search(new AtomicInteger()));
+                context.register(Api.InferenceServiceV1.class, new Api.InferenceServiceV1() {
+                    public Api.Result<Api.ProviderInfo> availability() { return Api.Result.ok(new Api.ProviderInfo("mock", "test", 8192, 1, 1)); }
+                    public CompletionStage<Api.Result<Void>> generate(Api.GenerationRequest request, java.util.function.Consumer<Api.GenerationEvent> sink, Api.CancellationToken token) {
+                        sink.accept(new Api.GenerationEvent("token", request.requestId(), output, null));
+                        return CompletableFuture.completedFuture(Api.Result.ok(null));
+                    }
+                });
+                new AssistantModule().register(context);
+                var session = context.require(Api.AssistantSessionServiceV1.class);
+                var result = session.send("Какие правила установлены?", event -> {}, new Api.CancellationToken()).toCompletableFuture().get(3, TimeUnit.SECONDS);
+                check(result.success(), "An uncited normative response completes with an explicit limitation");
+                var answer = session.history().getLast();
+                check(answer.text().startsWith("По найденным фрагментам") && !answer.text().contains("не найдены фрагменты"), "Generation failure is distinct from missing retrieval evidence");
+                check(answer.sources().size() == 1 && !answer.text().contains("[source:"), "Found sources remain available without fabricated citations");
+            }
+        }
+    }
+
     private static void generalAnswers(Path fixtures) throws Exception {
         String firstPart = "Практика обычно включает ", secondPart = "инструктаж и отчёт.";
         String body = firstPart + secondPart;
@@ -177,7 +202,7 @@ public final class AssistantInferenceTest {
                 });
                 new AssistantModule().register(context);
                 var session = context.require(Api.AssistantSessionServiceV1.class);
-                var pending = session.send("Какие правила прохождения практики установлены?", events::add, new Api.CancellationToken()).toCompletableFuture();
+                var pending = session.send("Объясни общие правила прохождения практики.", events::add, new Api.CancellationToken()).toCompletableFuture();
                 check(streamed.await(3, TimeUnit.SECONDS), "a general answer streams before the model completes");
                 check(!pending.isDone() && events.stream().noneMatch(event -> event.type().equals("done")), "the streamed general answer does not prematurely finish the request");
                 List<String> tokens = events.stream().filter(event -> event.type().equals("token")).map(Api.AssistantEvent::text).filter(text -> !text.isEmpty()).toList();
@@ -216,7 +241,7 @@ public final class AssistantInferenceTest {
                 new AssistantModule().register(context);
                 var session = context.require(Api.AssistantSessionServiceV1.class);
                 List<Api.AssistantEvent> events = new ArrayList<>();
-                var result = session.send("Правила практики?", events::add, new Api.CancellationToken()).toCompletableFuture().get(3, TimeUnit.SECONDS);
+                var result = session.send("Общие правила практики?", events::add, new Api.CancellationToken()).toCompletableFuture().get(3, TimeUnit.SECONDS);
                 check(!result.success() && result.error().code().equals("EMPTY_RESPONSE"), "blank output or reference-only general output cannot become a useful answer");
                 check(events.getLast().type().equals("error") && events.stream().noneMatch(event -> event.type().equals("done")), "invalid general output never becomes a completed answer");
                 check(session.history().size() == 2 && session.history().getLast().state().equals("error") && session.history().getLast().sources().isEmpty(), "failed general generation is retained as a source-free error");

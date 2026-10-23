@@ -1,1 +1,1 @@
-{"id":"inference","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.inference.InferenceModule","requires":[],"provides":["InferenceServiceV1"]}
+{"id":"inference","version":"1.0","contractVersion":"1.0","serviceFactory":"ai.enterprise.inference.InferenceModule","requires":[],"provides":["InferenceServiceV1","EvidenceModelServiceV1"]}
