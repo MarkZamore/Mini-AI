@@ -1,0 +1,317 @@
+{
+  "architecture": "windows-x64",
+  "files": [
+    {
+      "path": "evidence/encoder.onnx",
+      "sha256": "c399f8e018630338cdb624e78806f5e7c1616b8bb86b86834d20c396bddb8a5e"
+    },
+    {
+      "path": "evidence/fragments.jsonl",
+      "sha256": "7e8143b7bcdbc6c7cdc1c4e7f0819ef5f92100991a75e04206bcede2f88f939e"
+    },
+    {
+      "path": "evidence/index.json",
+      "sha256": "22d518a274cac0437d995993ed340029f53f0f813c3cce4bae423866a9c06b22"
+    },
+    {
+      "path": "evidence/tokenizers/embedder/sentencepiece.bpe.model",
+      "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+    },
+    {
+      "path": "evidence/tokenizers/embedder/special_tokens_map.json",
+      "sha256": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7"
+    },
+    {
+      "path": "evidence/tokenizers/embedder/tokenizer.json",
+      "sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+    },
+    {
+      "path": "evidence/tokenizers/embedder/tokenizer_config.json",
+      "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b"
+    },
+    {
+      "path": "evidence/vectors.f32",
+      "sha256": "e880d8987b8d117c4e8f4206d1eef4be2196e0f29c551d43e74b4376f9049de4"
+    },
+    {
+      "path": "inference-worker.exe",
+      "sha256": "90c09a1bcac6ed3eea74f9cf4baf8a8da7ceb7847e3d69334242bc866acf86f6"
+    },
+    {
+      "path": "licenses/Abseil-LICENSE.txt",
+      "sha256": "f54fff0b905df5b3464527c652a30e903b172d6dcab4d89b5e6f105d5e4a4603"
+    },
+    {
+      "path": "licenses/CUDA-EULA.html",
+      "sha256": "c0e213c4c53fbc9b29dc3e8cea0fb06b0498a28eca01858d3611d975dd70f585"
+    },
+    {
+      "path": "licenses/CUDA-REDISTRIBUTION-NOTICE.txt",
+      "sha256": "4565a10ea607d3d5b1fd295db155e0ecb769a559f2d1852a5f2b6959727da57f"
+    },
+    {
+      "path": "licenses/E5-MIT.txt",
+      "sha256": "904dc4d8749877f1dba1cda48200d2462dccbeb7c134d5e4ef6fa75e0198c8fe"
+    },
+    {
+      "path": "licenses/E5-MODEL-CARD.md",
+      "sha256": "0038de97aee16258cecbad7ffda4b4febd6953e747a00e0ddbc8e6ed241e9c1c"
+    },
+    {
+      "path": "licenses/llama.cpp-MIT.txt",
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    {
+      "path": "licenses/LLVM-OpenMP.txt",
+      "sha256": "fdad1758a9e1f9d5a81e18879b3406772115edc92c24bfa36b70c654f325e8e4"
+    },
+    {
+      "path": "licenses/Microsoft-VC-Runtime/DISTRIBUTION-RIGHTS.txt",
+      "sha256": "ef5f96e152d540019fc6804be0081d52244d875a10e5afcfcceca5423a622700"
+    },
+    {
+      "path": "licenses/Microsoft-VC-Runtime/LICENSE.txt",
+      "sha256": "c15f0776c632b97bc3b01dbc3090ae347bb406235ae7132601bbaba91624e4fc"
+    },
+    {
+      "path": "licenses/Microsoft-VC-Runtime/VS2026-Community.docx",
+      "sha256": "02ac07637f4a513a807cd3721c7620433fc483bc049d25784b0c10c54b05e1fb"
+    },
+    {
+      "path": "licenses/Microsoft-VC-Runtime/VS2026-Community.txt",
+      "sha256": "ef616cae10d627cdc97238749de23ba1fcae68c329879c7b63ec65bfadc89c0b"
+    },
+    {
+      "path": "licenses/MODEL-NOTICES.md",
+      "sha256": "15f65fc012fac9707fdfce53ccff1028c7d41c6af5ed2fd10de2197e6517437c"
+    },
+    {
+      "path": "licenses/NOTICE.txt",
+      "sha256": "2244bb0bfbec669a18935598c105452beae4ff6845bd5d3379a0fe58849c8b4f"
+    },
+    {
+      "path": "licenses/ONNX-Runtime-LICENSE.txt",
+      "sha256": "c250d6278f0b47a6439fb7592b08b58a55eb9f535aa49a1db63211c3f982b674"
+    },
+    {
+      "path": "licenses/ONNX-Runtime-ThirdPartyNotices.txt",
+      "sha256": "c53a76501ef60db6f865f20599f220761201ac4057683acefdab37d861b86622"
+    },
+    {
+      "path": "licenses/Qwen3.5-4B-LICENSE.txt",
+      "sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a"
+    },
+    {
+      "path": "licenses/SentencePiece-LICENSE.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "runtime/concrt140.dll",
+      "sha256": "54716f0738af891f283d213b5c8d11b25896bb8ee3097d301eae718560cf974e"
+    },
+    {
+      "path": "runtime/cublas64_12.dll",
+      "sha256": "e40202fe4223c1cd2d2dce7beec59e1ed61c7801bd827309183be9b50e358f4c"
+    },
+    {
+      "path": "runtime/cublaslt64_12.dll",
+      "sha256": "2a896460bef60ed57ef32b0875812f355a6984e671d638bb632f5e8c1d7a831f"
+    },
+    {
+      "path": "runtime/cudart64_12.dll",
+      "sha256": "d28e42265da7462162a54da6b7a99ea4fa2caf8139d862bb500db875d0b32dfc"
+    },
+    {
+      "path": "runtime/ggml-base.dll",
+      "sha256": "0a259689ea3c105a8122159eb97fb53733f2531fadd3e9739689961cdab27600"
+    },
+    {
+      "path": "runtime/ggml-cpu-haswell.dll",
+      "sha256": "d33deb9bf3dd25427404f0f94a13c6b3da92b9b57b794199a9f354c3a327efb6"
+    },
+    {
+      "path": "runtime/ggml-cpu-x64.dll",
+      "sha256": "7c9df996db7fe98510571524e3e62dd267a4034350185014814418dbad3c25ea"
+    },
+    {
+      "path": "runtime/ggml-cuda.dll",
+      "sha256": "152681bf91cf4bca0fe5939108645a8f83cbcc61982758e6974004cb89c4c8d5"
+    },
+    {
+      "path": "runtime/ggml.dll",
+      "sha256": "2649a5d914934188cccbe2c58e4642d2d4408bcda0f7068d58390686bd7ea62f"
+    },
+    {
+      "path": "runtime/libomp.dll",
+      "sha256": "a12116ba72d1d6820407cf30be23da04ce79d6bb8a71a5ee71759c5a1faa6f1c"
+    },
+    {
+      "path": "runtime/llama.dll",
+      "sha256": "aacb073c9c0d30090dd3e56f49772545452ccc4fd311efbfdb7d1bba7bbb0bda"
+    },
+    {
+      "path": "runtime/msvcp140.dll",
+      "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca"
+    },
+    {
+      "path": "runtime/msvcp140_1.dll",
+      "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982"
+    },
+    {
+      "path": "runtime/msvcp140_2.dll",
+      "sha256": "d50d7883f20d1dc6191768d3746f52dd9cac89c346ffaed5be1f110c2f34a838"
+    },
+    {
+      "path": "runtime/msvcp140_atomic_wait.dll",
+      "sha256": "3d0cbfaa1bf3eecf5a3f4491d2960ee803cb994f30292c6adc4a07c498f60e2b"
+    },
+    {
+      "path": "runtime/msvcp140_codecvt_ids.dll",
+      "sha256": "8a65c7596ef2e6938731f5a1058e7e40145b6d97967cc649231a076b9a608d78"
+    },
+    {
+      "path": "runtime/onnxruntime.dll",
+      "sha256": "0c42dc4e278f0968fdf9ebf1b1e54a74c657a9942e70803e453c91993451cf4c"
+    },
+    {
+      "path": "runtime/vccorlib140.dll",
+      "sha256": "09f93d5ff96ae09767f3e1af3cdd43a5a58f2598654fc63089429bb6f9f4737f"
+    },
+    {
+      "path": "runtime/vcruntime140.dll",
+      "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7"
+    },
+    {
+      "path": "runtime/vcruntime140_1.dll",
+      "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"
+    },
+    {
+      "path": "runtime/vcruntime140_threads.dll",
+      "sha256": "40f39e8cee5f5a531b4010e18b807e8fe265b908dc58f959ecb7ebc6ea6cb11a"
+    },
+    {
+      "path": "weights/Qwen3.5-4B-baseline-Q6_K.gguf",
+      "sha256": "3acaea00a98af4e8cb7195259d7dd903b0cc749dff61a8cf47274c9a91ed02f6"
+    }
+  ],
+  "precision": "Q6_K",
+  "protocol": "enterpriseai.inference.v1",
+  "revision": "620d2225cc436ab0b001e3200e590e3b286ef9ab+b11669-win-cuda12.4-wrapper-v2",
+  "engine": "llama.cpp",
+  "weights": {
+    "sha256": "3acaea00a98af4e8cb7195259d7dd903b0cc749dff61a8cf47274c9a91ed02f6",
+    "path": "weights/Qwen3.5-4B-baseline-Q6_K.gguf"
+  },
+  "backend": {
+    "device": 0,
+    "kind": "cuda",
+    "reserveFreeGpuMemoryBytes": 3221225472,
+    "gpuMemoryBudgetBytes": 8589934592
+  },
+  "supportedIsa": [
+    "x86-64"
+  ],
+  "threads": 12,
+  "contextTokens": 16384,
+  "maxProcessMemoryBytes": 8589934592,
+  "executable": "inference-worker.exe",
+  "schemaVersion": 2,
+  "dependencies": [
+    {
+      "sha256": "54716f0738af891f283d213b5c8d11b25896bb8ee3097d301eae718560cf974e",
+      "path": "runtime/concrt140.dll"
+    },
+    {
+      "sha256": "e40202fe4223c1cd2d2dce7beec59e1ed61c7801bd827309183be9b50e358f4c",
+      "path": "runtime/cublas64_12.dll"
+    },
+    {
+      "sha256": "2a896460bef60ed57ef32b0875812f355a6984e671d638bb632f5e8c1d7a831f",
+      "path": "runtime/cublaslt64_12.dll"
+    },
+    {
+      "sha256": "d28e42265da7462162a54da6b7a99ea4fa2caf8139d862bb500db875d0b32dfc",
+      "path": "runtime/cudart64_12.dll"
+    },
+    {
+      "sha256": "0a259689ea3c105a8122159eb97fb53733f2531fadd3e9739689961cdab27600",
+      "path": "runtime/ggml-base.dll"
+    },
+    {
+      "sha256": "d33deb9bf3dd25427404f0f94a13c6b3da92b9b57b794199a9f354c3a327efb6",
+      "path": "runtime/ggml-cpu-haswell.dll"
+    },
+    {
+      "sha256": "7c9df996db7fe98510571524e3e62dd267a4034350185014814418dbad3c25ea",
+      "path": "runtime/ggml-cpu-x64.dll"
+    },
+    {
+      "sha256": "152681bf91cf4bca0fe5939108645a8f83cbcc61982758e6974004cb89c4c8d5",
+      "path": "runtime/ggml-cuda.dll"
+    },
+    {
+      "sha256": "2649a5d914934188cccbe2c58e4642d2d4408bcda0f7068d58390686bd7ea62f",
+      "path": "runtime/ggml.dll"
+    },
+    {
+      "sha256": "a12116ba72d1d6820407cf30be23da04ce79d6bb8a71a5ee71759c5a1faa6f1c",
+      "path": "runtime/libomp.dll"
+    },
+    {
+      "sha256": "aacb073c9c0d30090dd3e56f49772545452ccc4fd311efbfdb7d1bba7bbb0bda",
+      "path": "runtime/llama.dll"
+    },
+    {
+      "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982",
+      "path": "runtime/msvcp140_1.dll"
+    },
+    {
+      "sha256": "d50d7883f20d1dc6191768d3746f52dd9cac89c346ffaed5be1f110c2f34a838",
+      "path": "runtime/msvcp140_2.dll"
+    },
+    {
+      "sha256": "3d0cbfaa1bf3eecf5a3f4491d2960ee803cb994f30292c6adc4a07c498f60e2b",
+      "path": "runtime/msvcp140_atomic_wait.dll"
+    },
+    {
+      "sha256": "8a65c7596ef2e6938731f5a1058e7e40145b6d97967cc649231a076b9a608d78",
+      "path": "runtime/msvcp140_codecvt_ids.dll"
+    },
+    {
+      "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca",
+      "path": "runtime/msvcp140.dll"
+    },
+    {
+      "sha256": "0c42dc4e278f0968fdf9ebf1b1e54a74c657a9942e70803e453c91993451cf4c",
+      "path": "runtime/onnxruntime.dll"
+    },
+    {
+      "sha256": "09f93d5ff96ae09767f3e1af3cdd43a5a58f2598654fc63089429bb6f9f4737f",
+      "path": "runtime/vccorlib140.dll"
+    },
+    {
+      "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e",
+      "path": "runtime/vcruntime140_1.dll"
+    },
+    {
+      "sha256": "40f39e8cee5f5a531b4010e18b807e8fe265b908dc58f959ecb7ebc6ea6cb11a",
+      "path": "runtime/vcruntime140_threads.dll"
+    },
+    {
+      "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+      "path": "runtime/vcruntime140.dll"
+    }
+  ],
+  "minFreeMemoryBytes": 9663676416,
+  "evidence": {
+    "embedder": {
+      "path": "evidence/encoder.onnx",
+      "sha256": "c399f8e018630338cdb624e78806f5e7c1616b8bb86b86834d20c396bddb8a5e"
+    },
+    "tokenizerDirectory": "evidence/tokenizers",
+    "index": {
+      "path": "evidence/index.json",
+      "sha256": "22d518a274cac0437d995993ed340029f53f0f813c3cce4bae423866a9c06b22"
+    }
+  }
+}

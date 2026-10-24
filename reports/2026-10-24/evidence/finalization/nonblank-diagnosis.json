@@ -1,0 +1,226 @@
+{
+  "schema": "teacher-kz-nonblank-before-after-v1",
+  "status": "NONBLANK_OPERATIONAL_PASS_TEACHER_RELEVANCE_GAIN_NOT_DEMONSTRATED",
+  "automatic": true,
+  "human_review": false,
+  "derivation_handoff_sha256": "fbd624532ed5b963b5aa42591a7210d150c96a33394b6744e37f1f31f8ecceb8",
+  "staging_receipt_sha256": "71b89790aa555a0f8a233d0da907797861417086f364bf4390c81c90f68b6fba",
+  "raw_receipt_sha256": "4d065af33f6b43f0a6252c588513e7576b050ee3701d5e3b8021fd4497ce00bb",
+  "exact_prior_questions_sha256": "2f0d79a52761b8db198889175968cbe8ed0d1777f10ac8ebdb0e1ff7a5fbafa7",
+  "shared_classpath_inventory_sha256": "72f67d3c07bfae4a11768f740927b8db0c0a1bcd060223959b57f9f5ce5f8429",
+  "source_search_sha256": "20fe421b11bc4e3056ed78f2f6b7ec0e26dd0480432176dd468ed2b52aef750e",
+  "runtimes": [
+    {
+      "variant": "ordinary",
+      "runtime": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\runtime-nonblank-ordinary-v1",
+      "manifest_sha256": "a36a2ee736308aaa698184e4fef8b103d4c6f15dfc7958a9a988b9e8bc2436d0",
+      "file_count": 6811,
+      "derived_assets": [
+        {
+          "path": "evidence/fragments.jsonl",
+          "sha256": "06458ff1ac79279e5b912334eb56ad09de8dfa7b8fc66e29d5e225f7845fd4f2",
+          "bytes": 22650002
+        },
+        {
+          "path": "evidence/index.json",
+          "sha256": "188b09f24b36091824b4e386dc7f5049756d8eb2d5b0af13320ee3f17740e199",
+          "bytes": 1930
+        },
+        {
+          "path": "evidence/vectors.f32",
+          "sha256": "dcff8761cd6cbe30d9ea00602a117164e94899e25c0a2b8fcd668b52792cb604",
+          "bytes": 162696192
+        }
+      ],
+      "old_rows": 106139,
+      "new_rows": 105922,
+      "generation_profile_unchanged": true
+    },
+    {
+      "variant": "foundation",
+      "runtime": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\runtime-nonblank-foundation-v1",
+      "manifest_sha256": "210dfae8e5b4c9a0b67eb746fcec01515ed37c67a0ab72d87f9891c4333d6217",
+      "file_count": 6811,
+      "derived_assets": [
+        {
+          "path": "evidence/fragments.jsonl",
+          "sha256": "06458ff1ac79279e5b912334eb56ad09de8dfa7b8fc66e29d5e225f7845fd4f2",
+          "bytes": 22650002
+        },
+        {
+          "path": "evidence/index.json",
+          "sha256": "0d05055fe91bea9c6e5c18993a48175532700e50ab643406bc320c4b1d5a859d",
+          "bytes": 1930
+        },
+        {
+          "path": "evidence/vectors.f32",
+          "sha256": "286bc8d0495fdf67920ceb03c0c836651c41e8317b46f58a785bf38d9f3d184c",
+          "bytes": 162696192
+        }
+      ],
+      "old_rows": 106139,
+      "new_rows": 105922,
+      "generation_profile_unchanged": true
+    }
+  ],
+  "variants": {
+    "ordinary": {
+      "old_raw_sha256": "414f3862e0a980b24945c44ffa1a59cc7c4a18999976bb6099f3c76b1a13e06c",
+      "new_raw_sha256": "6e87c6515e14a250f6e4635ad053de0b184e9674ce9082ff810104926b285d86",
+      "cases": [
+        {
+          "id": "retrieval-dev-v1-plan_responsibility-kz",
+          "before_blanks": 34,
+          "after_blanks": 0,
+          "old_nonblank_retained_in_same_order_as_new_prefix": true,
+          "retained_scores_bitwise_equal_json_float": true,
+          "required_norms": {
+            "responsibility": {
+              "before_rank": null,
+              "after_rank": null
+            },
+            "checker": {
+              "before_rank": null,
+              "after_rank": null
+            }
+          },
+          "after_teacher_document_hits": [],
+          "after_seconds": 8.6683936
+        },
+        {
+          "id": "retrieval-dev-v1-plan_review-kz",
+          "before_blanks": 0,
+          "after_blanks": 0,
+          "old_nonblank_retained_in_same_order_as_new_prefix": true,
+          "retained_scores_bitwise_equal_json_float": true,
+          "required_norms": {
+            "review": {
+              "before_rank": null,
+              "after_rank": null
+            }
+          },
+          "after_teacher_document_hits": [],
+          "after_seconds": 0.0431962
+        },
+        {
+          "id": "action-dev-v1-08",
+          "before_blanks": 0,
+          "after_blanks": 0,
+          "old_nonblank_retained_in_same_order_as_new_prefix": true,
+          "retained_scores_bitwise_equal_json_float": true,
+          "required_norms": {
+            "responsibility": {
+              "before_rank": null,
+              "after_rank": null
+            },
+            "checker": {
+              "before_rank": null,
+              "after_rank": null
+            },
+            "review": {
+              "before_rank": null,
+              "after_rank": null
+            }
+          },
+          "after_teacher_document_hits": [
+            {
+              "rank": 27,
+              "fragment_id": "aeb4b465b3cd3367c3e53acddb01cf684b85304eef83e3d41887cb6000399c31",
+              "text": "индивидуальный план работы преподавателя"
+            }
+          ],
+          "after_seconds": 0.0466929
+        }
+      ]
+    },
+    "foundation": {
+      "old_raw_sha256": "21e4a7c0145ca182bad2fc78d0ce3b6991aae38b0c3d839a6626f8768c6c8097",
+      "new_raw_sha256": "b87c7bf89f76869eb8c161f977b513e0fa0c2d5a75b005dbda0f2904be690c4f",
+      "cases": [
+        {
+          "id": "retrieval-dev-v1-plan_responsibility-kz",
+          "before_blanks": 15,
+          "after_blanks": 0,
+          "old_nonblank_retained_in_same_order_as_new_prefix": true,
+          "retained_scores_bitwise_equal_json_float": true,
+          "required_norms": {
+            "responsibility": {
+              "before_rank": null,
+              "after_rank": null
+            },
+            "checker": {
+              "before_rank": null,
+              "after_rank": null
+            }
+          },
+          "after_teacher_document_hits": [],
+          "after_seconds": 8.6530247
+        },
+        {
+          "id": "retrieval-dev-v1-plan_review-kz",
+          "before_blanks": 48,
+          "after_blanks": 0,
+          "old_nonblank_retained_in_same_order_as_new_prefix": true,
+          "retained_scores_bitwise_equal_json_float": true,
+          "required_norms": {
+            "review": {
+              "before_rank": null,
+              "after_rank": null
+            }
+          },
+          "after_teacher_document_hits": [],
+          "after_seconds": 0.0404989
+        },
+        {
+          "id": "action-dev-v1-08",
+          "before_blanks": 0,
+          "after_blanks": 0,
+          "old_nonblank_retained_in_same_order_as_new_prefix": true,
+          "retained_scores_bitwise_equal_json_float": true,
+          "required_norms": {
+            "responsibility": {
+              "before_rank": 62,
+              "after_rank": 62
+            },
+            "checker": {
+              "before_rank": null,
+              "after_rank": null
+            },
+            "review": {
+              "before_rank": null,
+              "after_rank": null
+            }
+          },
+          "after_teacher_document_hits": [
+            {
+              "rank": 62,
+              "fragment_id": "db4925d812010d68fa1bc7223e95eed3ec95b0a52fa89bee5bc96625eaf94917",
+              "text": "\t\t7. Ответственность за своевременное составление, оформление и выполнение индивидуального плана несут преподаватель и заведующий кафедрой. "
+            }
+          ],
+          "after_seconds": 0.0409435
+        }
+      ]
+    }
+  },
+  "canonical_fragments_crosschecked": 242,
+  "retrieve_calls": 6,
+  "generation_requests": 0,
+  "session_requests": 0,
+  "full28_runs": 0,
+  "lease_released": true,
+  "conclusions": [
+    "Blank candidates removed beforetopk: zero whitespace-only canonical body in all six raw64 pools.",
+    "All retained pre-filter nonblank results preserve scores and relative order; filter introduces no evidence-weight or query change.",
+    "Teacher normative relevance remains unchanged: ordinary requirednorm0/6; foundation1/6(action08 responsibility62).",
+    "For both encoders neither ordinary teacher responsibility nor review query retrieves the requested teacher-plan clauses in raw64 even after blank removal.",
+    "Index defect is real and repaired operationally, but is not a sufficient explanation or demonstrated remedy for the cross-language teacher miss."
+  ],
+  "limitations": [
+    "Same three pre-existing open development queries, not full heldout quality acceptance.",
+    "No Source/Search/API/query rewrite/weights/threshold/generation-profile changes; no new training or embeddings.",
+    "RuntimeDB aliases are an authorized research-only readonly exception, never a writable user portable installation.",
+    "No appEXE, ingestion, UI or generator invoked; fullsevenJVM WindowsJob evidence path only.",
+    "No full retrieval28 or top128/256 expansion by this reviewer."
+  ]
+}

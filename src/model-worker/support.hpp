@@ -179,8 +179,15 @@ inline uint64_t available_memory() {
     if (!GlobalMemoryStatusEx(&status)) throw Failure("INTERNAL_ERROR","Cannot query physical memory");
     return status.ullAvailPhys;
 }
+struct AdapterSpec { std::string path,sha256; };
+// Pure manifest binding, shared by package validation and model-free regressions.
+AdapterSpec adapter_spec(const Json & manifest,const std::map<std::string,std::string> & inventory);
+inline int32_t adapter_prepare_token(int32_t bos,int32_t vocabulary_size) {
+    if(vocabulary_size<1) throw Failure("INCOMPATIBLE_MODEL","Adapter graph preparation requires a nonempty vocabulary");
+    return bos>=0 && bos<vocabulary_size ? bos : 0;
+}
 struct Package {
-    std::wstring root,weights;
+    std::wstring root,weights,adapter;
     std::vector<Handle> open_files;
     uint32_t context=0,threads=0;
     uint64_t minimum_memory=0,maximum_memory=0;

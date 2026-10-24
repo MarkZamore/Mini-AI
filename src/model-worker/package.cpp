@@ -83,6 +83,35 @@ static bool haswell_isa() {
     __cpuid(cpu,int(0x80000000u));if(unsigned(cpu[0])<0x80000001u)return false;
     __cpuid(cpu,int(0x80000001u));return (unsigned(cpu[2])&(1u<<5))!=0;
 }
+AdapterSpec adapter_spec(const Json & data,const std::map<std::string,std::string> & inventory) {
+    try {
+    if (!data.contains("adapter")) return {};
+    if (integer(data,"schemaVersion",1,2)!=2) throw Failure("INCOMPATIBLE_MODEL","Adapters require package schema 2");
+    const auto & asset=data.at("adapter");
+    keys(asset,{"path","sha256","baseWeightsSha256"});
+    auto path=string(asset,"path",32760),hash=string(asset,"sha256",64);
+    (void)relative_path(path);
+    const std::string prefix="adapters/";
+    if (path.rfind(prefix,0)!=0 || path.size()<prefix.size()+6 || path.size()>prefix.size()+133 ||
+        path.substr(path.size()-5)!=".gguf" || path.find('/',prefix.size())!=std::string::npos)
+        throw Failure("INCOMPATIBLE_MODEL","Adapter requires a canonical adapters/*.gguf path");
+    const auto filename=path.substr(prefix.size(),path.size()-prefix.size()-5);
+    if (filename.empty() || filename.size()>128 || !((filename[0]>='a'&&filename[0]<='z')||(filename[0]>='0'&&filename[0]<='9')) ||
+        std::any_of(filename.begin(),filename.end(),[](char c){return !((c>='a'&&c<='z')||(c>='0'&&c<='9')||c=='.'||c=='_'||c=='-');}))
+        throw Failure("INCOMPATIBLE_MODEL","Adapter requires a canonical lowercase filename");
+    const auto & base=data.at("weights");
+    const auto base_path=string(base,"path",32760),base_hash=string(base,"sha256",64);
+    const auto binding=string(asset,"baseWeightsSha256",64);
+    if (!hash_text(hash) || !hash_text(binding) || binding!=base_hash || path==base_path ||
+        !inventory.count(base_path) || inventory.at(base_path)!=base_hash ||
+        !inventory.count(path) || inventory.at(path)!=hash)
+        throw Failure("INCOMPATIBLE_MODEL","Adapter and exact base weights must match the hashed inventory");
+    return {path,hash};
+    } catch(const Failure & failure) {
+        if(failure.code=="INVALID_REQUEST") throw Failure("INCOMPATIBLE_MODEL",failure.what());
+        throw;
+    }
+}
 Package::Package(const std::atomic<bool> & stop) {
     cpu_avx2=haswell_isa();
 #ifdef WORKER_TARGET_AVX2
@@ -116,7 +145,7 @@ Package::Package(const std::atomic<bool> & stop) {
     if (schema_version==1)
         keys(data,{"schemaVersion","protocol","executable","engine","revision","architecture","supportedIsa","weights","files","precision","contextTokens","threads","minFreeMemoryBytes","maxProcessMemoryBytes"});
     else {
-        Json copy=data; copy.erase("evidence");
+        Json copy=data; copy.erase("evidence"); copy.erase("adapter");
         keys(copy,{"schemaVersion","protocol","executable","engine","revision","architecture","supportedIsa","weights","files","precision","contextTokens","threads","minFreeMemoryBytes","maxProcessMemoryBytes","backend","dependencies"});
         auto & profile=data.at("backend");
         keys(profile,{"kind","device","gpuMemoryBudgetBytes","reserveFreeGpuMemoryBytes"});
@@ -188,6 +217,15 @@ Package::Package(const std::atomic<bool> & stop) {
         open_files.push_back(std::move(handle));
     }
     if (!found_self || !found_weights) throw Failure("INCOMPATIBLE_MODEL","Executable and weights must be inventoried");
+    const auto selected_adapter=adapter_spec(data,inventory);
+    if (!selected_adapter.path.empty()) {
+        auto handle=open(selected_adapter.path);
+        std::array<char,4> magic{}; DWORD n=0;
+        if (!ReadFile(handle.value,magic.data(),4,&n,nullptr) || n!=4 || std::string(magic.data(),4)!="GGUF")
+            throw Failure("INCOMPATIBLE_MODEL","Adapter requires actual GGUF contents");
+        adapter=final_path(handle.value);
+        open_files.push_back(std::move(handle));
+    }
     std::set<std::wstring> allowed_dlls;
     if (schema_version==2) {
         if (!data["dependencies"].is_array() || data["dependencies"].size()>64)

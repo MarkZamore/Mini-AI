@@ -1,0 +1,35 @@
+{
+  "scope": "Isolated CPU-only classical research dependencies; existing Torch/NumPy unchanged",
+  "wheels": [
+    {
+      "name": "cloudpickle-3.1.2-py3-none-any.whl",
+      "bytes": 22228,
+      "sha256": "9acb47f6afd73f60dc1df93bb801b472f05ff42fa6c84167d25cb206be1fbf4a"
+    },
+    {
+      "name": "joblib-1.6.0-py3-none-any.whl",
+      "bytes": 306115,
+      "sha256": "3dbbf9f6e4b592a2357b854608e980fe6390d131d7a82f011a377ef2ebef7aba"
+    },
+    {
+      "name": "narwhals-2.27.1-py3-none-any.whl",
+      "bytes": 483211,
+      "sha256": "d057df13f5852b8e157596e82eb5e955fad267425df5e420e0ee9863da483b31"
+    },
+    {
+      "name": "scikit_learn-1.9.1-cp312-cp312-win_amd64.whl",
+      "bytes": 8262238,
+      "sha256": "4b59abb30618121cc46b45972d6bf53a7128b4df4cd346c6ca6f4d5f9031e49c"
+    },
+    {
+      "name": "scipy-1.18.1-cp312-cp312-win_amd64.whl",
+      "bytes": 36658278,
+      "sha256": "5e4d44984abc0020154ea81b247adeddcc3ac5527b975ff798bd1ba0adc513c2"
+    },
+    {
+      "name": "threadpoolctl-3.7.0-py3-none-any.whl",
+      "bytes": 26362,
+      "sha256": "cd8b60b5641b45c67bbf73c64c843235fc2d8a480c87389f52f5dbee893b86be"
+    }
+  ]
+}

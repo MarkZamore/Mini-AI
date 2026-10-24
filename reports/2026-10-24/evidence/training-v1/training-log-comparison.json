@@ -1,0 +1,110 @@
+[
+  {
+    "run": "models/e5/ordinary",
+    "steps": 23,
+    "first": {
+      "step": 1,
+      "cursor": 4,
+      "loss": 0.3973098546266556,
+      "gradient_norm": 4.836339950561523,
+      "learning_rate": 1.9130434782608697e-05
+    },
+    "last": {
+      "step": 23,
+      "cursor": 91,
+      "loss": 0.0444352850317955,
+      "gradient_norm": 1.442196249961853,
+      "learning_rate": 0.0
+    }
+  },
+  {
+    "run": "models/e5/hard",
+    "steps": 23,
+    "first": {
+      "step": 1,
+      "cursor": 4,
+      "loss": 0.5391405299305916,
+      "gradient_norm": 6.209685802459717,
+      "learning_rate": 1.9130434782608697e-05
+    },
+    "last": {
+      "step": 23,
+      "cursor": 91,
+      "loss": 0.008485581570615372,
+      "gradient_norm": 0.3445618748664856,
+      "learning_rate": 0.0
+    }
+  },
+  {
+    "run": "models/e5/ordinary-seed2",
+    "steps": 23,
+    "first": {
+      "step": 1,
+      "cursor": 4,
+      "loss": 0.3605237901210785,
+      "gradient_norm": 5.621329307556152,
+      "learning_rate": 1.9130434782608697e-05
+    },
+    "last": {
+      "step": 23,
+      "cursor": 91,
+      "loss": 0.12277019869846602,
+      "gradient_norm": 4.943932056427002,
+      "learning_rate": 0.0
+    }
+  },
+  {
+    "run": "generator/A",
+    "steps": 16,
+    "first": {
+      "step": 1,
+      "cursor": 13,
+      "loss": 0.45640112898942364,
+      "gradient_norm": 1.8196444511413574,
+      "learning_rate": 9.375e-05
+    },
+    "last": {
+      "step": 16,
+      "cursor": 201,
+      "loss": 0.005356654315517189,
+      "gradient_norm": 0.1245754212141037,
+      "learning_rate": 0.0
+    }
+  },
+  {
+    "run": "generator/B",
+    "steps": 16,
+    "first": {
+      "step": 1,
+      "cursor": 13,
+      "loss": 0.4534515914200358,
+      "gradient_norm": 1.8108285665512085,
+      "learning_rate": 9.375e-05
+    },
+    "last": {
+      "step": 16,
+      "cursor": 201,
+      "loss": 0.004461929809009091,
+      "gradient_norm": 0.11365900933742523,
+      "learning_rate": 0.0
+    }
+  },
+  {
+    "run": "generator/partial08",
+    "steps": 16,
+    "first": {
+      "step": 1,
+      "cursor": 13,
+      "loss": 0.48536152508906544,
+      "gradient_norm": 7.623691082000732,
+      "learning_rate": 1.8750000000000002e-05
+    },
+    "last": {
+      "step": 16,
+      "cursor": 201,
+      "loss": 0.02387157342072283,
+      "gradient_norm": 1.7064411640167236,
+      "learning_rate": 0.0
+    }
+  }
+]

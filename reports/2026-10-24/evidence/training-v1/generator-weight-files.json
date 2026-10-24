@@ -1,0 +1,23 @@
+[
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\adapter\\adapter_model.safetensors",
+    "sha256": "99889e5c49f8d316aebc71d113527b214a1fc9a0ff92451c538deb96b57c416e",
+    "bytes": 65003848,
+    "copied": false,
+    "verification": "read_only_streaming_sha256_after_prior_training_no_tensor_loading"
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\adapter\\adapter_model.safetensors",
+    "sha256": "3382f204e9cc170e211095c5519884256f9a0487b21df5d76b286413ed5de59a",
+    "bytes": 65003848,
+    "copied": false,
+    "verification": "read_only_streaming_sha256_after_prior_training_no_tensor_loading"
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\partial-base-weights.safetensors",
+    "sha256": "daf122a497ac3d7d01560321a29609a9a12a6eeae9225f61c8ead1f0dabe90f7",
+    "bytes": 332081608,
+    "copied": false,
+    "verification": "read_only_streaming_sha256_after_prior_training_no_tensor_loading"
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "experiment": "A",
+    "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\feasibility.json",
+    "source_sha256": "4789209c9ef70b493ccb5af53d5cf4fad2bd86084c0a65a7e271357b34b06ce4",
+    "microsteps": [
+      {
+        "id": "f35c65cf3550dcf078a4069c6f7cf08332af801e3d617e0763cb5c0499382705/full",
+        "loss": 0.3620808521906535,
+        "peak_vram_allocated": 6146423296,
+        "host_rss": 2055225344,
+        "input_tokens": 365,
+        "pad_to": 365
+      },
+      {
+        "id": "8e244d04e433ba925299f1a5904bc059a6f4484a41d97a20be5769f47ba69837/full",
+        "loss": 0.45474329590797424,
+        "peak_vram_allocated": 6196838400,
+        "host_rss": 2067832832,
+        "input_tokens": 408,
+        "pad_to": 408
+      }
+    ],
+    "optimizer_updates": 0,
+    "state_restored": true,
+    "max_training_input_tokens": 945,
+    "max_training_pad_to": 983,
+    "maximum_length_exercised_in_preflight": false
+  },
+  {
+    "experiment": "B",
+    "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\feasibility.json",
+    "source_sha256": "17c2f0100e385fc80e52092f64af4a3d86eb90bdf63154a515f995d50eba5cdb",
+    "microsteps": [
+      {
+        "id": "f35c65cf3550dcf078a4069c6f7cf08332af801e3d617e0763cb5c0499382705/full",
+        "loss": 0.3620808521906535,
+        "peak_vram_allocated": 6146423296,
+        "host_rss": 2054561792,
+        "input_tokens": 365,
+        "pad_to": 365
+      },
+      {
+        "id": "8e244d04e433ba925299f1a5904bc059a6f4484a41d97a20be5769f47ba69837/full",
+        "loss": 0.45474329590797424,
+        "peak_vram_allocated": 6196838400,
+        "host_rss": 2066096128,
+        "input_tokens": 408,
+        "pad_to": 408
+      }
+    ],
+    "optimizer_updates": 0,
+    "state_restored": true,
+    "max_training_input_tokens": 983,
+    "max_training_pad_to": 983,
+    "maximum_length_exercised_in_preflight": false
+  },
+  {
+    "experiment": "partial08",
+    "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\feasibility.json",
+    "source_sha256": "e84a4a2eeb5c1357e15134a6f99e4dd96ea67e31d7dd005767cb48360318e606",
+    "microsteps": [
+      {
+        "id": "f35c65cf3550dcf078a4069c6f7cf08332af801e3d617e0763cb5c0499382705/full",
+        "loss": 0.3602588176727295,
+        "peak_vram_allocated": 2338517504,
+        "host_rss": 2101407744,
+        "input_tokens": 365,
+        "pad_to": 365
+      },
+      {
+        "id": "8e244d04e433ba925299f1a5904bc059a6f4484a41d97a20be5769f47ba69837/full",
+        "loss": 0.5133160352706909,
+        "peak_vram_allocated": 2356119552,
+        "host_rss": 2107764736,
+        "input_tokens": 408,
+        "pad_to": 408
+      }
+    ],
+    "optimizer_updates": 0,
+    "state_restored": true,
+    "max_training_input_tokens": 945,
+    "max_training_pad_to": 983,
+    "maximum_length_exercised_in_preflight": false
+  }
+]

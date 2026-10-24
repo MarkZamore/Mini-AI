@@ -1,0 +1,695 @@
+{
+  "status": "PASS",
+  "dataset_sha256": "10f8ec7392ddc5eb4910e20f9c8784f79e6b4ac5e93a80b06f2efa1fc360117b",
+  "dataset": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\datasets\\mode-cases-v1.jsonl",
+  "approved_ids": [
+    "mode-v1-01-answer",
+    "mode-v1-01-insufficient",
+    "mode-v1-02-answer",
+    "mode-v1-02-insufficient",
+    "mode-v1-03-answer",
+    "mode-v1-03-insufficient",
+    "mode-v1-04-answer",
+    "mode-v1-04-insufficient",
+    "mode-v1-05-answer",
+    "mode-v1-05-insufficient",
+    "mode-v1-06-answer",
+    "mode-v1-06-insufficient",
+    "mode-v1-07-answer",
+    "mode-v1-07-insufficient",
+    "mode-v1-08-answer",
+    "mode-v1-08-insufficient",
+    "mode-v1-09-answer",
+    "mode-v1-09-insufficient",
+    "mode-v1-10-answer",
+    "mode-v1-10-insufficient",
+    "mode-v1-11-answer",
+    "mode-v1-11-insufficient",
+    "mode-v1-12-answer",
+    "mode-v1-12-insufficient",
+    "mode-v1-13-answer",
+    "mode-v1-13-insufficient",
+    "mode-v1-meta-reference",
+    "mode-v1-meta-alternatives",
+    "mode-v1-meta-deadline_anchor",
+    "mode-v1-meta-applicability"
+  ],
+  "unknown": [],
+  "rejected": [],
+  "reserve_sha256": "4ba29fd097aae0b91c2f4b7332b9a598b80cfccce1bc62a32ff6c7192fbfc715",
+  "cases_reviewed": 30,
+  "source_fragments_verified": 20,
+  "original_files_hashed": 13,
+  "human_review": false,
+  "scope": "Bounded provided-context mode labels only, including title as available evidence. No production retrieval, current-law, end-to-end normative completeness or final test acceptance claim.",
+  "limitations": [
+    "13 source intents are predominantly narrow form facts; this is a small experimental classifier pilot, not proof of broad normative reliability.",
+    "Four clarify cases have no source family; they require intent-disjoint treatment and do not demonstrate generalization to document applicability ambiguity.",
+    "Counterfactual negative contexts are paired with positives and must remain in the same source/intent fold.",
+    "Source review verifies native OOXML and canonical text/title/provenance; semantic labels are automatically reviewed, not human gold."
+  ],
+  "reviews": [
+    {
+      "id": "mode-v1-01-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Answer clause explicitly requires the course-completing worker to arrange internal training for colleagues, with lecture/master class/other suitable format alternatives. Worker-duty heading resolves actor. Heading alone does not give this action.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-01-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Answer clause explicitly requires the course-completing worker to arrange internal training for colleagues, with lecture/master class/other suitable format alternatives. Worker-duty heading resolves actor. Heading alone does not give this action.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-02-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Canonical exact form title directly answers the form-name question. Empty supplied context is insufficient; title outside the retrieved array is not an inference feature.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-02-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Canonical exact form title directly answers the form-name question. Empty supplied context is insufficient; title outside the retrieved array is not an inference feature.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-03-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Canonical paragraph explicitly says division into modules, including R&D. Developer/authors row and canonical title do not provide those two facts.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-03-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Canonical paragraph explicitly says division into modules, including R&D. Developer/authors row and canonical title do not provide those two facts.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-04-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact cited note provides two months after admission for a master's supervisor; approval sentence remains in full text. Numbered column row and title contain no deadline. This is the quoted historical source's statement, not an assertion about current legislation.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-04-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact cited note provides two months after admission for a master's supervisor; approval sentence remains in full text. Numbered column row and title contain no deadline. This is the quoted historical source's statement, not an assertion about current legislation.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-05-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Note lists classes/participants counts, topics and target audience for events; second sentence is retained. Empty context cannot support these details.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-05-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Note lists classes/participants counts, topics and target audience for events; second sentence is retained. Empty context cannot support these details.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-06-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact field annotation names laboratory/inspection body. APPROVE heading and document title do not supply those types. No factual executor identity inferred.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-06-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact field annotation names laboratory/inspection body. APPROVE heading and document title do not supply those types. No factual executor identity inferred.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-07-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact heading specifies 2026-2027 academic year. Empty context lacks it; no priority/current-validity inference.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-07-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact heading specifies 2026-2027 academic year. Empty context lacks it; no priority/current-validity inference.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-08-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact request line names destructive/non-destructive methods; question asks which two names, not which method was used. Empty context insufficient.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-08-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact request line names destructive/non-destructive methods; question asks which two names, not which method was used. Empty context insufficient.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-09-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact funding heading says republican budget. Neighboring organization-name heading and canonical title do not identify funding. Scoped form fact, not funding rule for all activities.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-09-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact funding heading says republican budget. Neighboring organization-name heading and canonical title do not identify funding. Scoped form fact, not funding rule for all activities.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-10-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact Russian line identifies HR recipient; full positive context also retains adjacent Kazakh three-working-day clause. Negative context contains only timing and canonical title, which do not establish recipient. No corpus-wide absence claim.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-10-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact Russian line identifies HR recipient; full positive context also retains adjacent Kazakh three-working-day clause. Negative context contains only timing and canonical title, which do not establish recipient. No corpus-wide absence claim.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-11-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact heading states 2020. Generic GRAPH heading and canonical title have no year. Historical inscription only.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-11-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact heading states 2020. Generic GRAPH heading and canonical title have no year. Historical inscription only.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-12-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact field annotation lists organization name, position, full name and signature. It answers fields, not filled personal data. Empty context insufficient.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-12-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact field annotation lists organization name, position, full name and signature. It answers fields, not filled personal data. Empty context insufficient.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-13-answer",
+      "label": "answer",
+      "decision": "approved",
+      "rationale": "Exact plan heading names PhD doctoral, master's and bachelor's students. Canonical short title alone does not enumerate those audiences. Empty context insufficient.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-13-insufficient",
+      "label": "insufficient",
+      "decision": "approved",
+      "rationale": "Exact plan heading names PhD doctoral, master's and bachelor's students. Canonical short title alone does not enumerate those audiences. Empty context insufficient.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-meta-reference",
+      "label": "clarify",
+      "decision": "approved",
+      "rationale": "Question has an unresolved deictic/reference, alternatives, deadline anchor or applicability slot and no conversation/evidence. Clarification is supported by the actual question; no document-specific rule asserted.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-meta-alternatives",
+      "label": "clarify",
+      "decision": "approved",
+      "rationale": "Question has an unresolved deictic/reference, alternatives, deadline anchor or applicability slot and no conversation/evidence. Clarification is supported by the actual question; no document-specific rule asserted.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-meta-deadline_anchor",
+      "label": "clarify",
+      "decision": "approved",
+      "rationale": "Question has an unresolved deictic/reference, alternatives, deadline anchor or applicability slot and no conversation/evidence. Clarification is supported by the actual question; no document-specific rule asserted.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    },
+    {
+      "id": "mode-v1-meta-applicability",
+      "label": "clarify",
+      "decision": "approved",
+      "rationale": "Question has an unresolved deictic/reference, alternatives, deadline anchor or applicability slot and no conversation/evidence. Clarification is supported by the actual question; no document-specific rule asserted.",
+      "review_type": "independent_automatic_semantic_and_native_xml_source_review",
+      "human_review": false
+    }
+  ],
+  "verified_sources": [
+    {
+      "fragment_id": "51975bf814c9d16ae3cbf176a814e717f6b28fa2abdc52000b3da1a195bbfe46",
+      "document_id": "satbayev:document:43956",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 602-04. Договор обуч. работника за счет средств работодателя.docx",
+      "original_sha256": "8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[83]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "2.3.5.  оқу курсын аяқтағаннан кейін әріптестер үшін дәріс, шеберлік кластар немесе басқа да қолайлы форматта ішкі тренинг ұйымдастыру;"
+      ]
+    },
+    {
+      "fragment_id": "cb8547e1977e3eccaf98216e68dd24e42bef48f5bb64aea06ae4e620c78a8faf",
+      "document_id": "satbayev:document:43956",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 602-04. Договор обуч. работника за счет средств работодателя.docx",
+      "original_sha256": "8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[78]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "2.3. Жұмыскердің міндеттері:"
+      ]
+    },
+    {
+      "fragment_id": "324c7090ec02817a6ddfa1a4b4959243c3a87257e7facff7f7cf3cafda13c7c3",
+      "document_id": "satbayev:document:44070",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 601-23. Лист ознакомления работника с внутренними нормативными актами КазНИТУ.docx",
+      "original_sha256": "51ad0984a4bf445d1ef3c53abecf152dda9cf8ec9a88da1ac2ac55305a6f13ea",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "51ad0984a4bf445d1ef3c53abecf152dda9cf8ec9a88da1ac2ac55305a6f13ea",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[13]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "Лист ознакомления работника с внутренними нормативными актами КазНИТУ"
+      ]
+    },
+    {
+      "fragment_id": "9019368a4698006f86c2722ce33fce74d3a2698e2c1d1b0f5967a4b70702962d",
+      "document_id": "satbayev:document:27360",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 703-05 Образовательная программа.docx",
+      "original_sha256": "b47c680a241d934531c53c8180bfc1bf59e90268648f9893cb4cea035ed44262",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "b47c680a241d934531c53c8180bfc1bf59e90268648f9893cb4cea035ed44262",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[133]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "Приложение каталога элективных дисциплин так же, как Учебный план делиться по модулям, с включением Модуля \"R&D\""
+      ]
+    },
+    {
+      "fragment_id": "d6755e0f5510d99a3421a1f75d9fdec4a19979e68bcbe4aca45a6529e3931c52",
+      "document_id": "satbayev:document:27360",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 703-05 Образовательная программа.docx",
+      "original_sha256": "b47c680a241d934531c53c8180bfc1bf59e90268648f9893cb4cea035ed44262",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "b47c680a241d934531c53c8180bfc1bf59e90268648f9893cb4cea035ed44262",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl[3]/w:tr[19]/w:tc[1]"
+        },
+        {
+          "artifact_id": "original",
+          "source_sha256": "b47c680a241d934531c53c8180bfc1bf59e90268648f9893cb4cea035ed44262",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl[3]/w:tr[19]/w:tc[2]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "18",
+        "Разработчик(и) и авторы:"
+      ]
+    },
+    {
+      "fragment_id": "99605371b795eba781adbb0d4a5584f28c6fb856fd1631cea751001a532ec3e0",
+      "document_id": "satbayev:document:27268",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 711-10 Сведения о преподавателях, осуществляющих научное руководство магистрантов.docx",
+      "original_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[10]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "Примечание: п. 30. ГОСО МОН РК: «В течение двух месяцев после зачисления каждому магистранту для руководства магистерской диссертацией (проектом) назначается научный руководитель.       Научный руководитель и тема исследования магистранта утверждаются решением ученого совета."
+      ]
+    },
+    {
+      "fragment_id": "105b1a6f004669f64a872265eb075855ca8c7165c92e47e1b46da1a2a7a2e2f8",
+      "document_id": "satbayev:document:27268",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 711-10 Сведения о преподавателях, осуществляющих научное руководство магистрантов.docx",
+      "original_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl/w:tr[4]/w:tc[1]"
+        },
+        {
+          "artifact_id": "original",
+          "source_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl/w:tr[4]/w:tc[2]"
+        },
+        {
+          "artifact_id": "original",
+          "source_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl/w:tr[4]/w:tc[3]"
+        },
+        {
+          "artifact_id": "original",
+          "source_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl/w:tr[4]/w:tc[4]"
+        },
+        {
+          "artifact_id": "original",
+          "source_sha256": "6a29045d94d015ef14aafe225f4cf5b61f0c5d7bf3d9de1481e81d4f109daf61",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:tbl/w:tr[4]/w:tc[5]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "fragment_id": "96a0148d4609820d4b9755f3f61a39768abcfcf83322f514775c3b963feb02fe",
+      "document_id": "satbayev:document:29079",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 717-03. План работы ученого.docx",
+      "original_sha256": "78a8eabbc8a516638b6aae2361ab4a0195307b3d86b94a15f1feeb03fb659309",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "78a8eabbc8a516638b6aae2361ab4a0195307b3d86b94a15f1feeb03fb659309",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[14]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "Примечание: На мероприятиях необходимо указать количество проведенных занятий и участников, темы и целевую аудиторию. Также необходимо раскрыть тематику и количество разработанных статей, диссертаций и научных проектов."
+      ]
+    },
+    {
+      "fragment_id": "4fae0a7f4176c8e2eb0f368b7312239448b8cada3f3e6331df0449931c86f42b",
+      "document_id": "satbayev:document:22350",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - ДП и формы НИЛАС\\Ф ИЛ НИЛАС 7.7-02 План участия в МЛСИ.docx",
+      "original_sha256": "765bdaf8b555f613b6c296bb10d6fb6b992997d0cdbab3b09966ba5f7cacf1e5",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "765bdaf8b555f613b6c296bb10d6fb6b992997d0cdbab3b09966ba5f7cacf1e5",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[10]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "участия ИЛ НИЛАС НАО «КазНИТУ имени К.И. Сатпаева»                                                             наименование лаборатории/органа по инспекции"
+      ]
+    },
+    {
+      "fragment_id": "7f3b3c02c51c6637f3f58be795c8a82435954ba947a4f017fb43894d03ef8e12",
+      "document_id": "satbayev:document:22350",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - ДП и формы НИЛАС\\Ф ИЛ НИЛАС 7.7-02 План участия в МЛСИ.docx",
+      "original_sha256": "765bdaf8b555f613b6c296bb10d6fb6b992997d0cdbab3b09966ba5f7cacf1e5",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "765bdaf8b555f613b6c296bb10d6fb6b992997d0cdbab3b09966ba5f7cacf1e5",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[3]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "УТВЕРЖДАЮ"
+      ]
+    },
+    {
+      "fragment_id": "9c6d8b37d61b6b974b469c83bcf20391dd3d6267ffcb0c58ea7d5d9231eb632c",
+      "document_id": "satbayev:document:59446",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 703-06. Тематический план учебно-методических изданий.docx",
+      "original_sha256": "d386b6866e6668d1ed8baa8271dd946f298a97f9a7d15cabd572fa8b0c8dfaef",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "d386b6866e6668d1ed8baa8271dd946f298a97f9a7d15cabd572fa8b0c8dfaef",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[1]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "Тематический план учебно-методических изданий ППС на 2026 – 2027 учебный год"
+      ]
+    },
+    {
+      "fragment_id": "729d6b3adee1453997819e7f88fb0a85b25d9e4b26d56cdf78a46d4b271f5ec1",
+      "document_id": "satbayev:document:22344",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - ДП и формы НИЛАС\\Ф ИЛ НИЛАС 7.3-02 Заявка.docx",
+      "original_sha256": "6065355b63015da5b1beda0a383882f57b9b559e07128c059e6ca369404ef004",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "6065355b63015da5b1beda0a383882f57b9b559e07128c059e6ca369404ef004",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[19]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "Просим провести контрольные испытания разрушающим/не разрушающим методом: "
+      ]
+    },
+    {
+      "fragment_id": "9030be77f7384d9f1dac2ee31e53672448e70f4149adac2bee6d723b9bef1048",
+      "document_id": "satbayev:document:16582",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 717-06. Информация по привлечению зарубежных ученых.docx",
+      "original_sha256": "3f3a2129a198199e9f49ba61b9f66c3f28c7299362671309ce977d2f77eef38e",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "3f3a2129a198199e9f49ba61b9f66c3f28c7299362671309ce977d2f77eef38e",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[5]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "ЗА СЧЕТ РЕСПУБЛИКАНСКОГО БЮДЖЕТА"
+      ]
+    },
+    {
+      "fragment_id": "616ef84c7821ece7e2f521fe51ac7df02149536ccfadc4a4e906d81dfd8ba6a5",
+      "document_id": "satbayev:document:16582",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 717-06. Информация по привлечению зарубежных ученых.docx",
+      "original_sha256": "3f3a2129a198199e9f49ba61b9f66c3f28c7299362671309ce977d2f77eef38e",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "3f3a2129a198199e9f49ba61b9f66c3f28c7299362671309ce977d2f77eef38e",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[6]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "КАЗАХСКОГО НАЦИОНАЛЬНОГО ИССЛЕДОВАТЕЛЬСКОГО ТЕХНИЧЕСКОГО УНИВЕРСИТЕТА"
+      ]
+    },
+    {
+      "fragment_id": "70b33791d1f939974816cd78fc3e8c6f2616854847181bae46c5e2b412807b44",
+      "document_id": "satbayev:document:44072",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 601-25. Лист отметки о прохождении инструктажа (учета) .docx",
+      "original_sha256": "148cbc44302ccfed0312c76ee455a3b5e9a316897f20f69e017ef977538d8849",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "148cbc44302ccfed0312c76ee455a3b5e9a316897f20f69e017ef977538d8849",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[46]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "*Подлежит возвращению в HR Службу НАО КазНИТУ им. К.И. Сатпаева "
+      ]
+    },
+    {
+      "fragment_id": "82c4ee4be379fab3aa4c9ebec06640179de8f0903b9ad134e22bc7892bfccac9",
+      "document_id": "satbayev:document:44072",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 601-25. Лист отметки о прохождении инструктажа (учета) .docx",
+      "original_sha256": "148cbc44302ccfed0312c76ee455a3b5e9a316897f20f69e017ef977538d8849",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "148cbc44302ccfed0312c76ee455a3b5e9a316897f20f69e017ef977538d8849",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[45]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "3 (үш) жұмыс күні ішінде қайтарылуға жатады."
+      ]
+    },
+    {
+      "fragment_id": "9f62560c7c4c5c591368e32c8f65d093890d3e76c5e6d3d07755fea0bca3a504",
+      "document_id": "satbayev:document:22340",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - ДП и формы НИЛАС\\Ф ИЛ НИЛАС 6.5-04 Графикпроведения межлабораторных сравнительных испытаний.docx",
+      "original_sha256": "357d860039d2b306bdc307413e26b7e1e980560562b7264161fc63a8672c97ac",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "357d860039d2b306bdc307413e26b7e1e980560562b7264161fc63a8672c97ac",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[16]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "проведения межлабораторных сравнительных испытаний на 2020 год  "
+      ]
+    },
+    {
+      "fragment_id": "bdf56bb2301de927d1b72d67c92f949c804ed85b1897a0fc48a3a1ef129bf439",
+      "document_id": "satbayev:document:22340",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - ДП и формы НИЛАС\\Ф ИЛ НИЛАС 6.5-04 Графикпроведения межлабораторных сравнительных испытаний.docx",
+      "original_sha256": "357d860039d2b306bdc307413e26b7e1e980560562b7264161fc63a8672c97ac",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "357d860039d2b306bdc307413e26b7e1e980560562b7264161fc63a8672c97ac",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[15]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "ГРАФИК"
+      ]
+    },
+    {
+      "fragment_id": "0ba2953ee2b36341576258abfadddcedc60497771bba97d84139dbbb1fdda513",
+      "document_id": "satbayev:document:22343",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - ДП и формы НИЛАС\\Ф ИЛ НИЛАС 7.3-01 АКТ отбора образцов (проб).docx",
+      "original_sha256": "277373fb6730f895011334d2de0080e17d9fec54546bcc383be3157080cf93ea",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "277373fb6730f895011334d2de0080e17d9fec54546bcc383be3157080cf93ea",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[37]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "    наименование организации, должность представителя, Ф.И.О.                    подпись"
+      ]
+    },
+    {
+      "fragment_id": "260fbdb0f6bd92a9de2ecc87c306e20bb0735e3549452606c16e30b6190c7931",
+      "document_id": "satbayev:document:16585",
+      "original": "C:\\Users\\Oskar\\Documents\\Mini-AI\\docs\\2 уровень - Формы ДП КазНИТУ\\Ф КазНИТУ 717-09. План приглашения зарубежных ученых.docx",
+      "original_sha256": "a652c061bfc6b1e85a68f688870441f5f2168e3a654628eabb49711690de73c8",
+      "references": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "a652c061bfc6b1e85a68f688870441f5f2168e3a654628eabb49711690de73c8",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[12]"
+        }
+      ],
+      "exact_xml_node_texts": [
+        "План приглашения зарубежных профессоров для чтения гостевых лекций PhD докторантам, магистрантам и бакалаврам на 20__г."
+      ]
+    }
+  ]
+}

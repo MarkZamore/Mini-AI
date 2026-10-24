@@ -1,0 +1,19 @@
+{
+  "foundation_weights_sha256": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477",
+  "trained_weights_sha256": "039615db3f0e8ea6be29aad32cd878d440426396c6f05aee5da3969247df2043",
+  "weights_different": true,
+  "sampled_base_tensor_differences": [
+    {
+      "tensor": "encoder.layer.0.attention.self.query.weight",
+      "changed_values": 147450,
+      "l2_delta": 0.033508751541376114
+    },
+    {
+      "tensor": "encoder.layer.0.intermediate.dense.weight",
+      "changed_values": 589818,
+      "l2_delta": 0.06781121343374252
+    }
+  ],
+  "adapter_only": false,
+  "training_report": "training-report.json"
+}

@@ -1,0 +1,156 @@
+{
+  "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\dev-rag20\\paired-v2\\scores.json",
+  "source_sha256": "f317a3f20614000a82e05a875d267c70e8bdfee57f5ad56dc1ac5e66fde838aa",
+  "final_read": false,
+  "human_verified": false,
+  "semantic_quality": "unknown",
+  "time_is_inference_only": true,
+  "latencies": {
+    "base": {
+      "first_visible_seconds": {
+        "cases": 20,
+        "median": 3.4957254,
+        "p95_linear": 6.68405714500001,
+        "first_case": 21.1802923,
+        "warm_cases": 19,
+        "warm_median": 3.4194378,
+        "warm_p95_linear": 5.369818779999998
+      },
+      "full_seconds": {
+        "cases": 20,
+        "median": 5.78631025,
+        "p95_linear": 10.85581408500001,
+        "first_case": 21.4803174,
+        "warm_cases": 19,
+        "warm_median": 5.6514192,
+        "warm_p95_linear": 8.461579649999996
+      },
+      "model_ttft_seconds": {
+        "cases": 20,
+        "median": 1.8661159,
+        "p95_linear": 2.8050916950000047,
+        "first_case": 9.4097443,
+        "warm_cases": 19,
+        "warm_median": 1.8649327,
+        "warm_p95_linear": 2.26758488
+      },
+      "answer_chars": {
+        "cases": 20,
+        "median": 1752.5,
+        "p95_linear": 4945.250000000001,
+        "first_case": 1665,
+        "warm_cases": 19,
+        "warm_median": 1840,
+        "warm_p95_linear": 4978.499999999998
+      }
+    },
+    "A": {
+      "first_visible_seconds": {
+        "cases": 20,
+        "median": 3.1032335499999997,
+        "p95_linear": 7.875896855000011,
+        "first_case": 22.9055116,
+        "warm_cases": 19,
+        "warm_median": 3.0124313,
+        "warm_p95_linear": 4.3395924299999935
+      },
+      "full_seconds": {
+        "cases": 20,
+        "median": 5.6283413,
+        "p95_linear": 18.310519570000004,
+        "first_case": 22.9061155,
+        "warm_cases": 19,
+        "warm_median": 5.4981382,
+        "warm_p95_linear": 13.482393519999988
+      },
+      "model_ttft_seconds": {
+        "cases": 20,
+        "median": 2.1843119,
+        "p95_linear": 3.081969605000005,
+        "first_case": 10.1857524,
+        "warm_cases": 19,
+        "warm_median": 2.1784012,
+        "warm_p95_linear": 2.5651249899999997
+      },
+      "answer_chars": {
+        "cases": 20,
+        "median": 1917.5,
+        "p95_linear": 6401.800000000006,
+        "first_case": 234,
+        "warm_cases": 19,
+        "warm_median": 1928,
+        "warm_p95_linear": 6775.599999999984
+      }
+    }
+  },
+  "diagnostic_paired_differences": {
+    "literal_atom_coverage": {
+      "difference": 0.2,
+      "ci95": [
+        -0.15,
+        0.6
+      ],
+      "includes_zero": true,
+      "seed": 20261024,
+      "replicates": 20000,
+      "families": 5,
+      "family_sizes": [
+        12,
+        2,
+        2,
+        2,
+        2
+      ],
+      "method": "Paired hierarchical percentile bootstrap: document family, then distinct case/intention within sampled family",
+      "limitation": "Five dependent document families with strong imbalance; diagnostic interval, not semantic-quality proof"
+    },
+    "positive_citation_present": {
+      "difference": 0.1,
+      "ci95": [
+        -0.1,
+        0.6
+      ],
+      "includes_zero": true,
+      "seed": 20261024,
+      "replicates": 20000,
+      "families": 5,
+      "family_sizes": [
+        12,
+        2,
+        2,
+        2,
+        2
+      ],
+      "method": "Paired hierarchical percentile bootstrap: document family, then distinct case/intention within sampled family",
+      "limitation": "Five dependent document families with strong imbalance; diagnostic interval, not semantic-quality proof"
+    },
+    "current_source_citation_present": {
+      "difference": 0.05,
+      "ci95": [
+        -0.2,
+        0.4
+      ],
+      "includes_zero": true,
+      "seed": 20261024,
+      "replicates": 20000,
+      "families": 5,
+      "family_sizes": [
+        12,
+        2,
+        2,
+        2,
+        2
+      ],
+      "method": "Paired hierarchical percentile bootstrap: document family, then distinct case/intention within sampled family",
+      "limitation": "Five dependent document families with strong imbalance; diagnostic interval, not semantic-quality proof"
+    }
+  },
+  "interpretation": [
+    "Literal coverage is not semantic correctness: a negative or contradictory answer can contain the target words.",
+    "Citation existence does not establish support for an assertion.",
+    "Response lengths differ. Full-answer latency differences cannot be attributed to compute throughput.",
+    "answer_chars counts canonical saved history, including source-quality warnings; the UI may present these more compactly.",
+    "First case includes cold worker initialization; subsequent cases reuse the worker and OS cache.",
+    "Teams was stopped. These timings do not prove performance during a Teams meeting."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "state": "PASS",
+  "configuration_id": "final-v16-foundation-searchable",
+  "root": "C:\\Users\\Oskar\\Documents\\Mini-AI",
+  "full_runtime_file_count": 6811,
+  "all_runtime_bytes_verified_by_existing_installer": true,
+  "root_apply_exit_code": 0,
+  "cpu_switch_no_launch_exit_code": 0,
+  "final_verify_only_exit_code": 0,
+  "default_backend": "cpu",
+  "explicit_nvidia_profile_available": true,
+  "app_worker_and_profile_sha256": {
+    "Mini-AI.exe": "471cd062408efb135bd0c08465131a297dd9dfeadcd986e164a8057efa2f790b",
+    "model/inference-worker.exe": "90c09a1bcac6ed3eea74f9cf4baf8a8da7ceb7847e3d69334242bc866acf86f6",
+    "model/worker.json": "0c1cff3cd055ebaf9b809df1c19ecc604ee178ed9b4cb5ad3bc564ea17cb0313",
+    "profiles/worker.cpu.json": "0c1cff3cd055ebaf9b809df1c19ecc604ee178ed9b4cb5ad3bc564ea17cb0313",
+    "profiles/worker.cuda.json": "e40c4050ce1bae319418c5f51560d9a42005fcefc2851ebc65b37f859af727e9"
+  },
+  "inventory_sha256": "1724494a26730b664a3538efcdb590caa2abb20a641f7a3406e68ca2278406c7",
+  "release_sha256": "8b28a5e728da9c046b96be4c48e6ceeb483df24d7ab088fa8b5e65e47c3cee03",
+  "transaction_journal": "C:\\Users\\Oskar\\Documents\\Mini-AI\\.mini-ai-updates\\final-v16-foundation-searchable\\journal.json",
+  "transaction_journal_sha256": "0e487cceeda372470013baeb002cd1ffa6f5933c3bf06c34c740eb1656fcd475",
+  "backup_directory": "C:\\Users\\Oskar\\Documents\\Mini-AI\\.mini-ai-updates\\final-v16-foundation-searchable\\backup",
+  "original_frozen_base_critical_sha_and_fileid_unchanged": [
+    "Mini-AI.exe",
+    "db/index.sqlite",
+    "model/worker.json"
+  ],
+  "application_or_model_launched_by_installer_checks": false,
+  "quality_acceptance": "not-demonstrated",
+  "user_acceptance": "accepted_by_explicit_instruction",
+  "publication_assets_path": "D:/Mini-AI-release-20261024-final-v16/publication-assets.json",
+  "publication_assets_sha256": "c3364e0dcaddfa9e8e7e331db124bfd7ae5193ec824a24a573bf40887db156f8",
+  "free_c_bytes": 23091482624,
+  "free_d_bytes": 5660389376
+}

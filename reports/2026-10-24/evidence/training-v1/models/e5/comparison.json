@@ -1,0 +1,90 @@
+{
+  "metrics": {
+    "baseline": {
+      "recall_at_5": 0.65,
+      "recall_at_10": 0.8,
+      "ndcg_at_10": 0.5828650195228503,
+      "mrr": 0.5241452647176398
+    },
+    "ordinary": {
+      "recall_at_5": 0.9625,
+      "recall_at_10": 0.975,
+      "ndcg_at_10": 0.9274681945837724,
+      "mrr": 0.9134436274509804
+    },
+    "hard": {
+      "recall_at_5": 0.9625,
+      "recall_at_10": 0.9625,
+      "ndcg_at_10": 0.8965790063753298,
+      "mrr": 0.8763136574074075
+    }
+  },
+  "comparisons": {
+    "baseline_to_ordinary": {
+      "recall_at_10": {
+        "difference": 0.175,
+        "ci95_family_bootstrap": [
+          0.0,
+          0.19090909090909092
+        ],
+        "positive_interval": false,
+        "families": 5
+      },
+      "ndcg_at_10": {
+        "difference": 0.34460317506092203,
+        "ci95_family_bootstrap": [
+          0.0,
+          0.37474046594308347
+        ],
+        "positive_interval": false,
+        "families": 5
+      }
+    },
+    "baseline_to_hard": {
+      "recall_at_10": {
+        "difference": 0.1625,
+        "ci95_family_bootstrap": [
+          0.0,
+          0.17727272727272728
+        ],
+        "positive_interval": false,
+        "families": 5
+      },
+      "ndcg_at_10": {
+        "difference": 0.3137139868524795,
+        "ci95_family_bootstrap": [
+          0.0,
+          0.34104316971569154
+        ],
+        "positive_interval": false,
+        "families": 5
+      }
+    },
+    "ordinary_to_hard": {
+      "recall_at_10": {
+        "difference": -0.0125,
+        "ci95_family_bootstrap": [
+          -0.013636363636363636,
+          0.0
+        ],
+        "positive_interval": false,
+        "families": 5
+      },
+      "ndcg_at_10": {
+        "difference": -0.030889188208442574,
+        "ci95_family_bootstrap": [
+          -0.0336972962273919,
+          0.0
+        ],
+        "positive_interval": false,
+        "families": 5
+      }
+    }
+  },
+  "final_read": false,
+  "selection_examples": 80,
+  "selection_families": 5,
+  "warning": "One family has 72 of 80 questions; bootstrap cannot repair narrow source coverage",
+  "training_contribution_scope": "117653760 full encoder parameters; document-qualified extraction only; not end-to-end answer accuracy",
+  "selection_decision": "Root must apply pre-agreed gates; this comparison does not authorize production or open final"
+}

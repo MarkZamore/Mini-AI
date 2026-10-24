@@ -1,6 +1,7 @@
 package ai.enterprise.research;
 
 import ai.enterprise.assistant.AssistantModule;
+import ai.enterprise.assistant.SourcePresentation;
 import ai.enterprise.bootstrap.EnterpriseAIComponent;
 import ai.enterprise.contracts.Api;
 import ai.enterprise.contracts.Json;
@@ -52,7 +53,10 @@ public final class RagEvaluation {
                             record.put("type",event.type());record.put("text",event.text());record.put("error",event.error());events.add(record);
                         },new Api.CancellationToken()).toCompletableFuture().get(600,TimeUnit.SECONDS);
                         result.put("result",found);result.put("firstNonemptyTextSeconds",firstText.get()<0?null:firstText.get()/1e9);
-                        result.put("events",events);result.put("history",session.history().stream().map(m->Map.of("role",m.role(),"text",m.text(),"sources",m.sources(),"state",m.state())).toList());result.put("diagnostics",context.diagnostics());
+                        result.put("events",events);result.put("history",session.history().stream().map(m->Map.of("role",m.role(),"text",m.text(),"sources",m.sources(),"state",m.state())).toList());
+                        var delivered = session.history().getLast();
+                        result.put("user_visible_answer",SourcePresentation.answer(delivered.text(),delivered.sources()));
+                        result.put("evidence_delivery",session.evidenceDelivery());result.put("diagnostics",context.diagnostics());
                     }
                 }
                 result.put("fullSeconds",(System.nanoTime()-started)/1e9);

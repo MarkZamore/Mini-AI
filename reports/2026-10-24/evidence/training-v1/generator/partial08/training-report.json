@@ -1,0 +1,17 @@
+{
+  "status": "one_epoch_complete",
+  "experiment": "partial08",
+  "steps": 16,
+  "total_epoch_steps": 16,
+  "examples_consumed": 201,
+  "independent_intents": 91,
+  "answer_tokens_consumed": 12374,
+  "trainable_parameters": 83018720,
+  "changed_trainable_tensors": 53,
+  "base_weights_changed": true,
+  "adapter_weights_changed": false,
+  "peak_vram_allocated": 3865354240,
+  "peak_vram_reserved": 5108662272,
+  "quality_acceptance": false,
+  "final_read": false
+}

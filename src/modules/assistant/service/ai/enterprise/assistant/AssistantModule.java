@@ -89,14 +89,18 @@ public final class AssistantModule implements Api.ModuleFactory {
         private final AtomicBoolean closed = new AtomicBoolean();
         private long historyBytes;
         private CorpusIdentityServiceV1.Info corpusIdentity;
+        private volatile Map<String, Object> evidenceDelivery = Map.of();
         public Session(Api.Context context) { this.context = context; }
         public synchronized List<Api.SessionMessage> history() { return List.copyOf(messages); }
+        /** Research provenance of the last answer, distinct from the retrieval candidate pool. */
+        public Map<String, Object> evidenceDelivery() { return evidenceDelivery; }
 
         public CompletionStage<Api.Result<Void>> send(String query, Consumer<Api.AssistantEvent> events,
                                                        Api.CancellationToken cancellation) {
             if (closed.get()) return CompletableFuture.completedFuture(Api.Result.fail("SESSION_CLOSED", "Сеанс завершён"));
             if (query == null || query.isBlank()) return CompletableFuture.completedFuture(Api.Result.fail("EMPTY_QUERY", "Введите запрос"));
             String text = query.strip();
+            var intent = AssistantIntent.analyze(text);
             if (estimate(text) > MAX_QUERY_BYTES) return CompletableFuture.completedFuture(Api.Result.fail("QUERY_TOO_LARGE", "Запрос превышает допустимый объём памяти"));
             if (!active.compareAndSet(null, cancellation)) return CompletableFuture.completedFuture(Api.Result.fail("BUSY", "Дождитесь завершения или отмените текущий запрос"));
             try {
@@ -126,9 +130,20 @@ public final class AssistantModule implements Api.ModuleFactory {
             }
             events.accept(new Api.AssistantEvent("user", text, List.of(), null));
             return CompletableFuture.supplyAsync(() -> {
+                evidenceDelivery = Map.of();
                 List<Api.Fragment> sources = new ArrayList<>();
                 try {
                     cancellation.check();
+                    var calculated = TaskArithmetic.solve(text, intent.language());
+                    if (calculated.isPresent() || intent.kind() == AssistantIntent.Kind.CALCULATE) {
+                        String answer = calculated.map(TaskArithmetic.Result::text).orElseGet(() -> intent.language().equals("kz")
+                            ? "Есептеу үшін бастапқы сандарды және амалды көрсетіңіз. Мысалы: «200 санының 10%-ын есепте». Күндерге немесе құжаттағы шарттарға қатысты есеп үшін сол шарттар да қажет."
+                            : "Укажите исходные числа и что нужно вычислить. Например: «Посчитай 10% от 200». Для расчёта дат или значений по документу нужны также применимые условия.");
+                        evidenceDelivery = Map.of("schema", "mini-ai-evidence-delivery-v1", "request_kind", intent.kind().name(),
+                            "answer_mode", calculated.isPresent() ? "answer" : "clarify", "direct_answer", answer, "delivered_units", List.of());
+                        addAssistant(answer, sources, "complete"); emit(events, "token", answer, sources); emit(events, "done", answer, sources);
+                        return Api.Result.ok(null);
+                    }
                     Api.InferenceServiceV1 inference = context.find(Api.InferenceServiceV1.class)
                         .orElseThrow(() -> new Api.ServiceException("INFERENCE_ABSENT", "Провайдер локальной модели отсутствует в этой сборке"));
                     emit(events, "state", "Проверка доступности модели…", sources);
@@ -136,7 +151,9 @@ public final class AssistantModule implements Api.ModuleFactory {
                     if (!availability.success()) throw new Api.ServiceException(availability.error().code(), availability.error().message());
                     Api.SearchServiceV1 search = context.require(Api.SearchServiceV1.class);
                     emit(events, "state", "Поиск исходных фрагментов…", sources);
-                    var hits = Api.await(search.searchForAssistant(text, 10, List.of(), List.of(), cancellation));
+                    var hits = Api.await(search.searchForAssistant(text,
+                        AnswerPolicy.normative(text) || intent.isAction() || intent.isIdentity() ? 24 : 10,
+                        List.of(), List.of(), cancellation));
                     Set<String> seen = new HashSet<>();
                     long contextBytes = 0;
                     for (var hit : hits) {
@@ -152,7 +169,9 @@ public final class AssistantModule implements Api.ModuleFactory {
                             || !corpusIdentity.contentVersion().equals(hit.fragment().fields().get("content_version"))))
                             throw new Api.ServiceException("CORPUS_CHANGED","Источники относятся к другой базе. Перезапустите приложение для нового диалога.");
                         var fields = new LinkedHashMap<>(fragment.fields());
-                        for (String key : List.of("base_id", "content_version", "document_key", "fragment_key", "source_keys"))
+                        for (String key : List.of("base_id", "content_version", "document_key", "fragment_key", "source_keys",
+                            "evidence_bundle_ids", "evidence_section_heading", "evidence_context_complete",
+                            "evidence_scope_title", "evidence_scope_ambiguous", "evidence_role", "evidence_identity_body_span"))
                             if (hit.fragment().fields().containsKey(key)) fields.put(key, hit.fragment().fields().get(key));
                         fragment = new Api.Fragment(fields);
                         if (seen.add(fragment.fragmentId())) {
@@ -161,13 +180,35 @@ public final class AssistantModule implements Api.ModuleFactory {
                             sources.add(fragment);
                         }
                     }
-                    boolean normative = AnswerPolicy.normative(text);
+                    boolean normative = AnswerPolicy.normative(text) || intent.isIdentity() || (intent.isAction() && !sources.isEmpty())
+                        || sources.stream().anyMatch(source -> source.fields().containsKey("evidence_bundle_ids"));
                     String evidenceMode=hits.stream().map(h->Objects.toString(h.fragment().fields().get("evidence_answer_mode"),""))
                         .filter(s->!s.isEmpty()).findFirst().orElse("answer");
                     if(!Set.of("answer","clarify","insufficient").contains(evidenceMode))
                         throw new Api.ServiceException("SOURCE_POLICY_INVALID","Неизвестный режим оценки источников");
                     if(!normative&&!evidenceMode.equals("answer"))sources.clear();
+                    if(intent.isAction()&&!evidenceMode.equals("answer"))sources.clear();
                     emit(events, "sources", "", sources);
+                    boolean editableDraft = Set.of(AssistantIntent.Kind.DRAFT_APPLICATION, AssistantIntent.Kind.DRAFT_LETTER,
+                        AssistantIntent.Kind.GENERIC_TASK).contains(intent.kind());
+                    if (intent.isAction() && sources.isEmpty() && !editableDraft) {
+                        String answer = (intent.language().equals("kz") ? "### Нақтылау қажет\n\n" : "### Что уточнить\n\n")
+                            + EvidenceAnswer.missingMessage("insufficient", "evidence", intent.language().equals("kz"));
+                        evidenceDelivery = Map.of("schema", "mini-ai-evidence-delivery-v1", "request_kind", intent.kind().name(),
+                            "answer_mode", "insufficient", "direct_answer", answer, "delivered_units", List.of());
+                        addAssistant(answer, sources, "complete"); emit(events, "token", answer, sources); emit(events, "done", answer, sources);
+                        return Api.Result.ok(null);
+                    }
+                    if (intent.isAction() && sources.isEmpty()) {
+                        emit(events, "state", "Подготовка проекта решения…", sources);
+                        String proposal = taskProposal(inference, text, intent, sources, cancellation);
+                        String answer = TaskSolution.title(intent.kind().name(), intent.language().equals("kz"))
+                            + "\n\n" + proposal + "\n\n" + (intent.language().equals("kz")
+                                ? "Бұл ұсынылатын жоба. Ұйымның нақты талаптары табылған құжаттармен расталмады."
+                                : "Это предлагаемый проект. Конкретные требования организации найденными документами пока не подтверждены.");
+                        addAssistant(answer, sources, "complete"); emit(events, "token", answer, sources); emit(events, "done", answer, sources);
+                        return Api.Result.ok(null);
+                    }
                     if (normative && (sources.isEmpty()||!evidenceMode.equals("answer"))) {
                         cancellation.check();
                         emit(events, "state", "Проверка достаточности источников…", sources);
@@ -187,6 +228,73 @@ public final class AssistantModule implements Api.ModuleFactory {
                             var doc = Api.await(documents.get().document(id, cancellation));
                             documentWarnings.add(Map.of("document_id", id, "status", doc.status(), "warnings", doc.warnings()));
                         }
+                    }
+                    if (normative) {
+                        emit(events, "state", "Выбор полных оснований и проверка ответа…", sources);
+                        var verified = groundedAnswer(inference, text, intent, sources, cancellation);
+                        var delivery = new LinkedHashMap<String, Object>();
+                        delivery.put("schema", "mini-ai-evidence-delivery-v1");
+                        delivery.put("request_kind", intent.kind().name()); delivery.put("answer_mode", verified.mode());
+                        delivery.put("selected_ids", verified.selectedIds());
+                        delivery.put("candidate_pool", sources.stream().map(source -> Map.of("fragment_id", source.fragmentId(),
+                            "document_id", source.documentId(), "text_sha256", textSha(source.text()))).toList());
+                        delivery.put("closure_ids", verified.sources().stream().map(Api.Fragment::fragmentId).toList());
+                        delivery.put("delivered_units", verified.deliveredUnits().stream().map(unit -> Map.of(
+                            "unit_id", unit.id(), "fragment_id", unit.source().fragmentId(), "document_id", unit.source().documentId(),
+                            "text", unit.source().text(), "text_sha256", textSha(unit.source().text()), "section", unit.section())).toList());
+                        delivery.put("complete_evidence", verified.completeEvidence());
+                        delivery.put("canonical_answer", verified.text());
+                        delivery.put("canonical_paragraphs", verified.paragraphs().stream().map(paragraph -> Map.of(
+                            "id", paragraph.id(), "text", paragraph.text(), "unit_ids", paragraph.units().stream().map(EvidenceAnswer.Unit::id).toList(),
+                            "fragment_ids", paragraph.units().stream().map(unit -> unit.source().fragmentId()).toList())).toList());
+                        delivery.put("draft", ""); evidenceDelivery = Collections.unmodifiableMap(delivery);
+                        sources.clear(); sources.addAll(verified.sources());
+                        emit(events, "sources", "", sources);
+                        String answer = AnswerPresentation.format(verified, intent);
+                        delivery.put("direct_answer", answer);
+                        // Normative translations failed semantic development checks and added
+                        // substantial latency. Deliver the complete original instead of rewriting it.
+                        delivery.put("translation_status", intent.language().equals("kz")
+                            ? "not_performed_original_preserved" : "not_requested");
+                        evidenceDelivery = Collections.unmodifiableMap(new LinkedHashMap<>(delivery));
+                        if (intent.kind() == AssistantIntent.Kind.CHECKLIST && verified.mode().equals("answer")) {
+                            answer = AnswerPresentation.checklist(verified, intent);
+                            delivery.put("task_format", "canonical_checklist");
+                            delivery.put("direct_answer", answer);
+                            evidenceDelivery = Collections.unmodifiableMap(new LinkedHashMap<>(delivery));
+                        } else if (intent.isAction() && verified.mode().equals("answer")) {
+                            emit(events, "state", "Подготовка проекта решения по найденным требованиям…", sources);
+                            try {
+                                if (Set.of("PLAN", "MEMO", "COMPARE").contains(intent.kind().name())) {
+                                    answer = referenceTask(inference, text, intent, verified, cancellation);
+                                    delivery.put("task_format", "reference_layout"); delivery.put("direct_answer", answer);
+                                    evidenceDelivery = Collections.unmodifiableMap(new LinkedHashMap<>(delivery));
+                                } else {
+                                    String proposal = taskProposal(inference, text, intent, sources, cancellation);
+                                    delivery.put("draft", proposal); evidenceDelivery = Collections.unmodifiableMap(new LinkedHashMap<>(delivery));
+                                    answer = "### " + TaskSolution.title(intent.kind().name(), intent.language().equals("kz")) + "\n\n" + proposal + "\n\n" + answer;
+                                }
+                            } catch (Api.ServiceException failure) {
+                                cancellation.check();
+                                if (!Set.of("INVALID_TASK_PROPOSAL", "OUTPUT_LIMIT", "INVALID_CITATION").contains(failure.code)) throw failure;
+                                context.diagnostic("Task proposal withheld after validation: " + failure.code);
+                                answer += intent.language().equals("kz")
+                                    ? "\n\nДайын жобаны тексеру мүмкін болмады. Жоғарыда расталған талаптар берілген."
+                                    : "\n\nГотовый проект не прошёл проверку. Выше приведены подтверждённые требования.";
+                            }
+                        }
+                        var usedDocuments = new HashSet<String>(); sources.forEach(source -> usedDocuments.add(source.documentId()));
+                        Set<String> warningSet = new LinkedHashSet<>(sourceWarnings(sources));
+                        for (var warning : documentWarnings) if (usedDocuments.contains(warning.get("document_id"))) {
+                            if (!"complete".equals(warning.get("status"))) warningSet.add("документ имеет статус " + warning.get("status"));
+                            appendWarnings(warningSet, warning.get("warnings"));
+                        }
+                        if (!warningSet.isEmpty()) answer += "\n\nОграничения источников: " + String.join("; ", warningSet);
+                        if (estimate(answer) > MAX_RESPONSE_BYTES) throw new Api.ServiceException("RESPONSE_MEMORY_LIMIT", "Ответ превышает бюджет памяти");
+                        if (!sources.isEmpty()) validateCitations(answer, sources);
+                        addAssistant(answer, sources, "complete");
+                        emit(events, "token", answer, sources); emit(events, "done", answer, sources);
+                        return Api.Result.ok(null);
                     }
                     var citations = new CitationAliases(sources, sources.isEmpty());
                     // Citation policy is enforced here. The legacy worker's strict-RAG envelope
@@ -266,6 +374,106 @@ public final class AssistantModule implements Api.ModuleFactory {
                     return failure;
                 } finally { active.compareAndSet(cancellation, null); }
             }, executor);
+        }
+
+        private EvidenceAnswer.Result groundedAnswer(Api.InferenceServiceV1 inference, String question, AssistantIntent intent,
+                                                     List<Api.Fragment> sources, Api.CancellationToken cancellation) {
+            var catalog = new EvidenceAnswer.Catalog(sources);
+            if (intent.isIdentity()) {
+                var identity = catalog.identityFromCanonical(intent.language().equals("kz"));
+                if (identity.isPresent()) {
+                    context.diagnostic("Organization identity extracted from canonical native-original body span; no model generation");
+                    return identity.get();
+                }
+            }
+            String prompt = catalog.prompt(question, intent.kind().name());
+            String selectorSystem = EvidenceAnswer.system();
+            context.diagnostic("Evidence selection system SHA256: " + textSha(selectorSystem));
+            Api.ServiceException last = null;
+            for (int attempt = 0; attempt < 2; attempt++) {
+                cancellation.check();
+                String user = attempt == 0 ? prompt : prompt + "\nВерните завершённый JSON с существующими ID. "
+                    + "Для обычного вопроса answer пустой; для названия точно скопируйте name_candidates. Ошибка предыдущего плана: " + last.getMessage();
+                try {
+                    String raw = collect(inference, List.of(new Api.ModelMessage("system", selectorSystem),
+                        new Api.ModelMessage("user", user)), attempt == 0 ? 640 : 1024, cancellation);
+                    context.diagnostic("Evidence selection plan: " + raw);
+                    return catalog.accept(raw, intent.isIdentity(), intent.language().equals("kz"));
+                }
+                catch (Api.ServiceException failure) {
+                    if (!Set.of("INVALID_EVIDENCE_PLAN", "OUTPUT_LIMIT").contains(failure.code)) throw failure;
+                    last = failure; context.diagnostic("Evidence plan validation attempt " + (attempt + 1) + ": " + failure.getMessage());
+                }
+            }
+            context.diagnostic("Evidence selection failed closed after two attempts: " + last.code);
+            return new EvidenceAnswer.Result(EvidenceAnswer.missingMessage("insufficient", "detail", intent.language().equals("kz")),
+                List.of(), "insufficient", "detail", List.of(), false, List.of(), List.of());
+        }
+
+        private static String textSha(String text) {
+            try { return HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+                .digest(text.getBytes(java.nio.charset.StandardCharsets.UTF_8))); }
+            catch (java.security.NoSuchAlgorithmException impossible) { throw new AssertionError(impossible); }
+        }
+
+        private String taskProposal(Api.InferenceServiceV1 inference, String question, AssistantIntent intent,
+                                    List<Api.Fragment> sources, Api.CancellationToken cancellation) {
+            Api.ServiceException last = null;
+            for (int attempt = 0; attempt < 2; attempt++) {
+                var aliases = new CitationAliases(sources, sources.isEmpty());
+                String prompt = TaskSolution.prompt(question, intent.kind().name(), sources, aliases);
+                if (attempt > 0) prompt += "\nПредыдущий проект отклонён: " + last.getMessage()
+                    + ". Напишите сам готовый проект, без пересказа обязанностей и сроков. Неизвестные данные оставьте полями [данные].";
+                try {
+                    String raw = collect(inference, List.of(new Api.ModelMessage("system", TaskSolution.system() + "\n" + TaskSolution.instruction(intent.kind().name())
+                        + (intent.language().equals("kz") ? "\nДайын жобаның тілі — қазақ тілі. Өрістердің атауларын да қазақша беріңіз." : "\nЯзык готового проекта и названий полей — русский.")),
+                        new Api.ModelMessage("user", prompt)), 1280, cancellation);
+                    context.diagnostic("Task proposal candidate: " + raw);
+                    return TaskSolution.validate(raw, question, sources, aliases);
+                } catch (Api.ServiceException failure) {
+                    cancellation.check();
+                    if (!Set.of("INVALID_TASK_PROPOSAL", "INVALID_CITATION", "OUTPUT_LIMIT").contains(failure.code)) throw failure;
+                    last = failure; context.diagnostic("Task proposal validation attempt " + (attempt + 1) + ": " + failure.getMessage());
+                }
+            }
+            throw last;
+        }
+
+        private String referenceTask(Api.InferenceServiceV1 inference, String question, AssistantIntent intent,
+                                     EvidenceAnswer.Result evidence, Api.CancellationToken cancellation) {
+            String prompt = EvidenceTaskPresentation.prompt(question, intent.kind().name(), evidence);
+            String system = EvidenceTaskPresentation.system();
+            context.diagnostic("Reference task layout system SHA256: " + textSha(system));
+            Api.ServiceException last = null;
+            for (int attempt = 0; attempt < 2; attempt++) {
+                cancellation.check();
+                String request = attempt == 0 ? prompt : prompt + "\nПредыдущая структура отклонена: " + last.getMessage()
+                    + ". Верните завершённый JSON: используйте только целые известные P-ID, каждый один раз, без собственных фактов.";
+                try {
+                    String raw = collect(inference, List.of(new Api.ModelMessage("system", system),
+                        new Api.ModelMessage("user", request)), attempt == 0 ? 640 : 1024, cancellation);
+                    context.diagnostic("Reference task layout candidate: " + raw);
+                    return EvidenceTaskPresentation.render(raw, question, intent.kind().name(), evidence, intent.language().equals("kz"));
+                } catch (Api.ServiceException failure) {
+                    cancellation.check();
+                    if (!Set.of("INVALID_TASK_PROPOSAL", "INVALID_CITATION", "OUTPUT_LIMIT").contains(failure.code)) throw failure;
+                    last = failure; context.diagnostic("Reference task layout validation attempt " + (attempt + 1) + ": " + failure.getMessage());
+                }
+            }
+            throw last;
+        }
+
+        private String collect(Api.InferenceServiceV1 inference, List<Api.ModelMessage> messages, int limit,
+                               Api.CancellationToken cancellation) {
+            var result = new StringBuilder();
+            Api.await(inference.generate(new Api.GenerationRequest(nextRequestId(), messages, limit), event -> {
+                cancellation.check();
+                if (!event.type().equals("token")) return;
+                if (result.length() + event.text().length() > 32_768)
+                    throw new Api.ServiceException("RESPONSE_EVIDENCE_LIMIT", "План ответа превысил допустимый объём");
+                result.append(event.text());
+            }, cancellation));
+            cancellation.check(); return result.toString();
         }
         private synchronized void addAssistant(String text, List<Api.Fragment> sources, String state) {
             if (closed.get()) return;

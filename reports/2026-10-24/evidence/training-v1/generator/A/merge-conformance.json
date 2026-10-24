@@ -1,0 +1,36 @@
+{
+  "experiment": "A",
+  "sampled_targets": [
+    {
+      "parameter": "model.language_model.layers.0.linear_attn.in_proj_qkv.weight",
+      "shape": [
+        8192,
+        2560
+      ],
+      "bitwise_equal": true,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "parameter": "model.language_model.layers.11.self_attn.q_proj.weight",
+      "shape": [
+        8192,
+        2560
+      ],
+      "bitwise_equal": true,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "parameter": "model.language_model.layers.0.mlp.gate_proj.weight",
+      "shape": [
+        9216,
+        2560
+      ],
+      "bitwise_equal": true,
+      "max_absolute_difference": 0.0
+    }
+  ],
+  "all_passed": true,
+  "adapter_sha256": "99889e5c49f8d316aebc71d113527b214a1fc9a0ff92451c538deb96b57c416e",
+  "scope": "Three actual projection families; not an exhaustive all-tensor test",
+  "cuda_used": false
+}

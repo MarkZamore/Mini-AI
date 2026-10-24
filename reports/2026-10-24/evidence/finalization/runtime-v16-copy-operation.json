@@ -1,0 +1,52 @@
+{
+  "state": "full-seven-module-final-v16-awaiting-root-UI",
+  "runtime": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\final-runtime-v16",
+  "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\runtime-searchable-foundation-v2",
+  "app_stage": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\staging\\EnterpriseAI",
+  "source_stage_sha256": "7e827357d4d473cb9fe385f75df3bc5c022dce64e1186a75d66ed29244081d08",
+  "app_inventory_sha256": "159a6d722c25aa5d091c530d462071ec3a68ed63fdf114691bd849d935c48f27",
+  "independent_copy_bytes": 844470039,
+  "source_root_frozen_before": {
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\Mini-AI.exe": {
+      "bytes": 314363904,
+      "file_id": 72620543991669015,
+      "mtime_ns": 1792791112298272800
+    },
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\model\\worker.json": {
+      "bytes": 11196,
+      "file_id": 2533274791031314,
+      "mtime_ns": 1792796354033471700
+    },
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\db\\index.sqlite": {
+      "bytes": 504352768,
+      "file_id": 562949953738847,
+      "mtime_ns": 1792081933507805200
+    },
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-control-untrained-v1\\model\\worker.json": {
+      "bytes": 11196,
+      "file_id": 1407374884681017,
+      "mtime_ns": 1792790528032097100
+    },
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-runtime-v1\\model\\worker.json": {
+      "bytes": 11196,
+      "file_id": 10696049116064846,
+      "mtime_ns": 1792789315027413700
+    }
+  },
+  "next": "Root actual UI/smoke before READY; this script never creates it.",
+  "completed": 6001,
+  "app_sha256": "471cd062408efb135bd0c08465131a297dd9dfeadcd986e164a8057efa2f790b",
+  "model_manifest_sha256": "e40c4050ce1bae319418c5f51560d9a42005fcefc2851ebc65b37f859af727e9",
+  "corpus_sha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+  "runtime_files": 6811,
+  "independent_copies": 296,
+  "immutable_hardlinks": 6515,
+  "inventory_sha256": "8b8b38386e747c1b93f7d7ca440be7aea76380b62d3ca8f0a857ba385a6f5571",
+  "source_app_root_frozen_metadata_unchanged": true,
+  "free_c_bytes": 24625770496,
+  "settings_policy": "All model JSON/config and database non-artifact files copied independently. Source fixture had no top-level settings; none aliased or invented.",
+  "new_built_jar": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar",
+  "jar_needed_by_native_runtime": false,
+  "no_model_or_gui_started": true,
+  "no_READY_written": true
+}

@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "state": "verified-nonblank-index-derivation-handoff",
+  "canonical_database": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+  "variants": {
+    "ordinary": {
+      "state": "filter-proof-PASS",
+      "rows": 105922,
+      "removed_blank_body_rows": 217,
+      "encoder_sha256": "e5545f739d90684e292ce8377a1d6d9abe5038ff3cf62c094e511133ccf09395",
+      "corpus_sha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+      "source_index_sha256": "99446746393b6f30fd0725ded4694ed05b82be721669184cdb961b73a042d19e",
+      "selection_freeze_sha256_unchanged": "a6692e5bdcd291eaf2b47f7978e5b6599b4e3ea2022926344a7402b2f66756f9",
+      "assets": [
+        {
+          "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\ordinary\\vectors.f32",
+          "bytes": 162696192,
+          "sha256": "dcff8761cd6cbe30d9ea00602a117164e94899e25c0a2b8fcd668b52792cb604",
+          "runtime_path": "evidence/vectors.f32"
+        },
+        {
+          "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\ordinary\\fragments.jsonl",
+          "bytes": 22650002,
+          "sha256": "06458ff1ac79279e5b912334eb56ad09de8dfa7b8fc66e29d5e225f7845fd4f2",
+          "runtime_path": "evidence/fragments.jsonl"
+        },
+        {
+          "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\ordinary\\index.json",
+          "bytes": 1912,
+          "sha256": "27f35bc2e0c8ac8bdae8966771a39fcc372ea31a1359c13e8084ab69738310cc",
+          "runtime_path": "evidence/index.json"
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\ordinary\\filter-receipt.json",
+        "bytes": 3966,
+        "sha256": "e59eaac0aa4555e865c652be210fae226dd70e97db0f2fcabfe985c5467747e0"
+      }
+    },
+    "foundation": {
+      "state": "filter-proof-PASS",
+      "rows": 105922,
+      "removed_blank_body_rows": 217,
+      "encoder_sha256": "c399f8e018630338cdb624e78806f5e7c1616b8bb86b86834d20c396bddb8a5e",
+      "corpus_sha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+      "source_index_sha256": "0960c15088db2e659d2a653776540ba4cf18a8431d223efffc051206c677e3c9",
+      "selection_freeze_sha256_unchanged": "f30d24f57ac267d22fea48b4aa5493c93cb7689a8a78bc81d987bf9e919c060a",
+      "assets": [
+        {
+          "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\foundation\\vectors.f32",
+          "bytes": 162696192,
+          "sha256": "286bc8d0495fdf67920ceb03c0c836651c41e8317b46f58a785bf38d9f3d184c",
+          "runtime_path": "evidence/vectors.f32"
+        },
+        {
+          "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\foundation\\fragments.jsonl",
+          "bytes": 22650002,
+          "sha256": "06458ff1ac79279e5b912334eb56ad09de8dfa7b8fc66e29d5e225f7845fd4f2",
+          "runtime_path": "evidence/fragments.jsonl"
+        },
+        {
+          "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\foundation\\index.json",
+          "bytes": 1912,
+          "sha256": "f8baf7975039adf5fa7d0f3abd2784c51d394ebc3120cefe28bc854cae1e8761",
+          "runtime_path": "evidence/index.json"
+        }
+      ],
+      "receipt": {
+        "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\foundation\\filter-receipt.json",
+        "bytes": 3994,
+        "sha256": "eb25be4e3ab7d3c713b5dbf8fc541e518f2ccbb7158049e9fbc353c7cdb3b05a"
+      }
+    }
+  },
+  "filter_code": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\filter_evidence_index.py",
+    "bytes": 13063,
+    "sha256": "e2253ea9a607a1532cea1cfd698b57b3d6d0f77c76b754fafc170c7696403d3d"
+  },
+  "upstream_builder_code": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\e5_index.py",
+    "bytes": 5935,
+    "sha256": "41e92b83e7c7472baeb763d72f5dda9538a3b2e7b240c55789c45fd6e285ef22"
+  },
+  "focused_tests": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\tests\\test_filter_evidence_index.py",
+    "bytes": 7178,
+    "sha256": "092cf574ed1fee91449e65a663680d448500317328ae9c3e50ff6b4cea6445d3"
+  },
+  "synthetic_tests": {
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "src/research/tests",
+      "-p",
+      "test_filter_evidence_index.py",
+      "-v"
+    ],
+    "tests_passed": 8,
+    "failed": 0,
+    "coverage": [
+      "raw retained vectors and heterogeneous JSONL line endings exact",
+      "Unicode whitespace removed; numeric/punctuation/zero-width retained",
+      "corpus/model/vector/metadata SHA mismatch rejected",
+      "document mapping mismatch and duplicate fragment rejected",
+      "dimensions/rowcount/vector size rejected",
+      "existing output untouched; source-nested output rejected",
+      "disk reserve checked",
+      "all source fixture bytes unchanged"
+    ]
+  },
+  "independent_read_only_code_review": "PASS: /root/final_evaluation/index_filter_review; no material alignment/integrity/nonoverwrite blocker",
+  "retention_rule": "Only canonical chunks.text.strip() == '' removed; no other filtering.",
+  "source_database_and_indexes_rehashed_unchanged": true,
+  "weights_changed": false,
+  "embedding_runs": 0,
+  "native_builds": 0,
+  "runtime_or_model_runs": 0,
+  "final_authority_changed": false,
+  "disk_free_bytes_after": 28078714880,
+  "staging_note": "Derived index.json uses builder-local vectors.f32 and fragments.jsonl. Runtime packager must rebase these two references to evidence/vectors.f32 and evidence/fragments.jsonl, then recompute staged index/worker manifest SHA. No vector/metadata changes permitted. Encoder/tokenizer stay in existing runtime; derived index does not copy weights.",
+  "quality_claim": "None; this removes whitespace-only body candidates, not a measured semantic quality result."
+}

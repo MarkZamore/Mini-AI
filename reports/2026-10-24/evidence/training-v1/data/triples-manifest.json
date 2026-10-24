@@ -1,0 +1,10 @@
+{
+  "seed": 20261024,
+  "counts": {
+    "ordinary": 91,
+    "hard": 91
+  },
+  "train_sha256": "cd8b86909c8566a98ffc29b95f2f196ddb6994cf74fb1e3f0bf52cb73ed3d536",
+  "scope": "Document-qualified native extraction, not broad ordinary-question semantic supervision",
+  "final_used": false
+}

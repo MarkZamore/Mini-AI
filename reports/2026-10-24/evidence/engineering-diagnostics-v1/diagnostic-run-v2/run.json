@@ -1,0 +1,27 @@
+{
+  "scope": "Full-seven JVM development service host; not final EXE/GUI or held-out acceptance",
+  "command": [
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+    "-Xmx2g",
+    "-XX:-UsePerfData",
+    "-XX:+DisableAttachMechanism",
+    "-XX:ErrorFile=NUL",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Denterprise.nativeDlls=true",
+    "-Dfile.encoding=UTF-8",
+    "-classpath",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+    "ai.enterprise.research.RagEvaluation",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\runtime-dev-foundation",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-input-v1.jsonl",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v2\\answers.jsonl",
+    "answer"
+  ],
+  "input_sha256": "3645c58badad5822530c202e2dbe621c0ca04fb2ce79191b7aa633af41452d91",
+  "human_verified": false,
+  "exit_code": 0,
+  "state": "completed",
+  "wall_seconds": 40.0309999999954,
+  "free_c_bytes": 30997999616,
+  "lease_released": true
+}

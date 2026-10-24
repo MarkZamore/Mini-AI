@@ -1,0 +1,58 @@
+[
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\train.jsonl",
+    "sha256": "cd8b86909c8566a98ffc29b95f2f196ddb6994cf74fb1e3f0bf52cb73ed3d536",
+    "bytes": 157232,
+    "rows": 91,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\sources.jsonl",
+    "sha256": "a41bcdc6824576620ae14ef8fdf86bcc1995ab618c287b6d572eab9596de2f07",
+    "bytes": 696462,
+    "rows": 564,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\selection.jsonl",
+    "sha256": "31b09d6770ccfdfe169b2375beba218621f1a29e84d5890390eae9d99955b049",
+    "bytes": 153861,
+    "rows": 80,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\ordinary-triples.jsonl",
+    "sha256": "f6f9debbff0e8b98cdfbf28b20717d8460220fe07cd94e27f0f572e72fe337a9",
+    "bytes": 82323,
+    "rows": 91,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\hard-triples.jsonl",
+    "sha256": "476b421ca3741372af9f6fcbbad6452eb76801b2f40251caac1b275d8966c23f",
+    "bytes": 81959,
+    "rows": 91,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\data\\train-A.jsonl",
+    "sha256": "f358ea552c6c24a2f1d3b604c10bd7dc7687d51706841b30ea482dc6b1a802b0",
+    "bytes": 1239402,
+    "rows": 201,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\data\\train-B.jsonl",
+    "sha256": "d67105eae6d8e224e163ebfdd4ec21f2a3e2fc46eac475c31148ab15a7d54911",
+    "bytes": 1513263,
+    "rows": 201,
+    "copied": false
+  },
+  {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\data\\selection-fixed-context.jsonl",
+    "sha256": "d2ddb439561114d1ae07651e0361174d38a6f4e0b0f8144028c927bb63ebc3fc",
+    "bytes": 548169,
+    "rows": 80,
+    "copied": false
+  }
+]

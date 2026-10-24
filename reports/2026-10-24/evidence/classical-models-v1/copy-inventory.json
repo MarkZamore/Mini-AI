@@ -1,0 +1,84 @@
+{
+  "scope": "Actual CPU-only development model benchmark, not new final or normative quality acceptance",
+  "models_weights_and_python_dependencies_copied": false,
+  "files": [
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\answer_mode_models.py",
+      "path": "evidence/classical-models-v1/answer_mode_models.py",
+      "sha256": "fd2eb735f56e92d4e97ca45032d17a00628c9a14c87ab60ff5d2df3b6ba676af",
+      "bytes": 27919
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\preregistered-v1.json",
+      "path": "evidence/classical-models-v1/preregistered-v1-not-executed.json",
+      "sha256": "748cd58638e6920df8875090d1539b2b8614e040183885f7cfc06f35dc48249d",
+      "bytes": 2834
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\preregistered-v2.json",
+      "path": "evidence/classical-models-v1/preregistered-v2.json",
+      "sha256": "8b1aab8776cb75533df7d3d489a8e71215e7e7584101f24fd93553c961f211c5",
+      "bytes": 3189
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\wheel-lock.json",
+      "path": "evidence/classical-models-v1/wheel-lock.json",
+      "sha256": "3163d0be64bf150fe23c70c890033a216a9fc8d2519f466baefa2d2fd30a30ce",
+      "bytes": 1188
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\datasets\\mode-cases-v1.jsonl",
+      "path": "evidence/classical-models-v1/datasets/mode-cases-v1.jsonl",
+      "sha256": "10f8ec7392ddc5eb4910e20f9c8784f79e6b4ac5e93a80b06f2efa1fc360117b",
+      "bytes": 76171
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\datasets\\authoring-manifest-v1.json",
+      "path": "evidence/classical-models-v1/datasets/authoring-manifest-v1.json",
+      "sha256": "64979290c5c8ed79e25bdfd8148e7f60f2921de2ac5faadd09a7a7e7bf0140af",
+      "bytes": 1249
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\classifier-v1-independent-source-audit.json",
+      "path": "evidence/classical-models-v1/source-audit.json",
+      "sha256": "c930a72e3223a551e1806d579467319e93e1abc3224ff75aa98ecc91f8aeea66",
+      "bytes": 35808
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\pilot-v1\\metrics.json",
+      "path": "evidence/classical-models-v1/run/metrics.json",
+      "sha256": "03e1070abe8612c8b921ca8594847b281f35d302b85f2f868399f4569080e853",
+      "bytes": 30357
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\pilot-v1\\folds.json",
+      "path": "evidence/classical-models-v1/run/folds.json",
+      "sha256": "bdbc1c258c219320f6901b90aed2bebe9142923483039ddb6d779bc0696944ac",
+      "bytes": 5993
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\pilot-v1\\oof-predictions.jsonl",
+      "path": "evidence/classical-models-v1/run/oof-predictions.jsonl",
+      "sha256": "a154ed9eaf7ae3591193494d6ab7dcae96d2d04fb103ac62ea60970137157aa9",
+      "bytes": 5785
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\pilot-v1\\run-manifest.json",
+      "path": "evidence/classical-models-v1/run/run-manifest.json",
+      "sha256": "af49a9b4284e8fc6d5ef20e64680ca01682402b09ab309f0b98d178c75ce1c6a",
+      "bytes": 470
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\pilot-v1\\fitted-weight-structure.json",
+      "path": "evidence/classical-models-v1/run/fitted-weight-structure.json",
+      "sha256": "29cb8355604d717df5c3551e40e1af4a710eba76bdd7d77b68d1b32c4bc34abf",
+      "bytes": 2330
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\pilot-v1\\verification.json",
+      "path": "evidence/classical-models-v1/run/verification.json",
+      "sha256": "491d64395c51d821ad28796bc4a6ee38c8d46920d4d6b9856359b76dabd98fa0",
+      "bytes": 447
+    }
+  ]
+}

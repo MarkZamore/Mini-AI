@@ -1,0 +1,16 @@
+{
+  "configuration_id": "final-v16-foundation-searchable",
+  "app_sha256": "471cd062408efb135bd0c08465131a297dd9dfeadcd986e164a8057efa2f790b",
+  "checks": {
+    "organization_name": "passed-direct-name-and-one-source",
+    "termination": "passed-three-working-days-written-reply-agreed-date",
+    "source_card": "opened-and-closed-exact-document34448-header2-locator",
+    "cancel": "passed-user-click-stop-during-search",
+    "next_request_after_cancel": "passed-15-percent-of-48000-is-7200"
+  },
+  "external_original_opened": false,
+  "real_teams_call_tested": false,
+  "automatic_quality_acceptance": "not-demonstrated",
+  "human_verified": false,
+  "screenshots_are_original": true
+}

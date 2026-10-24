@@ -171,6 +171,22 @@
         "$ref": "#/$defs/dependency"
       }
     },
+    "adapter": {
+      "description": "Optional single plain LoRA GGUF, bound to the exact inventoried base. Scale is fixed to 1; GGUF alpha/rank applies.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "baseWeightsSha256"],
+      "properties": {
+        "path": {
+          "allOf": [
+            {"$ref": "#/$defs/relativePath"},
+            {"pattern": "^adapters/[a-z0-9][a-z0-9._-]{0,127}\\.gguf$"}
+          ]
+        },
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "baseWeightsSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
     "evidence": {
       "type": "object",
       "additionalProperties": false,
@@ -260,6 +276,11 @@
             {
               "required": [
                 "evidence"
+              ]
+            },
+            {
+              "required": [
+                "adapter"
               ]
             }
           ]

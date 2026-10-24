@@ -192,7 +192,7 @@ public final class AssistantPanelUiTest {
             String displayedAnswer = SourcePresentation.answer(canonicalAnswer, List.of(fragment));
             check(displayedAnswer.contains("Условие 1 обязательно. Исключение 2 сохраняется. [1]")
                 && !displayedAnswer.contains("needs_review") && displayedAnswer.contains("карточках источников")
-                && displayedAnswer.contains("извлечены не полностью"),
+                && displayedAnswer.contains("фрагменты требуют сверки") && !displayedAnswer.contains("полноту ответа"),
                 "citation presentation preserves substantive conditions and replaces service suffix with a readable note");
             check(SourcePresentation.warningDetails(canonicalAnswer).contains("OCR needs_review partial") && fragment.fragmentId().equals("fragment-1"),
                 "full diagnostics and canonical source ID remain available without data mutation");

@@ -1,0 +1,122 @@
+[
+  {
+    "case": {
+      "id": "1fc9d31a5049e4af9354cda6615894362571bd2f4f40abfa7592b81a1f5df5d2",
+      "split": "train",
+      "intent_group": "e194fc2e2d86009720e9294f202140f64b840aed800d93124f1c9f8b3214b75e",
+      "family_ids": [
+        "6db29c8ec05cb5a8df527446106ec0ad653b67d309f5da0bd2d462720bae7194"
+      ],
+      "document_ids": [
+        "satbayev:document:44070"
+      ],
+      "language": "ru",
+      "question": "Что говорится в документе «Ф КазНИТУ 601-23. Лист ознакомления работника с внутренними нормативными актами КазНИТУ» о «Лист ознакомления работника с внутренними нормативными актами»? Укажи положение и источник, сохрани существенные ограничения.",
+      "positive_ids": [
+        "324c7090ec02817a6ddfa1a4b4959243c3a87257e7facff7f7cf3cafda13c7c3"
+      ],
+      "context_ids": [
+        "324c7090ec02817a6ddfa1a4b4959243c3a87257e7facff7f7cf3cafda13c7c3"
+      ],
+      "required_atoms": [
+        {
+          "text": "Лист ознакомления работника с внутренними нормативными актами КазНИТУ",
+          "fragment_id": "324c7090ec02817a6ddfa1a4b4959243c3a87257e7facff7f7cf3cafda13c7c3",
+          "label": "source_verified_literal_span",
+          "semantic_completeness": "unknown"
+        }
+      ],
+      "forbidden_assertions": [],
+      "answerability": "answerable_from_identified_literal_span",
+      "verification": "automatic_source_verified_not_independent_human_gold",
+      "task": "native_document_rule_extraction",
+      "human_verified": false,
+      "evaluation_limit": "Document/anchor-assisted question; no independently verified complete normative semantic gold"
+    },
+    "source": {
+      "fragment_id": "324c7090ec02817a6ddfa1a4b4959243c3a87257e7facff7f7cf3cafda13c7c3",
+      "document_id": "satbayev:document:44070",
+      "family_id": "6db29c8ec05cb5a8df527446106ec0ad653b67d309f5da0bd2d462720bae7194",
+      "block_id": "satbayev:document:44070:51ad0984a4bf445d1ef3c53abecf152dda9cf8ec9a88da1ac2ac55305a6f13ea:75557a2208ab70ce:11",
+      "language": "ru",
+      "title": "Ф КазНИТУ 601-23. Лист ознакомления работника с внутренними нормативными актами КазНИТУ",
+      "text": "Лист ознакомления работника с внутренними нормативными актами КазНИТУ",
+      "source_sha256": "51ad0984a4bf445d1ef3c53abecf152dda9cf8ec9a88da1ac2ac55305a6f13ea",
+      "source_refs": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "51ad0984a4bf445d1ef3c53abecf152dda9cf8ec9a88da1ac2ac55305a6f13ea",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[13]"
+        }
+      ],
+      "verification": "machine_original_DOCX_XML_exact_match",
+      "human_verified": false,
+      "section_path": [],
+      "edition": null,
+      "effective_date": null,
+      "demo_topic_quarantine": false
+    }
+  },
+  {
+    "case": {
+      "id": "2f38d499b888e41957b94d8635db84afbd098b2c03d07d9a2ec835fd136975b9",
+      "split": "train",
+      "intent_group": "273e35463ecfb1b62e459925f7049d1c640a0b405b7461c736a152f49e7715f0",
+      "family_ids": [
+        "b881d4e19e5ad317400ac4a5777a7aefcb805038166332a0a303e3a0c1d82faa"
+      ],
+      "document_ids": [
+        "satbayev:document:43956"
+      ],
+      "language": "kz",
+      "question": "«Ф КазНИТУ 602-04. Договор обуч. работника за счет средств работодателя» құжатында «Жұмыскердің оқу ақысын оқыту ұйымы белгілеген мерзімде» туралы қандай талап көрсетілген? Шарттары болса, оларды сақтап, дереккөзді келтір.",
+      "positive_ids": [
+        "fb1817f91220d71dfe65670c801603b00ae20462ec405469c1550716d0095db5"
+      ],
+      "context_ids": [
+        "fb1817f91220d71dfe65670c801603b00ae20462ec405469c1550716d0095db5"
+      ],
+      "required_atoms": [
+        {
+          "text": "2.1.1. Жұмыскердің оқу ақысын оқыту ұйымы белгілеген мерзімде және шарттармен тиісінше төлеу",
+          "fragment_id": "fb1817f91220d71dfe65670c801603b00ae20462ec405469c1550716d0095db5",
+          "label": "source_verified_literal_span",
+          "semantic_completeness": "unknown"
+        }
+      ],
+      "forbidden_assertions": [],
+      "answerability": "answerable_from_identified_literal_span",
+      "verification": "automatic_source_verified_not_independent_human_gold",
+      "task": "native_document_rule_extraction",
+      "human_verified": false,
+      "evaluation_limit": "Document/anchor-assisted question; no independently verified complete normative semantic gold"
+    },
+    "source": {
+      "fragment_id": "fb1817f91220d71dfe65670c801603b00ae20462ec405469c1550716d0095db5",
+      "document_id": "satbayev:document:43956",
+      "family_id": "b881d4e19e5ad317400ac4a5777a7aefcb805038166332a0a303e3a0c1d82faa",
+      "block_id": "satbayev:document:43956:8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca:c37f966ac3711a4d:60",
+      "language": "kz",
+      "title": "Ф КазНИТУ 602-04. Договор обуч. работника за счет средств работодателя",
+      "text": "2.1.1. Жұмыскердің оқу ақысын оқыту ұйымы белгілеген мерзімде және шарттармен тиісінше төлеу;",
+      "source_sha256": "8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca",
+      "source_refs": [
+        {
+          "artifact_id": "original",
+          "source_sha256": "8f70049c75a0d1dd17fae33a93d532184f758026f9426492c4bad1ce972310ca",
+          "kind": "ooxml_node",
+          "part": "word/document.xml",
+          "xpath": "/w:document/w:body/w:p[69]"
+        }
+      ],
+      "verification": "machine_original_DOCX_XML_exact_match",
+      "human_verified": false,
+      "section_path": [],
+      "edition": null,
+      "effective_date": null,
+      "demo_topic_quarantine": false
+    }
+  }
+]

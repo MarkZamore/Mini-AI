@@ -1,0 +1,191 @@
+{
+  "schema": "mini-ai-finalization-evidence-copies-v1",
+  "scope": "Existing small factual summaries and paired uncertainty; not new inference, gold, training or final acceptance",
+  "closed_test_read": false,
+  "model_calls": 0,
+  "weight_or_corpus_copied": false,
+  "files": [
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\ordinary-v15-searchable\\source-review\\summary.json",
+      "copy": "evidence/finalization/v15-ordinary-summary.json",
+      "bytes": 7153,
+      "sha256": "042cec764b3cfac7a0a5a263a10979f72e4e06b70d685b3f45d677cc2eb7e210",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\draft-task-review\\summary.json",
+      "copy": "evidence/finalization/v15-draft-summary.json",
+      "bytes": 5556,
+      "sha256": "1f5e6f8c39c4eabe6ec3d9dacfbee906252fc9cae5d79a66278f80eae9b2347b",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\reference-task-review\\summary.json",
+      "copy": "evidence/finalization/v15-reference-summary.json",
+      "bytes": 3463,
+      "sha256": "50e48b052b5c055dc5a12cc28f37d120947ade773db6e1155c606d29897ecda8",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\verification.json",
+      "copy": "evidence/finalization/v14-focused-verification.json",
+      "bytes": 16230,
+      "sha256": "0dafb87b70a86d432baf27cfb56992606d7056d584ebc31edf3412a95ebdf592",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\v13-math-service\\answers.jsonl",
+      "copy": "evidence/finalization/math-service-two-cases.jsonl",
+      "bytes": 5494,
+      "sha256": "0064992b306d18a99257f573576df16fa7fc5dafbe6cba44d3313c5c278df602",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\query-rewrite-teacher-kz-v1\\review.json",
+      "copy": "evidence/finalization/query-rewrite-review.json",
+      "bytes": 6399,
+      "sha256": "e4cfa1fa756fa403e9c96a0336a077a94c6030fec49c8ce395fd521d02859b6f",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\query-rewrite-teacher-kz-v1\\review.md",
+      "copy": "evidence/finalization/query-rewrite-review.md",
+      "bytes": 5325,
+      "sha256": "7a4e1da9e87a74e90004cf4266931abc31bbca888b0027ad31d896cb77e145aa",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\representation-pilot-v1\\preparation\\results\\summary.json",
+      "copy": "evidence/finalization/representation-summary.json",
+      "bytes": 3069,
+      "sha256": "ca02b2d2fc01b037bbf994355e87f20695d5e69a7a556da43c255f1b29b3314e",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\teacher-kz-raw64-nonblank-v1\\diagnosis.json",
+      "copy": "evidence/finalization/nonblank-diagnosis.json",
+      "bytes": 9136,
+      "sha256": "b2be32517f0a2cfc2f20c8013a9cd123f02a6c7310adee071fafba52f46d9e91",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\index-nonblank-v1\\HANDOFF-v1.json",
+      "copy": "evidence/finalization/nonblank-handoff.json",
+      "bytes": 6199,
+      "sha256": "fbd624532ed5b963b5aa42591a7210d150c96a33394b6744e37f1f31f8ecceb8",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\m2-selector-gold-pilot-v1\\Source-gate.md",
+      "copy": "evidence/finalization/M2-source-gate.md",
+      "bytes": 4448,
+      "sha256": "754442fa6b8030d68e060fa4a8ad4831dff3150479799ca374a0efc8d30e201e",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\metrics.json",
+      "copy": "evidence/finalization/paired-retrieval-v13-bootstrap-v1/metrics.json",
+      "bytes": 16878,
+      "sha256": "c5cb42693c78e77839fc05fe5ed8ad72bbab7f678fe9103158765007f58e4de1",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\summary.md",
+      "copy": "evidence/finalization/paired-retrieval-v13-bootstrap-v1/summary.md",
+      "bytes": 5272,
+      "sha256": "cf19c4b8952c23ebcf9fea60b89609efadc4ecda47dddaddb1df5af8eac26f7d",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\bootstrap.py",
+      "copy": "evidence/finalization/paired-retrieval-v13-bootstrap-v1/bootstrap.py",
+      "bytes": 22335,
+      "sha256": "ae3c2678b59d8b9c70e06489340e60355d1f941a3ab512af0222a954bc342b97",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\cases.jsonl",
+      "copy": "evidence/finalization/paired-retrieval-v13-bootstrap-v1/cases.jsonl",
+      "bytes": 17774,
+      "sha256": "3ad68e39fe483680019f51765ade0d5543d1def23e4d2299e5c1bab671a1d0be",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\command.txt",
+      "copy": "evidence/finalization/paired-retrieval-v13-bootstrap-v1/command.txt",
+      "bytes": 398,
+      "sha256": "328859ac87744fc8347e8cfb5927d0e27bd30a2b1cf2ba0e3c870978289447fd",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\manifest.json",
+      "copy": "evidence/finalization/paired-retrieval-v13-bootstrap-v1/manifest.json",
+      "bytes": 1841,
+      "sha256": "f251c84107aa0a7cfaf5e53b080950cc41b3f255f36dc65cffc6a441b8f20bcc",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\native\\final-runtime-v16-copy\\release-authority.json",
+      "copy": "evidence/finalization/release-authority-v16.json",
+      "bytes": 1805,
+      "sha256": "c16b6c48beafb0c38b6ad7b51bb3443ad3383e3bbf0393ece8889a4eac198c1d",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\build-current-v16\\BUILT-HANDOFF.md",
+      "copy": "evidence/finalization/AOT-v16-built-handoff.md",
+      "bytes": 2514,
+      "sha256": "3aa3acbaf624c53784c6ebe7a56b2cc21f5b5859263424c8474a16741ddf587f",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\native\\final-runtime-v16-copy\\operation.json",
+      "copy": "evidence/finalization/runtime-v16-copy-operation.json",
+      "bytes": 2604,
+      "sha256": "81c4cb845fc812530ee316c6f70fe43852293cbad78b919d753e2d5b224f6b84",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\final-runtime-v16\\model\\worker.json",
+      "copy": "evidence/finalization/worker-v16-cuda.json",
+      "bytes": 10881,
+      "sha256": "e40c4050ce1bae319418c5f51560d9a42005fcefc2851ebc65b37f859af727e9",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\classical-models\\HANDOFF.md",
+      "copy": "evidence/finalization/classical-pilot-HANDOFF.md",
+      "bytes": 2969,
+      "sha256": "1113bdeab7c039e9be96e5f08e32bfeeae7a1278e2eb3cd77e7baf7c9e9c8f08",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\m2-action-gold-pilot-v1\\README.md",
+      "copy": "evidence/finalization/M2-action-candidates-README.md",
+      "bytes": 5479,
+      "sha256": "e4848e72bf746450526a673c419c3846d4514f18d0cef392e10e5313182ce38a",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\m2-action-gold-pilot-v1\\independent-review\\summary.md",
+      "copy": "evidence/finalization/M2-action-independent-summary.md",
+      "bytes": 4980,
+      "sha256": "d40145448a28d308819c9700f2eee4355cc75937c950563eb1d915208101a80d",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\native\\offline-installer-v16\\verification.json",
+      "copy": "evidence/finalization/offline-installer-v16-verification.json",
+      "bytes": 1031,
+      "sha256": "6805ea82a789ec9c386291d48ccfdacfdcb0832a3584c9d3584a23d082616a6f",
+      "transformation": "byte-exact existing small artifact copy"
+    },
+    {
+      "origin": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\native\\final-v16-root-verification.json",
+      "copy": "evidence/finalization/final-v16-root-verification.json",
+      "bytes": 2040,
+      "sha256": "fa5e8c68d363624a6c2a7007c7bacc731525e63e93bc11d19d060b10a56a45f6",
+      "transformation": "byte-exact existing small artifact copy"
+    }
+  ]
+}

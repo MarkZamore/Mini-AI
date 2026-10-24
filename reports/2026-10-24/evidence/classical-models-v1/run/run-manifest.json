@@ -1,0 +1,10 @@
+{
+  "status": "COMPLETED",
+  "dataset_sha256": "10f8ec7392ddc5eb4910e20f9c8784f79e6b4ac5e93a80b06f2efa1fc360117b",
+  "plan_sha256": "8b1aab8776cb75533df7d3d489a8e71215e7e7584101f24fd93553c961f211c5",
+  "code_sha256": "fd2eb735f56e92d4e97ca45032d17a00628c9a14c87ab60ff5d2df3b6ba676af",
+  "metrics_sha256": "03e1070abe8612c8b921ca8594847b281f35d302b85f2f868399f4569080e853",
+  "candidate_export": null,
+  "new_final_read": false,
+  "production_changed": false
+}

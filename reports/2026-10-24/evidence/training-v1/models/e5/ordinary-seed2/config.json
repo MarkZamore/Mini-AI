@@ -1,0 +1,19 @@
+{
+  "seed": 20261025,
+  "variant": "ordinary",
+  "loss": "two-candidate InfoNCE; cosine / temperature",
+  "temperature": 0.05,
+  "learning_rate": 2e-05,
+  "optimizer": "AdamW",
+  "weight_decay": 0.01,
+  "accumulation": 4,
+  "max_length": 256,
+  "trainable": "all encoder base weights",
+  "frozen": [],
+  "parameter_count": 117653760,
+  "total_epoch_steps": 23,
+  "train_sha256": "cd8b86909c8566a98ffc29b95f2f196ddb6994cf74fb1e3f0bf52cb73ed3d536",
+  "triples_sha256": "f6f9debbff0e8b98cdfbf28b20717d8460220fe07cd94e27f0f572e72fe337a9",
+  "foundation_lock_sha256": "38e2983a60920c507697db64f89d6b0cb97ca70d23fa1e8a3fd0d3c18b87ce90",
+  "final_used": false
+}

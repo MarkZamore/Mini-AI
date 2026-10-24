@@ -1,0 +1,47 @@
+{
+  "max_length": 1024,
+  "independent_source_intents": 91,
+  "retained_intents": 91,
+  "examples_per_variant": 201,
+  "context_variants": {
+    "full": 91,
+    "redundant": 90,
+    "partial": 20
+  },
+  "answer_tokens": {
+    "A": 12374,
+    "B": 12374
+  },
+  "content_tokens": {
+    "A": 91629,
+    "B": 116106
+  },
+  "equal_padded_compute_tokens": 116106,
+  "canonical_context_excerpt_events": 2,
+  "dropped": [
+    {
+      "intent_id": "04c55ef36869cc25cd43d344bf23b52cb7a9e0b641001817a08405901ecc8e1f",
+      "variant": "redundant",
+      "tokens": {
+        "A": 945,
+        "B": 1197
+      }
+    }
+  ],
+  "selection_examples": 80,
+  "generation_cases": 16,
+  "training_sha256": "cd8b86909c8566a98ffc29b95f2f196ddb6994cf74fb1e3f0bf52cb73ed3d536",
+  "selection_sha256": "31b09d6770ccfdfe169b2375beba218621f1a29e84d5890390eae9d99955b049",
+  "sources_sha256": "a41bcdc6824576620ae14ef8fdf86bcc1995ab618c287b6d572eab9596de2f07",
+  "final_read": false,
+  "human_verified": false,
+  "hypotheses": {
+    "A": "Clean evidence repetition + partial-evidence controls",
+    "B": "Same intents/factual targets plus real irrelevant distractor excerpts, deterministic shuffled source order/aliases, same partial controls"
+  },
+  "limitations": [
+    "Literal extraction supervision, not independently reviewed complete procedures",
+    "A/B supervised and padded budgets identical; B has more unmasked input text",
+    "Full-required-evidence excerpts may replace long canonical fragments; all target spans are retained"
+  ]
+}

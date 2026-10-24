@@ -1,0 +1,77 @@
+{
+  "schema": "mini-ai-final-research-report-v2",
+  "status": "research_closed_accepted_by_user",
+  "user_quality_acceptance": "accepted_by_explicit_instruction",
+  "automated_quality_acceptance": "not_demonstrated",
+  "new_test120_task10_executed": false,
+  "new_final_read": false,
+  "research_stopped_by_user": true,
+  "M2": "stopped_before_weight_updates_no_trained_adapter",
+  "configuration_id": "final-v16-foundation-searchable",
+  "app_sha256": "471cd062408efb135bd0c08465131a297dd9dfeadcd986e164a8057efa2f790b",
+  "native_build": "full7_AOT_exit0; not_quality_acceptance",
+  "native_demonstrations": {
+    "cases": 2,
+    "source": "real-final-native-application",
+    "first_source_card_opened_and_closed": true,
+    "external_original_open_not_tested": true,
+    "historically_blind": false,
+    "exact_TTFT_measured": false,
+    "real_Teams_call_tested": false,
+    "cancel_then_next_request": "PASS_actual_native_UI",
+    "gui_checks_path": "final/gui-checks.json"
+  },
+  "main_words": 2256,
+  "speech_spoken_words_excluding_FAQ": 1799,
+  "relative_authored_local_links": 141,
+  "bad_links": [],
+  "absolute_authored_links": [],
+  "screenshots_raw_sha_and_crop_sha_verified": true,
+  "crop_pixel_parity": "manifestPASS; both crops visually inspected; no image edits by report author",
+  "weight_or_corpus_duplication": false,
+  "publication": "prepared_release;public_check_by_root_separate",
+  "report_files": [
+    {
+      "path": "Отчёт.md",
+      "bytes": 32531,
+      "sha256": "deb8703ba2c527b687e13fda79846878f2d01036b886e28d36bec78ebd25ed0f"
+    },
+    {
+      "path": "Выступление_Как_я_обучил_модель.md",
+      "bytes": 29859,
+      "sha256": "59527bbedc230336f256ad70724c24de4afa015ce330932d3ce3f8f3f2e9c668"
+    },
+    {
+      "path": "КОНТЕКСТ_ОБУЧЕНИЯ_ДЛЯ_ДРУГОГО_ЧАТА.md",
+      "bytes": 34023,
+      "sha256": "a4ae594b141c8b7e2e7bb76c109d25b8249ea4fb9be6a7593b234b3aa2e25ca7"
+    },
+    {
+      "path": "Текущий_результат.md",
+      "bytes": 5697,
+      "sha256": "8df9d720c6f403dba988e35acf9475673cb5c6e68c23f1b8cc7dbfbda9a4be99"
+    },
+    {
+      "path": "appendices/Инженерные_методы_версии2.md",
+      "bytes": 17830,
+      "sha256": "a5e2a94859e5f9dcda99e905a5c6796402e5564071bf84c8bee13d5331c7a623"
+    },
+    {
+      "path": "appendices/Как_обучалась_модель.md",
+      "bytes": 46348,
+      "sha256": "06e0b23debfc516f5e4747c9ea31517e964c87cf8b81680b1fa9a3abed70fd90"
+    },
+    {
+      "path": "appendices/Классические_модели_режима_ответа.md",
+      "bytes": 17410,
+      "sha256": "7d34914b4efcdb094cfec8086c123c4298d9aeb4199a8bb36ba340e889251672"
+    }
+  ],
+  "main_status": "accepted_by_user",
+  "offline_installation_and_VerifyOnly": "PASS_all6811_files_no_model_run",
+  "context_words": 2387,
+  "small_finalization_copies_verified": 26,
+  "native_root_installed": "PASS_atomic_update_and_full6811VerifyOnly_CPUdefault",
+  "native_root_receipt_sha256": "fa5e8c68d363624a6c2a7007c7bacc731525e63e93bc11d19d060b10a56a45f6",
+  "canonical_MD_ready_for_immutable_copy": true
+}

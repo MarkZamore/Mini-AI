@@ -1,0 +1,5 @@
+{
+  "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\train-source-packet-v2-source-audit.json",
+  "sha256": "47f3bca1bd284fd88b6ee5444550ae8f6544ddb29614cafbc55469aab0ac1652",
+  "scope": "TRAIN-only source and demo-reserve recheck, not final questions/answers"
+}

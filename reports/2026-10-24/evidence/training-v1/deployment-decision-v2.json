@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "state": "operational-fallback",
+  "role": "operational-fallback",
+  "created_utc": "2026-10-23T22:52:25.560073+00:00",
+  "configuration_id": "mini-ai-20261024-4b-base-e5-foundation-fallback-v1",
+  "authorized_by": "root following predeclared quality-gate rejection and simpler-configuration fallback",
+  "evaluation_freeze": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-preparation\\FREEZE-v1.json",
+    "bytes": 7024632,
+    "sha256": "1fb75aab2a04e42d655ee272d0a29e3d380ec7e422400d0d5fda5ae275e619d9"
+  },
+  "evaluated_runtime_key": "untrained",
+  "runtime_root": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-control-untrained-v1",
+  "app_sha256": "160219d9351faad98b57c2c26394f13a4ea3e79af9172d794b1502e390a0dccd",
+  "model_manifest_sha256": "91eef09c28743ebae6a8ab251e841cc0f8b8446681e3831de77ed879457fe82a",
+  "corpus_sha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+  "production_source_prompt_thresholds_changed": false,
+  "new_weights_or_hyperparameters_selected": false,
+  "normative_answer_quality_acceptance": "not demonstrated for either configuration",
+  "independent_human_review": false,
+  "decision_basis": {
+    "automatic_source_review_answerable_success": {
+      "trained_e5": 6,
+      "foundation_e5": 6,
+      "denominator": 28
+    },
+    "observed_critical_cases": {
+      "trained_e5": 4,
+      "foundation_e5": 3,
+      "denominator": 30
+    },
+    "paired_success_difference_percentage_points": 0,
+    "family_bootstrap_95_percent_interval_percentage_points": [
+      -20,
+      25
+    ],
+    "interpretation": "Trained E5 improves retrieval, but end-to-end answer gain and no-growth critical-error gates were not met. Return to the previously frozen untrained control; this does not certify its normative reliability."
+  },
+  "evidence": [
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\challenge-reviewed-all-v1\\metrics.json",
+      "bytes": 619370,
+      "sha256": "08a1dda1d0dc38ea5b320efb48628f96add0b4cd79f9086dfe07ef013544273b"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\challenge-reviewed-all-v1\\manifest.json",
+      "bytes": 3376,
+      "sha256": "881320888e88d398e0e817757a31e9357ab14f41dfc352314760ef8fd22a63c8"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\final100-metrics\\metrics.json",
+      "bytes": 2106043,
+      "sha256": "a1843fd7085043e78621aa2921f5f2a21499a6566636d79717bc3876d80c3803"
+    }
+  ],
+  "deployment_pending": true,
+  "supersedes_decision": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\deployment-decision-v1.json",
+    "bytes": 2802,
+    "sha256": "b26b2436f53be3428268a07295dcb136b13b61df2b3d687f75560bc24405792d"
+  },
+  "runtime_inventory": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-control-untrained-v1.stage.json",
+    "bytes": 1540248,
+    "sha256": "6c13c42b56c141288fb5ae6749f21053bf015bb6fb6a71465572afc9c29e490f"
+  },
+  "runtime_inventory_scope": "All6811 exact evaluated-control runtime files; original FREEZE detected6789, remaining22long source paths separately validated against frozen canonical document JSON.",
+  "coverage_audit": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\postrun-audit\\coverage-companion.json",
+    "bytes": 85657,
+    "sha256": "10368dfeecc5eb39e8b0db916c89162db354a7d1ae94c666e71d526dbed5c7a6"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "checkpoint_sha256": "3a3bfcedbaf2de9d044676cbba29d1582f2aa43f94cbd3fecad73196d6dec7fc",
+  "optimizer_tensors_bitwise_restored": 1488,
+  "python_numpy_torch_cpu_rng_replay_identical": true,
+  "cuda_rng_bytes_present": true,
+  "cuda_initialized": false,
+  "step": 16,
+  "cursor": 201,
+  "scheduler_present": true,
+  "grad_scaler": null,
+  "scope": "Actual saved checkpoint/AdamW tensors and CPU RNG restored. Interrupted CUDA next-step equivalence was not exercised."
+}

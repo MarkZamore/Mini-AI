@@ -1,0 +1,92 @@
+{
+  "seed": 20261024,
+  "splits": {
+    "final": {
+      "count": 100,
+      "languages": {
+        "ru": 67,
+        "kz": 33
+      },
+      "families": 8,
+      "tasks": {
+        "native_document_rule_extraction": 96,
+        "explicit_condition": 4
+      },
+      "thematic_transfer": 30
+    },
+    "selection": {
+      "count": 80,
+      "languages": {
+        "ru": 44,
+        "kz": 36
+      },
+      "families": 5,
+      "tasks": {
+        "native_document_rule_extraction": 75,
+        "explicit_condition": 3,
+        "explicit_obligation": 2
+      },
+      "thematic_transfer": 0
+    },
+    "calibration": {
+      "count": 20,
+      "languages": {
+        "ru": 20
+      },
+      "families": 1,
+      "tasks": {
+        "native_document_rule_extraction": 17,
+        "explicit_condition": 3
+      },
+      "thematic_transfer": 0
+    },
+    "gatecheck": {
+      "count": 20,
+      "languages": {
+        "ru": 20
+      },
+      "families": 2,
+      "tasks": {
+        "native_document_rule_extraction": 17,
+        "explicit_obligation": 1,
+        "explicit_condition": 2
+      },
+      "thematic_transfer": 0
+    },
+    "train": {
+      "count": 91,
+      "languages": {
+        "kz": 30,
+        "ru": 61
+      },
+      "families": 17,
+      "tasks": {
+        "native_document_rule_extraction": 83,
+        "explicit_condition": 8
+      },
+      "thematic_transfer": 0
+    }
+  },
+  "expected_counts": {
+    "final": 100,
+    "selection": 80,
+    "calibration": 20,
+    "gatecheck": 20
+  },
+  "counts_met": true,
+  "all_final_families_excluded_from_weight_training": true,
+  "development_subsplits_share_families": false,
+  "human_review": false,
+  "claims": "Machine-verified extraction/explicit-obligation benchmark only; desired diverse semantic 120-question gold remains NOT established",
+  "unknown_semantic_labels": true,
+  "demo_exclusion": "Conservative whole-topic quarantine in new training and development",
+  "final_sha256": "75ba09584976432e67d8ef8f61f4811de1abae6f00909b83a01546efb60b3f75",
+  "final_disclosure_policy": "Training/selection modules must not open final; the author of data is not a blind evaluator",
+  "limitations": [
+    "No independently human-reviewed labels",
+    "No fabricated no-answer/procedure/conflict labels",
+    "Automatic document/phrase anchors make this easier than ordinary questions",
+    "Final has eight source families but two dominate; weak statistical power",
+    "Native original XML subset does not represent all OCR-heavy documents"
+  ]
+}

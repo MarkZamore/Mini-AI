@@ -1,0 +1,13 @@
+{
+  "status": "one_epoch_complete",
+  "steps": 23,
+  "total_epoch_steps": 23,
+  "examples_consumed": 91,
+  "variant": "hard",
+  "trainable_parameters": 117653760,
+  "full_base_weight_update": true,
+  "resume_checkpoint": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\checkpoint.pt",
+  "final_used": false,
+  "peak_vram_allocated": 2838489600,
+  "quality_acceptance": false
+}

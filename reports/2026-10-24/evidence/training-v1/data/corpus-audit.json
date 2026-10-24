@@ -1,0 +1,28 @@
+{
+  "seed": 20261024,
+  "corpus_documents": 599,
+  "corpus_families": 568,
+  "verified_native_blocks": 611,
+  "unique_verified_fragments": 564,
+  "eligible_documents": 40,
+  "eligible_families": 36,
+  "languages": {
+    "ru": 370,
+    "kz": 194
+  },
+  "quarantined_demo_topic_fragments": 58,
+  "rejections": {
+    "xml_mismatch": 78,
+    "blank_form": 153,
+    "exact_text_duplicate": 47
+  },
+  "human_review": false,
+  "limits": [
+    "Original DOCX only; XLSX cell supervision not yet source-verified",
+    "No semantic/manual gold",
+    "Prior grouping policy retained; cross-language family equivalence still automatic"
+  ],
+  "source_database_sha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+  "family_snapshot_sha256": "16cbd528a8fc6e3e9df7305dec629a51dd2b0e988a5382ef49c7759fe501f989",
+  "language_label_method": "Automatic Kazakh-specific-letter/Cyrillic heuristic, not human-verified"
+}

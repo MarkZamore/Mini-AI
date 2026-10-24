@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "scope": "Independent sklearn F1/confusion oracle and direct family/document/intent fold intersections, no new fit or final read",
+  "case_count": 30,
+  "oof_test_partition_exact": true,
+  "direct_family_document_intent_overlap_count": 0,
+  "sklearn_metric_oracle_matches": true,
+  "rejected_candidate_export_absent": true,
+  "metrics_sha256": "03e1070abe8612c8b921ca8594847b281f35d302b85f2f868399f4569080e853"
+}

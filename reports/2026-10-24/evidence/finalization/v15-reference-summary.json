@@ -1,0 +1,77 @@
+{
+  "scope": "Six open development actual v15 reference tasks only; no final/GUI acceptance",
+  "human_review": false,
+  "answers_sha256": "e67ae3400d433ca984b6b81430b20d8e7333bdf583c3be9a8ee67d8efbea8d40",
+  "gold_sha256": "bab688f5b3bab9f2348678941daca0f0b4b5623d57f62c438032daf1ae9e24cc",
+  "gold_revision": "v2 approved before outputs; questions unchanged",
+  "run": {
+    "scope": "Full-seven JVM development service host; not final EXE/GUI or held-out acceptance",
+    "command": [
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+      "-Xmx2g",
+      "-XX:-UsePerfData",
+      "-XX:+DisableAttachMechanism",
+      "-XX:ErrorFile=NUL",
+      "--enable-native-access=ALL-UNNAMED",
+      "-Denterprise.nativeDlls=true",
+      "-Dfile.encoding=UTF-8",
+      "-classpath",
+      "src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\classpath\\classes;src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\classpath\\EnterpriseAI-1.0.0.jar;src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\classpath\\libraries\\*",
+      "ai.enterprise.research.RagEvaluation",
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\runtime-searchable-ordinary-v2",
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\development-actions\\v2\\questions.jsonl",
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\answers.jsonl",
+      "answer"
+    ],
+    "input_sha256": "2c24038dbd3af63a92dca9e224951237e16fcec79942bc2a3b390190ff1e6067",
+    "human_verified": false,
+    "classpath_inventory_sha256": "77f6fcc210ec71ca8135453ecf0e0426325eeae39f74cc069c4f2362a8c221a1",
+    "worker_manifest_sha256": "aeb86673038e6188f61d996ed982561df857ea662398c08b89bec311e2e18d39",
+    "exit_code": 0,
+    "state": "completed",
+    "wall_seconds": 83.06200000000536,
+    "free_c_bytes": 26934665216,
+    "lease_released": true
+  },
+  "reviewed_ids": [
+    "action-dev-v1-04",
+    "action-dev-v1-06",
+    "action-dev-v1-08",
+    "action-dev-v1-09",
+    "action-dev-v1-11",
+    "action-dev-v1-12"
+  ],
+  "required_atom_counts": {
+    "supported": 20,
+    "unknown": 1,
+    "missing": 9
+  },
+  "required_atoms_total": 30,
+  "full_case_success_count": 0,
+  "canonical_delivered_units_exact": 37,
+  "layout_artifacts_delivered": 1,
+  "layout_cases": 4,
+  "checklist_artifacts_delivered": 2,
+  "new_visible_answers_vs_v14": {
+    "byte_identical": [
+      "04",
+      "06",
+      "08",
+      "11"
+    ],
+    "changed": [
+      "09",
+      "12"
+    ]
+  },
+  "causal_claim": false,
+  "offline_framing_replay_excluded_from_actual_scores": true,
+  "limitations": [
+    "Automatic semantic review, no independent human adjudication.",
+    "Exact canonical text/citation provenance is separate from source applicability, grouping and task usefulness.",
+    "No causal attribution to model training or a single code change: several snapshot/index/presentation details differ from v14.",
+    "Native Kazakh return all-media conjunction remains unknown, not a confirmed contradiction or PASS.",
+    "Canonical Russian evidence with Kazakh navigation is not a verified Kazakh translation.",
+    "Final pools do not reveal raw dense64/fusion stage losses."
+  ]
+}

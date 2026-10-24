@@ -1,0 +1,257 @@
+{
+  "compile_command": [
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\javac.exe",
+    "-encoding",
+    "UTF-8",
+    "-classpath",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+    "-d",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AnswerPolicy.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AnswerPresentation.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AssistantIntent.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AssistantModule.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\CitationAliases.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\EvidenceAnswer.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\EvidenceTaskPresentation.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\EvidenceTranslation.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\NormativeStreamGate.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\PromptSources.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\TaskArithmetic.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\TaskSolution.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\ui\\ai\\enterprise\\assistant\\MarkdownText.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\ui\\ai\\enterprise\\assistant\\SourcePresentation.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\search\\service\\ai\\enterprise\\search\\AssistantSearch.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\java\\ai\\enterprise\\research\\RagEvaluation.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\assistant-ui\\MarkdownDocumentTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\assistant-ui\\SourcePresentationTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\AnswerPresentationTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\AssistantIntentTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\EvidenceAnswerTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\EvidenceTaskPresentationTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\TaskArithmeticTest.java",
+    "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\TaskSolutionTest.java"
+  ],
+  "compile_exit_code": 0,
+  "sources": [
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AnswerPolicy.java",
+      "sha256": "e5c4d9c9e81c43af91568fd05c6a4e9c6b9b4ea7e5b2c1f41800a8c11dcffb25"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AnswerPresentation.java",
+      "sha256": "3ec649b2fb0521b414087df86f1e4e9a2de6e16ce85c26e90f331a4f109099af"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AssistantIntent.java",
+      "sha256": "96972eb8bd017281fdd7a99f19c0064742e0bed1825e4b2edafdc183350d205c"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\AssistantModule.java",
+      "sha256": "36e8bd09601bd0f98879ab1ecac0fd421beae37e07fd9f4397f6326037f4b07d"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\CitationAliases.java",
+      "sha256": "a936c7b706cdb0321f64d8ca9222bebac04eb6d6cdff815d5a009f0dcb9026aa"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\EvidenceAnswer.java",
+      "sha256": "20895d840e41158aeae956330f7cddacbb7e75bd86261abb6d5743e6f221a769"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\EvidenceTaskPresentation.java",
+      "sha256": "8ba83df88ae7e52a451e31c5b59390cf3c0dbf411d1eed1cca09b54a2863d40a"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\EvidenceTranslation.java",
+      "sha256": "6589d191d307c3251b13a6acf973ce23003ca284075356d5c695d31374074fb9"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\NormativeStreamGate.java",
+      "sha256": "5ae6a88dd44cc63b638fd7dae66235556f815f7de69abf896de0728f83b6dd8e"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\PromptSources.java",
+      "sha256": "850bb957ffe144f2698a4a43818de6dcdcaaccbe5ee7632b5511a328cbd39ab7"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\TaskArithmetic.java",
+      "sha256": "653d8b608ab9eb13b86317df434e01f4db68fa9dceeb1d2995af26f2457d54f2"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\service\\ai\\enterprise\\assistant\\TaskSolution.java",
+      "sha256": "6e01733d98e2aeb4ffdd3f978c1516236c3edba64d1537675aad0b35b0dde65d"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\ui\\ai\\enterprise\\assistant\\MarkdownText.java",
+      "sha256": "f61e75b7d4ef864f79cd168026d9f27d334c0f798535f1e39469e58082d53780"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\assistant\\ui\\ai\\enterprise\\assistant\\SourcePresentation.java",
+      "sha256": "f986821f46f0933d345956a4da2c26a53e89474a6b6321919a5f60de7121bfd7"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\modules\\search\\service\\ai\\enterprise\\search\\AssistantSearch.java",
+      "sha256": "20fe421b11bc4e3056ed78f2f6b7ec0e26dd0480432176dd468ed2b52aef750e"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\java\\ai\\enterprise\\research\\RagEvaluation.java",
+      "sha256": "e9825092d6c11ab72c191b6a50b9c55e078dd0b396a72328584b51b2ad18e668"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\assistant-ui\\MarkdownDocumentTest.java",
+      "sha256": "785f8e85bbe67aba377572744010a860cadc6e9bad30e2eaa1299e65024effaa"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\assistant-ui\\SourcePresentationTest.java",
+      "sha256": "48140d3b3b507674e2b31ee159ec236e4fb91cc4be91f742cce99d156ba04c36"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\AnswerPresentationTest.java",
+      "sha256": "087f6cc24197fee9df7483f7456d7244662bf192c336d7814451287561e709b8"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\AssistantIntentTest.java",
+      "sha256": "ebe4e16d3077046ebaf8ca16740a046589044475b9f9a8b1c11bd14ef5e85ed9"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\EvidenceAnswerTest.java",
+      "sha256": "ea7fe3f89c63414de78bbc23fe677db91b135ddf715a780439608178dfe7c419"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\EvidenceTaskPresentationTest.java",
+      "sha256": "1e38277d4bcf4c66ad2daa0fe0bca0477f752903a437793701172d683d6dd23f"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\TaskArithmeticTest.java",
+      "sha256": "5f3ae4222ea80eb914b842ae25ede3744a4e3813b1de9e565cda3995ff7f28a3"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\tests\\inference\\TaskSolutionTest.java",
+      "sha256": "0e71fa20dd4bf068777bb1b1d9d265af934522773f05c52c246435be38787990"
+    }
+  ],
+  "tests": [
+    {
+      "class": "ai.enterprise.assistant.EvidenceAnswerTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.assistant.EvidenceAnswerTest"
+      ],
+      "exit_code": 0,
+      "stdout": "Evidence answer invariants: 48 passed\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.assistant.AnswerPresentationTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.assistant.AnswerPresentationTest"
+      ],
+      "exit_code": 0,
+      "stdout": "AnswerPresentationTest PASS 8 presentation contracts; no extra inference\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.assistant.TaskSolutionTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.assistant.TaskSolutionTest"
+      ],
+      "exit_code": 0,
+      "stdout": "TaskSolutionTest PASS 59 assertions\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.assistant.TaskArithmeticTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.assistant.TaskArithmeticTest"
+      ],
+      "exit_code": 0,
+      "stdout": "TaskArithmeticTest PASS 1003 assertions\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.assistant.AssistantIntentTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.assistant.AssistantIntentTest"
+      ],
+      "exit_code": 0,
+      "stdout": "AssistantIntentTest PASS 650 assertions\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.assistant.EvidenceTaskPresentationTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.assistant.EvidenceTaskPresentationTest"
+      ],
+      "exit_code": 0,
+      "stdout": "EvidenceTaskPresentationTest PASS 57 assertions\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.tests.SourcePresentationTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.tests.SourcePresentationTest"
+      ],
+      "exit_code": 0,
+      "stdout": "Source presentation checks passed: 22; full seven-module classpath; no GUI/model/build launch\n",
+      "stderr": ""
+    },
+    {
+      "class": "ai.enterprise.tests.MarkdownDocumentTest",
+      "command": [
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dfile.encoding=UTF-8",
+        "-Dswt.library.path=C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\current-working-v11\\native",
+        "-classpath",
+        "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\rebuilt-v14\\classes;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\libs\\EnterpriseAI-1.0.0.jar;C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\runtime-libs\\*",
+        "ai.enterprise.tests.MarkdownDocumentTest"
+      ],
+      "exit_code": 0,
+      "stdout": "MarkdownDocumentTest: 75 PASS; full7 classpath; no Display/model/GUI\n",
+      "stderr": ""
+    }
+  ],
+  "scope": "Current full-seven assistant/search/UI/research overlay; pure focused invariants with SWT static init only; no windows/models/qualityacceptance"
+}

@@ -1,0 +1,6 @@
+{
+  "reason": "Standard conversion retained unused MTP tensors:441 instead of deployed426. Its precision/export path is not the matched training control. Preserved as an unaccepted exploratory artifact.",
+  "rejected_sha256": "ab9a0cac6b6354820870e3c10b9a2ed3bf7ef3ed8d978d88babcf01fe37abb09",
+  "production_installed": false,
+  "intended_replacement": "matched-baseline-Q6_K.gguf"
+}

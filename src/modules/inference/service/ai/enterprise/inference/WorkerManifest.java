@@ -22,6 +22,7 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
         var expected = new HashSet<>(KEYS);
         if (version == 2) expected.addAll(Set.of("backend", "dependencies"));
         if (version == 2 && value.containsKey("evidence")) expected.add("evidence");
+        if (version == 2 && value.containsKey("adapter")) expected.add("adapter");
         if (!value.keySet().equals(expected)) throw new IllegalArgumentException("worker.json: неверный набор полей");
         if (!"enterpriseai.inference.v1".equals(string(value, "protocol"))
             || !"windows-x64".equals(string(value, "architecture"))
@@ -62,8 +63,20 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
         if (exe == null || !weights.equals(inventory.get(weights.path().toLowerCase(Locale.ROOT))))
             throw new IllegalArgumentException("worker.json: EXE и веса должны входить в files");
         Map<String,Path> dependencies = new LinkedHashMap<>();
+        Path adapterPath = null;
         Set<String> permittedImports = new HashSet<>();
         if (version == 2) {
+            if (value.containsKey("adapter")) {
+                var adapter = object(value, "adapter");
+                if (!adapter.keySet().equals(Set.of("path", "sha256", "baseWeightsSha256")))
+                    throw new IllegalArgumentException("Неверное описание адаптера");
+                FileSpec asset = spec(Map.of("path", string(adapter, "path"), "sha256", string(adapter, "sha256")));
+                if (!asset.path().matches("adapters/[a-z0-9][a-z0-9._-]{0,127}\\.gguf")
+                    || asset.path().equals(weights.path()) || !asset.equals(inventory.get(asset.path()))
+                    || !weights.sha256().equals(string(adapter, "baseWeightsSha256")))
+                    throw new IllegalArgumentException("Адаптер должен входить в inventory и соответствовать точным исходным весам");
+                adapterPath = contained(root, asset.path());
+            }
             var backend = object(value, "backend");
             if (!backend.keySet().equals(Set.of("kind", "device", "gpuMemoryBudgetBytes", "reserveFreeGpuMemoryBytes")))
                 throw new IllegalArgumentException("worker.json: неверный backend");
@@ -145,6 +158,10 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
                 throw new IllegalArgumentException("SHA-256 не совпадает: " + entry.getValue().path());
         }
         Arrays.fill(buffer, (byte) 0);
+        if (adapterPath != null) {
+            requireGguf(contained(root, weights.path()));
+            requireGguf(adapterPath);
+        }
         WorkerPeAudit.verify(contained(root, exe.path()), cancelled, permittedImports, false);
         for (var dependency : dependencies.entrySet()) {
             Set<String> libraryImports = permittedImports;
@@ -161,6 +178,12 @@ public record WorkerManifest(Path executable, Path weights, String engine, Strin
     }
 
     private record FileSpec(String path, String sha256) {}
+    private static void requireGguf(Path path) throws java.io.IOException {
+        try (InputStream stream = Files.newInputStream(path)) {
+            if (!Arrays.equals(stream.readNBytes(4), new byte[]{'G','G','U','F'}))
+                throw new IllegalArgumentException("Адаптер и его исходные веса должны содержать GGUF");
+        }
+    }
     private static FileSpec spec(Map<String,Object> value) {
         if (!value.keySet().equals(Set.of("path", "sha256"))) throw new IllegalArgumentException("Неверное описание файла");
         String path = string(value, "path"), hash = string(value, "sha256");

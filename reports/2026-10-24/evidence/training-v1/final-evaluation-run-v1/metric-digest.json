@@ -1,0 +1,869 @@
+{
+  "source": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\final100-metrics\\metrics.json",
+    "bytes": 2106043,
+    "sha256": "a1843fd7085043e78621aa2921f5f2a21499a6566636d79717bc3876d80c3803"
+  },
+  "interpretation": "Descriptive extraction of frozen scores, no new metric definitions or tuning",
+  "main_semantic_quality": "unknown_not_accuracy0",
+  "runs": {
+    "final": {
+      "cases": 100,
+      "family_counts": {
+        "66d0307d8c4ef3aae05227b77ab4e40dc8b98a0d9d93d560d706eb6ff676384c": 55,
+        "8b2575ad7a2ef04c15bf825af29bf7f0e333e4a7ac6d01462c25cd3da307c01e": 30,
+        "52cca147979edda69c0806bdf590fe95bc66d9f1721d65abfb27a9abba6dca6c": 3,
+        "0ac01e42702829869b14a0e81cd16713f7eeb8841149303c91805285ec859a97": 3,
+        "c64820473e2d304f67f1b1dedb77b87568b04140f04b450d40bdbbbd847d21bf": 3,
+        "2fc90f0d4552ec11db77b6c54cd9007dc665f1cfd0ca1f4face1ec0495f7c068": 2,
+        "5a94de8a1c75550f754be2abcb7b684675494c528babe8c653f23c669725761c": 2,
+        "478f007cad48a89d9dabb36f4d109890bbef3c96f008bfe015c6abfa694c3a0e": 2
+      },
+      "language_counts": {
+        "ru": 67,
+        "kz": 33
+      },
+      "task_counts": {
+        "native_document_rule_extraction": 96,
+        "explicit_condition": 4
+      },
+      "actual_answer_context": {
+        "recall_at_10": 0.95,
+        "ndcg_at_10": 0.8587333804334352,
+        "literal_atom_coverage": 0.44,
+        "cited_literal_atom_coverage": 0.44,
+        "incomplete_answer_warning_rate": 0.89
+      },
+      "separate_search_limit24_top10": {
+        "cases": 100,
+        "missing_results": 0,
+        "request_errors": 0,
+        "metrics": {
+          "recall_at_5": 0.93,
+          "recall_at_10": 0.98,
+          "ndcg_at_10": 0.8681964005243341
+        },
+        "full_search_seconds": {
+          "count": 100,
+          "median": 0.10508245,
+          "p95": 0.16441481,
+          "minimum": 0.0828291,
+          "maximum": 10.0478133
+        }
+      },
+      "semantic_unknown": 100,
+      "citations_mechanically_invalid_answers": 0,
+      "first_visible_seconds": {
+        "count": 100,
+        "median": 3.7266048,
+        "p95": 7.083441459999999,
+        "minimum": 2.7161806,
+        "maximum": 23.1450359
+      },
+      "full_seconds": {
+        "count": 100,
+        "median": 6.22036035,
+        "p95": 10.390083854999999,
+        "minimum": 3.3552359,
+        "maximum": 24.6314905
+      },
+      "answer_chars": {
+        "count": 100,
+        "median": 1957.5,
+        "p95": 4146.349999999999,
+        "minimum": 215.0,
+        "maximum": 5358.0
+      },
+      "transfer30": {
+        "cases": 30,
+        "family_counts": {
+          "8b2575ad7a2ef04c15bf825af29bf7f0e333e4a7ac6d01462c25cd3da307c01e": 30
+        },
+        "language_counts": {
+          "ru": 30
+        },
+        "rates": {
+          "literal_atom_coverage": 0.6,
+          "cited_literal_atom_coverage": 0.6,
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 1.0,
+          "request_success_rate": 1.0,
+          "visible_source_cited_answer_rate": 0.8,
+          "positive_citation_present_rate": 0.8,
+          "strict_literal_proxy_success_rate": 0.0,
+          "detected_deterministic_refusal_or_clarification_rate": 0.0,
+          "generation_attempted_rate": 1.0,
+          "incomplete_answer_warning_rate": 0.8
+        },
+        "semantic_unknown": 30
+      }
+    },
+    "untrained": {
+      "cases": 100,
+      "family_counts": {
+        "66d0307d8c4ef3aae05227b77ab4e40dc8b98a0d9d93d560d706eb6ff676384c": 55,
+        "8b2575ad7a2ef04c15bf825af29bf7f0e333e4a7ac6d01462c25cd3da307c01e": 30,
+        "52cca147979edda69c0806bdf590fe95bc66d9f1721d65abfb27a9abba6dca6c": 3,
+        "0ac01e42702829869b14a0e81cd16713f7eeb8841149303c91805285ec859a97": 3,
+        "c64820473e2d304f67f1b1dedb77b87568b04140f04b450d40bdbbbd847d21bf": 3,
+        "2fc90f0d4552ec11db77b6c54cd9007dc665f1cfd0ca1f4face1ec0495f7c068": 2,
+        "5a94de8a1c75550f754be2abcb7b684675494c528babe8c653f23c669725761c": 2,
+        "478f007cad48a89d9dabb36f4d109890bbef3c96f008bfe015c6abfa694c3a0e": 2
+      },
+      "language_counts": {
+        "ru": 67,
+        "kz": 33
+      },
+      "task_counts": {
+        "native_document_rule_extraction": 96,
+        "explicit_condition": 4
+      },
+      "actual_answer_context": {
+        "recall_at_10": 0.56,
+        "ndcg_at_10": 0.44912686968683885,
+        "literal_atom_coverage": 0.29,
+        "cited_literal_atom_coverage": 0.29,
+        "incomplete_answer_warning_rate": 0.79
+      },
+      "separate_search_limit24_top10": {
+        "cases": 100,
+        "missing_results": 0,
+        "request_errors": 0,
+        "metrics": {
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.58,
+          "ndcg_at_10": 0.45535085128335107
+        },
+        "full_search_seconds": {
+          "count": 100,
+          "median": 0.1235928,
+          "p95": 0.16542364,
+          "minimum": 0.0913934,
+          "maximum": 10.1794567
+        }
+      },
+      "semantic_unknown": 100,
+      "citations_mechanically_invalid_answers": 0,
+      "first_visible_seconds": {
+        "count": 100,
+        "median": 4.18256435,
+        "p95": 8.259750884999999,
+        "minimum": 2.6388932,
+        "maximum": 22.1658386
+      },
+      "full_seconds": {
+        "count": 100,
+        "median": 6.00898675,
+        "p95": 10.964835035,
+        "minimum": 3.7989546,
+        "maximum": 25.5319626
+      },
+      "answer_chars": {
+        "count": 100,
+        "median": 1814.0,
+        "p95": 3420.0999999999995,
+        "minimum": 215.0,
+        "maximum": 4591.0
+      },
+      "transfer30": {
+        "cases": 30,
+        "family_counts": {
+          "8b2575ad7a2ef04c15bf825af29bf7f0e333e4a7ac6d01462c25cd3da307c01e": 30
+        },
+        "language_counts": {
+          "ru": 30
+        },
+        "rates": {
+          "literal_atom_coverage": 0.36666666666666664,
+          "cited_literal_atom_coverage": 0.36666666666666664,
+          "recall_at_5": 0.7666666666666667,
+          "recall_at_10": 0.8,
+          "ndcg_at_10": 0.7354296500935632,
+          "request_success_rate": 1.0,
+          "visible_source_cited_answer_rate": 0.7333333333333333,
+          "positive_citation_present_rate": 0.6666666666666666,
+          "strict_literal_proxy_success_rate": 0.0,
+          "detected_deterministic_refusal_or_clarification_rate": 0.0,
+          "generation_attempted_rate": 1.0,
+          "incomplete_answer_warning_rate": 0.7333333333333333
+        },
+        "semantic_unknown": 30
+      }
+    },
+    "lexical": {
+      "cases": 100,
+      "family_counts": {
+        "66d0307d8c4ef3aae05227b77ab4e40dc8b98a0d9d93d560d706eb6ff676384c": 55,
+        "8b2575ad7a2ef04c15bf825af29bf7f0e333e4a7ac6d01462c25cd3da307c01e": 30,
+        "52cca147979edda69c0806bdf590fe95bc66d9f1721d65abfb27a9abba6dca6c": 3,
+        "0ac01e42702829869b14a0e81cd16713f7eeb8841149303c91805285ec859a97": 3,
+        "c64820473e2d304f67f1b1dedb77b87568b04140f04b450d40bdbbbd847d21bf": 3,
+        "2fc90f0d4552ec11db77b6c54cd9007dc665f1cfd0ca1f4face1ec0495f7c068": 2,
+        "5a94de8a1c75550f754be2abcb7b684675494c528babe8c653f23c669725761c": 2,
+        "478f007cad48a89d9dabb36f4d109890bbef3c96f008bfe015c6abfa694c3a0e": 2
+      },
+      "language_counts": {
+        "ru": 67,
+        "kz": 33
+      },
+      "task_counts": {
+        "native_document_rule_extraction": 96,
+        "explicit_condition": 4
+      },
+      "actual_answer_context": {
+        "recall_at_10": 0.0,
+        "ndcg_at_10": 0.0,
+        "literal_atom_coverage": 0.0,
+        "cited_literal_atom_coverage": 0.0,
+        "incomplete_answer_warning_rate": 0.0
+      },
+      "separate_search_limit24_top10": {
+        "cases": 100,
+        "missing_results": 0,
+        "request_errors": 0,
+        "metrics": {
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "ndcg_at_10": 0.0
+        },
+        "full_search_seconds": {
+          "count": 100,
+          "median": 0.0324419,
+          "p95": 0.03669771499999999,
+          "minimum": 0.0254106,
+          "maximum": 0.5541493
+        }
+      },
+      "semantic_unknown": 100,
+      "citations_mechanically_invalid_answers": 0,
+      "first_visible_seconds": {
+        "count": 100,
+        "median": 0.034626500000000004,
+        "p95": 0.044641890000000004,
+        "minimum": 0.0264873,
+        "maximum": 0.5728309
+      },
+      "full_seconds": {
+        "count": 100,
+        "median": 0.03480395,
+        "p95": 0.044759595,
+        "minimum": 0.026605,
+        "maximum": 0.5734695
+      },
+      "answer_chars": {
+        "count": 100,
+        "median": 234.0,
+        "p95": 234.0,
+        "minimum": 234.0,
+        "maximum": 234.0
+      },
+      "transfer30": {
+        "cases": 30,
+        "family_counts": {
+          "8b2575ad7a2ef04c15bf825af29bf7f0e333e4a7ac6d01462c25cd3da307c01e": 30
+        },
+        "language_counts": {
+          "ru": 30
+        },
+        "rates": {
+          "literal_atom_coverage": 0.0,
+          "cited_literal_atom_coverage": 0.0,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "ndcg_at_10": 0.0,
+          "request_success_rate": 1.0,
+          "visible_source_cited_answer_rate": 0.0,
+          "positive_citation_present_rate": 0.0,
+          "strict_literal_proxy_success_rate": 0.0,
+          "detected_deterministic_refusal_or_clarification_rate": 1.0,
+          "generation_attempted_rate": 0.0,
+          "incomplete_answer_warning_rate": 0.0
+        },
+        "semantic_unknown": 30
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "left": "untrained",
+      "right": "final",
+      "effect": "E5 full-FT weights and corresponding rebuilt index, same generator/architecture/hybrid code; component training effect",
+      "paired": {
+        "recall_at_10": {
+          "metric": "recall_at_10",
+          "difference_right_minus_left": 0.39,
+          "ci95_family_bootstrap": [
+            0.12244897959183673,
+            0.5241935483870968
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.09523809523809523,
+            0.555571161048689
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 7254708451532454272,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "literal_atom_coverage": {
+          "metric": "literal_atom_coverage",
+          "difference_right_minus_left": 0.15,
+          "ci95_family_bootstrap": [
+            -0.047619047619047616,
+            0.2631578947368421
+          ],
+          "ci95_hierarchical_family_intent": [
+            -0.055575117370892,
+            0.3378918918918911
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 6596427073252284854,
+          "positive_family_interval": false,
+          "negative_family_interval": false,
+          "interval_includes_zero": true,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "first_visible_seconds": {
+          "metric": "first_visible_seconds",
+          "difference_right_minus_left": -0.522745374,
+          "ci95_family_bootstrap": [
+            -1.2107998994934208,
+            -0.21100419054054056
+          ],
+          "ci95_hierarchical_family_intent": [
+            -1.2750236204761902,
+            -0.00010816927272736902
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 15954717811131210527,
+          "positive_family_interval": false,
+          "negative_family_interval": true,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "full_seconds": {
+          "metric": "full_seconds",
+          "difference_right_minus_left": 0.073725113,
+          "ci95_family_bootstrap": [
+            -0.18121646251315768,
+            0.3327513574894736
+          ],
+          "ci95_hierarchical_family_intent": [
+            -0.40591401153253404,
+            0.5005101708467155
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 7222771762505115327,
+          "positive_family_interval": false,
+          "negative_family_interval": false,
+          "interval_includes_zero": true,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        }
+      },
+      "transfer30": {
+        "primary_success_conservative": {
+          "metric": "primary_success_conservative",
+          "difference_right_minus_left": 0.0,
+          "ci95_family_bootstrap": [
+            0.0,
+            0.0
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.0,
+            0.0
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 2063340234919323589,
+          "positive_family_interval": false,
+          "negative_family_interval": false,
+          "interval_includes_zero": true,
+          "advantage_confirmed": false,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "literal_atom_coverage": {
+          "metric": "literal_atom_coverage",
+          "difference_right_minus_left": 0.23333333333333334,
+          "ci95_family_bootstrap": [
+            0.23333333333333334,
+            0.23333333333333334
+          ],
+          "ci95_hierarchical_family_intent": [
+            -0.06666666666666667,
+            0.5
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 9874531007006781573,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "recall_at_10": {
+          "metric": "recall_at_10",
+          "difference_right_minus_left": 0.2,
+          "ci95_family_bootstrap": [
+            0.2,
+            0.2
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.06666666666666667,
+            0.3333333333333333
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 3602270259703041562,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "ndcg_at_10": {
+          "metric": "ndcg_at_10",
+          "difference_right_minus_left": 0.2645703499064368,
+          "ci95_family_bootstrap": [
+            0.2645703499064368,
+            0.2645703499064368
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.12817837440475707,
+            0.4132646669557346
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 9634926208210526660,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        }
+      }
+    },
+    {
+      "left": "lexical",
+      "right": "untrained",
+      "effect": "Engineering addition of untrained semantic retrieval and RRF to current lexical control; not weight-training effect",
+      "paired": {
+        "recall_at_10": {
+          "metric": "recall_at_10",
+          "difference_right_minus_left": 0.56,
+          "ci95_family_bootstrap": [
+            0.4044943820224719,
+            0.8367346938775511
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.3700787401574803,
+            0.875
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 1777419487548588428,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "literal_atom_coverage": {
+          "metric": "literal_atom_coverage",
+          "difference_right_minus_left": 0.29,
+          "ci95_family_bootstrap": [
+            0.21621621621621623,
+            0.48936170212765956
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.18110236220472442,
+            0.5238095238095238
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 5169690398957465286,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "first_visible_seconds": {
+          "metric": "first_visible_seconds",
+          "difference_right_minus_left": 4.796561205,
+          "ci95_family_bootstrap": [
+            4.5826263166666665,
+            5.28543774
+          ],
+          "ci95_hierarchical_family_intent": [
+            4.35149582037182,
+            5.493536563085585
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 11876364820906180789,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "full_seconds": {
+          "metric": "full_seconds",
+          "difference_right_minus_left": 6.736112867,
+          "ci95_family_bootstrap": [
+            6.06458259375,
+            7.118032491129033
+          ],
+          "ci95_hierarchical_family_intent": [
+            5.917294021567507,
+            7.442325166717696
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 14389924191479329247,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        }
+      },
+      "transfer30": {
+        "primary_success_conservative": {
+          "metric": "primary_success_conservative",
+          "difference_right_minus_left": 0.0,
+          "ci95_family_bootstrap": [
+            0.0,
+            0.0
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.0,
+            0.0
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 2228002841866482509,
+          "positive_family_interval": false,
+          "negative_family_interval": false,
+          "interval_includes_zero": true,
+          "advantage_confirmed": false,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "literal_atom_coverage": {
+          "metric": "literal_atom_coverage",
+          "difference_right_minus_left": 0.36666666666666664,
+          "ci95_family_bootstrap": [
+            0.36666666666666664,
+            0.36666666666666664
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.2,
+            0.5333333333333333
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 17313273166153172211,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "recall_at_10": {
+          "metric": "recall_at_10",
+          "difference_right_minus_left": 0.8,
+          "ci95_family_bootstrap": [
+            0.8,
+            0.8
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.6333333333333333,
+            0.9333333333333333
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 9716015150302912005,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "ndcg_at_10": {
+          "metric": "ndcg_at_10",
+          "difference_right_minus_left": 0.7354296500935632,
+          "ci95_family_bootstrap": [
+            0.7354296500935632,
+            0.7354296500935632
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.5833290410433687,
+            0.8753953169047638
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 6265167181084050794,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        }
+      }
+    },
+    {
+      "left": "lexical",
+      "right": "final",
+      "effect": "Combined engineering hybrid retrieval plus trained E5; not pure training effect or historical-A0 comparison",
+      "paired": {
+        "recall_at_10": {
+          "metric": "recall_at_10",
+          "difference_right_minus_left": 0.95,
+          "ci95_family_bootstrap": [
+            0.8947368421052632,
+            1.0
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.8732394366197183,
+            1.0
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 5286706283809297965,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "literal_atom_coverage": {
+          "metric": "literal_atom_coverage",
+          "difference_right_minus_left": 0.44,
+          "ci95_family_bootstrap": [
+            0.352,
+            0.5866666666666667
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.2972972972972973,
+            0.6533461538461537
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 1657061791150279144,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "first_visible_seconds": {
+          "metric": "first_visible_seconds",
+          "difference_right_minus_left": 4.273815831,
+          "ci95_family_bootstrap": [
+            3.858669406007353,
+            4.514205134666667
+          ],
+          "ci95_hierarchical_family_intent": [
+            3.7589528009583337,
+            4.7335595747985435
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 5586734509512437830,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "full_seconds": {
+          "metric": "full_seconds",
+          "difference_right_minus_left": 6.80983798,
+          "ci95_family_bootstrap": [
+            6.107591758011364,
+            7.084250473275862
+          ],
+          "ci95_hierarchical_family_intent": [
+            6.036096277,
+            7.407937478969749
+          ],
+          "paired_cases": 100,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 8,
+          "intent_groups": 100,
+          "bootstrap_samples": 10000,
+          "seed": 8528615787821978732,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        }
+      },
+      "transfer30": {
+        "primary_success_conservative": {
+          "metric": "primary_success_conservative",
+          "difference_right_minus_left": 0.0,
+          "ci95_family_bootstrap": [
+            0.0,
+            0.0
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.0,
+            0.0
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 162185504303956393,
+          "positive_family_interval": false,
+          "negative_family_interval": false,
+          "interval_includes_zero": true,
+          "advantage_confirmed": false,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "literal_atom_coverage": {
+          "metric": "literal_atom_coverage",
+          "difference_right_minus_left": 0.6,
+          "ci95_family_bootstrap": [
+            0.6,
+            0.6
+          ],
+          "ci95_hierarchical_family_intent": [
+            0.43333333333333335,
+            0.7666666666666667
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 9837856642878861793,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "recall_at_10": {
+          "metric": "recall_at_10",
+          "difference_right_minus_left": 1.0,
+          "ci95_family_bootstrap": [
+            1.0,
+            1.0
+          ],
+          "ci95_hierarchical_family_intent": [
+            1.0,
+            1.0
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 8201606591542479736,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        },
+        "ndcg_at_10": {
+          "metric": "ndcg_at_10",
+          "difference_right_minus_left": 1.0,
+          "ci95_family_bootstrap": [
+            1.0,
+            1.0
+          ],
+          "ci95_hierarchical_family_intent": [
+            1.0,
+            1.0
+          ],
+          "paired_cases": 30,
+          "excluded_missing_numeric_pairs": 0,
+          "family_clusters": 1,
+          "intent_groups": 30,
+          "bootstrap_samples": 10000,
+          "seed": 98320334742519169,
+          "positive_family_interval": true,
+          "negative_family_interval": false,
+          "interval_includes_zero": false,
+          "advantage_confirmed": null,
+          "interpretation": "Proxy-specific interval only; no independent semantic-quality claim"
+        }
+      }
+    }
+  ],
+  "transfer_limitation": "30 cases belong to one family: a degenerate family-bootstrap interval is not evidence of population transfer; hierarchical intent resampling describes only this theme."
+}

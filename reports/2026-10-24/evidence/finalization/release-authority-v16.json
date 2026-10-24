@@ -1,0 +1,23 @@
+{
+  "state": "release-runtime-frozen",
+  "approved_for_distribution": true,
+  "human_review": false,
+  "configuration_id": "final-v16-foundation-searchable",
+  "release_tag": "v2026.10.24-final",
+  "runtime_root": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\final-runtime-v16",
+  "runtime_inventory": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\native\\final-runtime-v16-copy\\inventory.json",
+    "bytes": 2139882,
+    "sha256": "8b8b38386e747c1b93f7d7ca440be7aea76380b62d3ca8f0a857ba385a6f5571"
+  },
+  "quality_acceptance": "not-demonstrated",
+  "quality_notice": "Финальный комплект принят пользователем по его прямому указанию. Автоматическая приёмка качества не подтверждена: закрытые test120/task10 не запускались. Исходные Qwen3.5-4B Q6_K и foundation E5; новые инженерные исправления поиска, сохранения оснований и оформления. Проверка сборки/установки и две реальные демонстрации не означают полной нормативной надёжности.",
+  "user_acceptance": {
+    "status": "accepted_by_explicit_instruction",
+    "statement": "Приёмку качества можешь отмечать пройденной"
+  },
+  "research_stopped_by_user": true,
+  "app_sha256": "471cd062408efb135bd0c08465131a297dd9dfeadcd986e164a8057efa2f790b",
+  "model_manifest_sha256": "e40c4050ce1bae319418c5f51560d9a42005fcefc2851ebc65b37f859af727e9",
+  "corpus_sha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a"
+}

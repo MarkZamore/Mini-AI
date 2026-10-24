@@ -1,0 +1,12 @@
+{
+  "old_report": {
+    "path": "C:\\Users\\Oskar\\Desktop\\Исследование_локального_ИИ_2026-10-24\\Отчёт.md",
+    "sha256": "6c118d4f6116e950ffb852b63a969bed4a4cb3fdc089cd101a256683ce8331f3"
+  },
+  "old_zip": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\report-release-v1\\Mini-AI-research.zip",
+    "sha256": "4a7f3c97353d632f964a45b21374754a7d6e8c04ac9dceb53cd1064e423a5369"
+  },
+  "prior_source_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+  "prior_release": "https://github.com/MarkZamore/Mini-AI/releases/tag/v2026.10.24-local-ai"
+}

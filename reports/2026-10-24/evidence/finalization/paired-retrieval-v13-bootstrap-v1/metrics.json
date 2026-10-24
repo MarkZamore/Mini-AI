@@ -1,0 +1,469 @@
+{
+  "schema": "mini-ai-v13-open-paired-source-coverage-bootstrap-v1",
+  "status": "COMPLETED_RETRIEVAL_UNCERTAINTY_NOT_ANSWER_ACCEPTANCE",
+  "human_review": false,
+  "automatic_source_labels": true,
+  "scope": "Existing open development28: 14RU+14KZ,14pairedintents,5documentfamilies; final retrieval pools capped at24 units/query (actual counts vary). Not generated-answer quality, actual LLM context Recall@10, or sealed final acceptance.",
+  "method": {
+    "paired": true,
+    "cluster_rule": "Connected components of cases sharing any family_id OR intent_group; preserve all multilingual paraphrases and atoms in the same component. Same sampled components for both variants and both metrics.",
+    "clusters": 5,
+    "replicates": 10000,
+    "seed": 20261024,
+    "rng": "Python random.Random(seed); randrange(K), K draws with replacement per replicate; clusters sorted by lexicographic minimum case id",
+    "python": "3.12.10",
+    "interval": "Two-sided percentile95%, quantiles0.025/0.975; linear interpolation index(n-1)*p; no BCa or normal approximation",
+    "estimand": "Micro source-atom rate and micro all-source-facts query rate; each replicate recomputes numerator and denominator over sampled whole clusters, rather than averaging family percentages.",
+    "unknown_handling": "Only supported/true counts as covered. Missing, unknown, not_found count as not covered. A query is covered only if every required source atom is covered.",
+    "draws_sha256": "0f7a57416ef2fe14fa9065eedeb227833b92c81516f375aa66c2644730535b81"
+  },
+  "inputs": {
+    "open_development": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\development-source-verified-v1.jsonl",
+      "bytes": 96854,
+      "sha256": "465c4dcbee6a4e5f4aef3761b6227bb096557d31d6d4aeecb8d131ed5eeba1ed"
+    },
+    "ru_source_review": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-ru-review-v1.json",
+      "bytes": 62141,
+      "sha256": "7a927e16119a5cabcfb7c7b5789ac7ccbfc462ddfcce9605006f4b7cf7d28e3f"
+    },
+    "kz_semantic_labels": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\kz-semantic-review\\labels.jsonl",
+      "bytes": 120590,
+      "sha256": "ae9ab34a3e4710e36c4d90bcb467fcb115351774f922691726840f1984c09c5c"
+    },
+    "kz_review_summary": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\kz-semantic-review\\summary.json",
+      "bytes": 2880,
+      "sha256": "465d6facbf1c177b8d2b41d749751c25beba999b79d4bc01cf7d97478167094e"
+    },
+    "ordinary_retrieval_output": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\ordinary\\answers.jsonl",
+      "bytes": 1831544,
+      "sha256": "4c64bb37aaa0b807b4e83b013e5ecb6c904159664cd468bebbaad0ebc8eb3a68"
+    },
+    "ordinary_classpath_inventory": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\ordinary\\classpath-inventory.json",
+      "bytes": 28242,
+      "sha256": "72f67d3c07bfae4a11768f740927b8db0c0a1bcd060223959b57f9f5ce5f8429"
+    },
+    "ordinary_run": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\ordinary\\run.json",
+      "bytes": 1785,
+      "sha256": "b5d2a8deec4aa7f394f766b9846954bbe9d3ca9ec64f47bc783d5757fa34e191"
+    },
+    "foundation_retrieval_output": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\foundation\\answers.jsonl",
+      "bytes": 1877898,
+      "sha256": "69b78cef99310c3eebdf367028e03b030319d75e18fbc454e88b6b52a73bb348"
+    },
+    "foundation_classpath_inventory": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\foundation\\classpath-inventory.json",
+      "bytes": 28242,
+      "sha256": "72f67d3c07bfae4a11768f740927b8db0c0a1bcd060223959b57f9f5ce5f8429"
+    },
+    "foundation_run": {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\retrieval-v13\\foundation\\run.json",
+      "bytes": 1793,
+      "sha256": "131ceab352fabd1123360889972f4f26bcb327327fb57f63a79e4476d5f994bc"
+    }
+  },
+  "script": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\bootstrap.py",
+    "sha256": "ae3c2678b59d8b9c70e06489340e60355d1f941a3ab512af0222a954bc342b97"
+  },
+  "reproduce_command": "python -X utf8 -B \"C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\\bootstrap.py\" --quality-root \"C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\" --out \"C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\paired-retrieval-v13-bootstrap-v1\" --replicates 10000 --seed 20261024",
+  "input_binding_checks": {
+    "original_question_and_case_ids_exact": true,
+    "original_atom_ids_exact": true,
+    "review_to_raw_and_classpath_sha_exact": true,
+    "kz_raw_line_sha_exact": true,
+    "full_seven_modules_all_56_outputs": true,
+    "all_pools_at_most_24_units_and_counts_exact_to_reviews": true,
+    "all_14_language_pairs_one_cluster": true
+  },
+  "pool_count_distributions": {
+    "ordinary": {
+      "4": 1,
+      "23": 1,
+      "24": 26
+    },
+    "foundation": {
+      "10": 1,
+      "19": 2,
+      "24": 25
+    }
+  },
+  "metrics": {
+    "source_atom_coverage": {
+      "ordinary": {
+        "numerator": 70,
+        "denominator": 84,
+        "rate": 0.8333333333333334,
+        "percentile_95_ci": [
+          0.5714285714285714,
+          0.9642857142857143
+        ]
+      },
+      "foundation": {
+        "numerator": 61,
+        "denominator": 84,
+        "rate": 0.7261904761904762,
+        "percentile_95_ci": [
+          0.39285714285714285,
+          0.9310344827586207
+        ]
+      },
+      "difference_ordinary_minus_foundation": {
+        "rate": 0.1071428571428572,
+        "percentage_points": 10.71428571428572,
+        "percentile_95_ci": [
+          0.0,
+          0.2794117647058824
+        ],
+        "percentile_95_ci_percentage_points": [
+          0.0,
+          27.941176470588243
+        ],
+        "includes_zero": true,
+        "bootstrap_draws_equal_zero": 782,
+        "bootstrap_draws_below_zero": 0,
+        "confirmed_positive_at_declared_interval": false
+      }
+    },
+    "all_source_facts_query_coverage": {
+      "ordinary": {
+        "numerator": 22,
+        "denominator": 28,
+        "rate": 0.7857142857142857,
+        "percentile_95_ci": [
+          0.55,
+          0.925
+        ]
+      },
+      "foundation": {
+        "numerator": 19,
+        "denominator": 28,
+        "rate": 0.6785714285714286,
+        "percentile_95_ci": [
+          0.3,
+          0.9090909090909091
+        ]
+      },
+      "difference_ordinary_minus_foundation": {
+        "rate": 0.1071428571428571,
+        "percentage_points": 10.71428571428571,
+        "percentile_95_ci": [
+          0.0,
+          0.30000000000000004
+        ],
+        "percentile_95_ci_percentage_points": [
+          0.0,
+          30.000000000000004
+        ],
+        "includes_zero": true,
+        "bootstrap_draws_equal_zero": 782,
+        "bootstrap_draws_below_zero": 0,
+        "confirmed_positive_at_declared_interval": false
+      }
+    }
+  },
+  "language_points": {
+    "ru": {
+      "source_atom_coverage": {
+        "ordinary": {
+          "numerator": 42,
+          "denominator": 42,
+          "rate": 1.0
+        },
+        "foundation": {
+          "numerator": 37,
+          "denominator": 42,
+          "rate": 0.8809523809523809
+        }
+      },
+      "all_source_facts_query_coverage": {
+        "ordinary": {
+          "numerator": 14,
+          "denominator": 14,
+          "rate": 1.0
+        },
+        "foundation": {
+          "numerator": 12,
+          "denominator": 14,
+          "rate": 0.8571428571428571
+        }
+      }
+    },
+    "kz": {
+      "source_atom_coverage": {
+        "ordinary": {
+          "numerator": 28,
+          "denominator": 42,
+          "rate": 0.6666666666666666
+        },
+        "foundation": {
+          "numerator": 24,
+          "denominator": 42,
+          "rate": 0.5714285714285714
+        }
+      },
+      "all_source_facts_query_coverage": {
+        "ordinary": {
+          "numerator": 8,
+          "denominator": 14,
+          "rate": 0.5714285714285714
+        },
+        "foundation": {
+          "numerator": 7,
+          "denominator": 14,
+          "rate": 0.5
+        }
+      }
+    }
+  },
+  "clusters": [
+    {
+      "cluster_id": "retrieval-dev-v1-change-kz",
+      "family_ids": [
+        "66d0307d8c4ef3aae05227b77ab4e40dc8b98a0d9d93d560d706eb6ff676384c"
+      ],
+      "intent_groups": [
+        "retrieval-dev-v1-change",
+        "retrieval-dev-v1-leave",
+        "retrieval-dev-v1-probation",
+        "retrieval-dev-v1-terminate",
+        "retrieval-dev-v1-wage"
+      ],
+      "case_ids": [
+        "retrieval-dev-v1-wage-ru",
+        "retrieval-dev-v1-wage-kz",
+        "retrieval-dev-v1-leave-ru",
+        "retrieval-dev-v1-leave-kz",
+        "retrieval-dev-v1-change-ru",
+        "retrieval-dev-v1-change-kz",
+        "retrieval-dev-v1-terminate-ru",
+        "retrieval-dev-v1-terminate-kz",
+        "retrieval-dev-v1-probation-ru",
+        "retrieval-dev-v1-probation-kz"
+      ],
+      "queries": 10,
+      "atoms": 32,
+      "metrics": {
+        "source_atom_coverage": {
+          "ordinary": {
+            "numerator": 32,
+            "denominator": 32,
+            "rate": 1.0
+          },
+          "foundation": {
+            "numerator": 32,
+            "denominator": 32,
+            "rate": 1.0
+          }
+        },
+        "all_source_facts_query_coverage": {
+          "ordinary": {
+            "numerator": 10,
+            "denominator": 10,
+            "rate": 1.0
+          },
+          "foundation": {
+            "numerator": 10,
+            "denominator": 10,
+            "rate": 1.0
+          }
+        }
+      }
+    },
+    {
+      "cluster_id": "retrieval-dev-v1-falsification-kz",
+      "family_ids": [
+        "ba1b6fbb6c7fede01596df645357ce89721bdac19ac74e2a82106cc336e5a5e3"
+      ],
+      "intent_groups": [
+        "retrieval-dev-v1-falsification",
+        "retrieval-dev-v1-gadgets"
+      ],
+      "case_ids": [
+        "retrieval-dev-v1-gadgets-ru",
+        "retrieval-dev-v1-gadgets-kz",
+        "retrieval-dev-v1-falsification-ru",
+        "retrieval-dev-v1-falsification-kz"
+      ],
+      "queries": 4,
+      "atoms": 8,
+      "metrics": {
+        "source_atom_coverage": {
+          "ordinary": {
+            "numerator": 6,
+            "denominator": 8,
+            "rate": 0.75
+          },
+          "foundation": {
+            "numerator": 6,
+            "denominator": 8,
+            "rate": 0.75
+          }
+        },
+        "all_source_facts_query_coverage": {
+          "ordinary": {
+            "numerator": 3,
+            "denominator": 4,
+            "rate": 0.75
+          },
+          "foundation": {
+            "numerator": 3,
+            "denominator": 4,
+            "rate": 0.75
+          }
+        }
+      }
+    },
+    {
+      "cluster_id": "retrieval-dev-v1-lost-kz",
+      "family_ids": [
+        "46723aded82a6935cd71636bf3b1ef620825313e4c04ae45245d5c7e444fba8f"
+      ],
+      "intent_groups": [
+        "retrieval-dev-v1-lost",
+        "retrieval-dev-v1-return",
+        "retrieval-dev-v1-storage"
+      ],
+      "case_ids": [
+        "retrieval-dev-v1-lost-ru",
+        "retrieval-dev-v1-lost-kz",
+        "retrieval-dev-v1-return-ru",
+        "retrieval-dev-v1-return-kz",
+        "retrieval-dev-v1-storage-ru",
+        "retrieval-dev-v1-storage-kz"
+      ],
+      "queries": 6,
+      "atoms": 20,
+      "metrics": {
+        "source_atom_coverage": {
+          "ordinary": {
+            "numerator": 19,
+            "denominator": 20,
+            "rate": 0.95
+          },
+          "foundation": {
+            "numerator": 15,
+            "denominator": 20,
+            "rate": 0.75
+          }
+        },
+        "all_source_facts_query_coverage": {
+          "ordinary": {
+            "numerator": 5,
+            "denominator": 6,
+            "rate": 0.8333333333333334
+          },
+          "foundation": {
+            "numerator": 4,
+            "denominator": 6,
+            "rate": 0.6666666666666666
+          }
+        }
+      }
+    },
+    {
+      "cluster_id": "retrieval-dev-v1-plan_responsibility-kz",
+      "family_ids": [
+        "5e03e691c1d262f7cad940b68391da6f693658120f071e8d7fabd83033d15b58"
+      ],
+      "intent_groups": [
+        "retrieval-dev-v1-plan_responsibility",
+        "retrieval-dev-v1-plan_review"
+      ],
+      "case_ids": [
+        "retrieval-dev-v1-plan_responsibility-ru",
+        "retrieval-dev-v1-plan_responsibility-kz",
+        "retrieval-dev-v1-plan_review-ru",
+        "retrieval-dev-v1-plan_review-kz"
+      ],
+      "queries": 4,
+      "atoms": 12,
+      "metrics": {
+        "source_atom_coverage": {
+          "ordinary": {
+            "numerator": 6,
+            "denominator": 12,
+            "rate": 0.5
+          },
+          "foundation": {
+            "numerator": 6,
+            "denominator": 12,
+            "rate": 0.5
+          }
+        },
+        "all_source_facts_query_coverage": {
+          "ordinary": {
+            "numerator": 2,
+            "denominator": 4,
+            "rate": 0.5
+          },
+          "foundation": {
+            "numerator": 2,
+            "denominator": 4,
+            "rate": 0.5
+          }
+        }
+      }
+    },
+    {
+      "cluster_id": "retrieval-dev-v1-report_analysis-kz",
+      "family_ids": [
+        "6f62407339e41e99a70e03f842ff4c7dfeb76aedbaf7bf6fb2691a3674f4ab99"
+      ],
+      "intent_groups": [
+        "retrieval-dev-v1-report_analysis",
+        "retrieval-dev-v1-report_conclusions"
+      ],
+      "case_ids": [
+        "retrieval-dev-v1-report_analysis-ru",
+        "retrieval-dev-v1-report_analysis-kz",
+        "retrieval-dev-v1-report_conclusions-ru",
+        "retrieval-dev-v1-report_conclusions-kz"
+      ],
+      "queries": 4,
+      "atoms": 12,
+      "metrics": {
+        "source_atom_coverage": {
+          "ordinary": {
+            "numerator": 7,
+            "denominator": 12,
+            "rate": 0.5833333333333334
+          },
+          "foundation": {
+            "numerator": 2,
+            "denominator": 12,
+            "rate": 0.16666666666666666
+          }
+        },
+        "all_source_facts_query_coverage": {
+          "ordinary": {
+            "numerator": 2,
+            "denominator": 4,
+            "rate": 0.5
+          },
+          "foundation": {
+            "numerator": 0,
+            "denominator": 4,
+            "rate": 0.0
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Only five family-connected clusters: unstable, discrete intervals and substantial zero-difference bootstrap mass. No evidence of benefit outside these families.",
+    "This repeatedly used, open development set is not an independent or sealed test. No change to fixed acceptance criteria.",
+    "RU exact-source-atom matching and KZ source-linked semantic labels use different necessary language checks; both are automatic, not human verification.",
+    "A relevant source in a retrieval pool capped at24 units does not establish that it reaches the eventual generator context, is used correctly, or supports every generated assertion.",
+    "All-source-facts query coverage concerns only the finite declared source atoms, not all legal/normative conditions or every applicable document.",
+    "This computation reuses existing labels without relabeling, new retrieval, generation, model training, or sealed inputs. It does not isolate every mechanism of the configuration difference."
+  ],
+  "recommendation": "Ordinary may remain a provisional open-development candidate. Both paired confidence intervals include zero, so its general advantage is not confirmed by this diagnostic. Confirm or reject with the frozen final evaluation and the untrained control; never label these retrieval rates as answer accuracy."
+}

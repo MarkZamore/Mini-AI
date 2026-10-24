@@ -1,0 +1,21 @@
+{
+  "cases": 140,
+  "selection": {
+    "answer": 74,
+    "clarify": 5,
+    "insufficient": 1
+  },
+  "calibration": {
+    "answer": 19,
+    "clarify": 1
+  },
+  "gate": {
+    "answer": 20
+  },
+  "stress": {
+    "no_hits": 1,
+    "insufficient": 19
+  },
+  "accepted": false,
+  "reason": "Known selection source-span cases lose 7.5 percentage points of substantive-answer coverage, exceeding pre-agreed 3-point budget; stress negatives remain semantic unknown; no threshold retuning"
+}

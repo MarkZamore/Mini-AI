@@ -1,0 +1,91 @@
+{
+  "schema": "mini-ai-designated-draft-review-summary-v15-v1",
+  "human_review": false,
+  "scope": "Open development designated02/05/10+math2; not sealed acceptance, native GUI, target notebook or resource acceptance.",
+  "bindings": {
+    "raw_answers_sha256": "e67ae3400d433ca984b6b81430b20d8e7333bdf583c3be9a8ee67d8efbea8d40",
+    "questions_sha256": "2c24038dbd3af63a92dca9e224951237e16fcec79942bc2a3b390190ff1e6067",
+    "gold_sha256": "bab688f5b3bab9f2348678941daca0f0b4b5623d57f62c438032daf1ae9e24cc",
+    "classpath_inventory_sha256": "77f6fcc210ec71ca8135453ecf0e0426325eeae39f74cc069c4f2362a8c221a1",
+    "run_sha256": "de999a41724f3b367bd87b3d6cd5f98c568d771d1ec89c33530ab8975e73dda5",
+    "unchanged_pre_output_rubric_sha256": "f23303823b762ed806c920bf97783f44cdcc18e3d867bbfb3d0877144aa00857",
+    "previous_v14_cases_sha256": "f01f04b4bb0868d04b8b6e245e98a6a2f745110d4cfb46fc86e50e5397cfe41f",
+    "worker_manifest_sha256": "aeb86673038e6188f61d996ed982561df857ea662398c08b89bec311e2e18d39"
+  },
+  "textual_strict_rubric": "0/3",
+  "arithmetic_separate": "2/2",
+  "useful_core": [
+    "action-dev-v1-05"
+  ],
+  "confirmed_critical_errors": 0,
+  "confirmed_material_unsupported_claims": 0,
+  "unknown_critical_records": 0,
+  "required_normative_atoms": {
+    "supported": 7,
+    "missing": 4,
+    "unknown": 1,
+    "total": 12,
+    "limitation": "Correct normative text does not establish useful task completion. In02 blocking unsafe draft does not pass the task."
+  },
+  "main_answer_extraction_service_clutter_cases": 0,
+  "comparison": [
+    {
+      "id": "action-dev-v1-02",
+      "v14_outcome": "FAIL_FABRICATED_CONSENT_AND_COMPLETED_AMENDMENT",
+      "v15_outcome": "FAIL_CLOSED_UNSAFE_DRAFT_WITHHELD_NO_LETTER",
+      "v14_answer_sha256": "9b5ff94b9c0d2b694af848eb38931ea69b91139801ec3aafc8d6e92267cef103",
+      "v15_answer_sha256": "2f05e8f2652370dda250005ba114b080e923ed3741f1691c1a44fc9a77d91f66",
+      "v14_full_service_seconds": 5.9199493,
+      "v15_full_service_seconds": 7.5791572,
+      "latency_interpretation": "Descriptive selected open-development JVM times only; answer length, failure mode and multiple components differ. Not a p95, GUI speed result or causal training improvement."
+    },
+    {
+      "id": "action-dev-v1-05",
+      "v14_outcome": "PARTIAL_USEFUL_LOSS_NOTICE_MISSING_INCIDENT_AND_CONTACT_FIELDS",
+      "v15_outcome": "PARTIAL_USEFUL_LOSS_NOTICE_CIRCUMSTANCES_FIXED_CONTACT_UNIT_MISSING",
+      "v14_answer_sha256": "316af1d5023411a00a5492d651bad927d5b7b3e09414b1f687cc82107ac00dac",
+      "v15_answer_sha256": "e442401d6818639f974b71f60339eea81d498ee8ce9dc4639e0e71da8551e3ce",
+      "v14_full_service_seconds": 6.7287121,
+      "v15_full_service_seconds": 6.6538756,
+      "latency_interpretation": "Descriptive selected open-development JVM times only; answer length, failure mode and multiple components differ. Not a p95, GUI speed result or causal training improvement."
+    },
+    {
+      "id": "action-dev-v1-10",
+      "v14_outcome": "FAIL_INCOMPLETE_REPORT_AND_UNSUPPORTED_RESOURCE_CAUSAL_CLAIM",
+      "v15_outcome": "FAIL_DESCRIPTIVE_OUTLINE_NOT_SUBSTANTIVE_FILLABLE_REPORT",
+      "v14_answer_sha256": "f48c9fecac14016b5546e8a4b6de57ef08fe7e332a6196e60556c422d09513b7",
+      "v15_answer_sha256": "a38f655276c0808767e515aaa2648dc74b723b27fc0d471d51174290e291edc9",
+      "v14_full_service_seconds": 13.4308003,
+      "v15_full_service_seconds": 6.3585394,
+      "latency_interpretation": "Descriptive selected open-development JVM times only; answer length, failure mode and multiple components differ. Not a p95, GUI speed result or causal training improvement."
+    },
+    {
+      "id": "action-dev-v1-math-01",
+      "v14_outcome": "PASS_EXPLICIT_ARITHMETIC",
+      "v15_outcome": "PASS_EXPLICIT_ARITHMETIC",
+      "v14_answer_sha256": "6fce9e29781ac281922204c601f4672f3a54b88d4ea7160f3c6a5888d5fe7f93",
+      "v15_answer_sha256": "6fce9e29781ac281922204c601f4672f3a54b88d4ea7160f3c6a5888d5fe7f93",
+      "v14_full_service_seconds": 0.003942,
+      "v15_full_service_seconds": 0.0031953,
+      "latency_interpretation": "Descriptive selected open-development JVM times only; answer length, failure mode and multiple components differ. Not a p95, GUI speed result or causal training improvement."
+    },
+    {
+      "id": "action-dev-v1-math-02",
+      "v14_outcome": "PASS_EXPLICIT_ARITHMETIC",
+      "v15_outcome": "PASS_EXPLICIT_ARITHMETIC",
+      "v14_answer_sha256": "eff29f7ca7a484c7cf9aadac70c3b2ae42a0006b8b58f0cc7ff367a14f385bd9",
+      "v15_answer_sha256": "eff29f7ca7a484c7cf9aadac70c3b2ae42a0006b8b58f0cc7ff367a14f385bd9",
+      "v14_full_service_seconds": 0.0024023,
+      "v15_full_service_seconds": 0.0019502,
+      "latency_interpretation": "Descriptive selected open-development JVM times only; answer length, failure mode and multiple components differ. Not a p95, GUI speed result or causal training improvement."
+    }
+  ],
+  "cases_sha256": "79057768c0bcf6d97884677a1bfcd9c0eb76f272b332af41d1c8318f005dd580",
+  "source_audit_sha256": "ce1d4943c168204af68074a8a2852e924486dcb1940b53040ceeb463be94a391",
+  "limitations": [
+    "Automatic semantic review only; no human review.",
+    "Repeatedly used selected open-development subset; no overall answer accuracy or held-out quality claim.",
+    "No fresh model call, source-code change, screenshot or native UI interaction.",
+    "Selected JVM timing differences are descriptive, not p95 or causal speed/training gain."
+  ]
+}

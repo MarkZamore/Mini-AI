@@ -1,0 +1,11 @@
+{
+  "initial_adapter_tensor_hashes_identical": true,
+  "same_training_order": true,
+  "same_seed_hyperparameters_and_train_entrypoint": true,
+  "completed_steps_A": 16,
+  "completed_steps_B": 16,
+  "target_token_budget_each": 12374,
+  "distinct_context_construction": true,
+  "source_positions_B_shuffled": true,
+  "final_read": false
+}

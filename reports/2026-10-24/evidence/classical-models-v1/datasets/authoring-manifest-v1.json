@@ -1,0 +1,27 @@
+{
+  "state": "labels_frozen_await_independent_audit_before_fit",
+  "dataset_sha256": "10f8ec7392ddc5eb4910e20f9c8784f79e6b4ac5e93a80b06f2efa1fc360117b",
+  "plan_sha256": "748cd58638e6920df8875090d1539b2b8614e040183885f7cfc06f35dc48249d",
+  "source_packet": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\train-source-packet-v2.jsonl",
+  "source_packet_sha256": "8d3300a889710907d4e0a21c2414f7adf83bdddff60819d1cd1ebea40d9a061d",
+  "cases": 30,
+  "modes": {
+    "answer": 13,
+    "insufficient": 13,
+    "clarify": 4
+  },
+  "languages": {
+    "kz": 4,
+    "ru": 26
+  },
+  "source_families": 13,
+  "meta_clarify_intents": 4,
+  "unknown_semantic_normative_completeness": true,
+  "limitations": [
+    "Only one distinct scoped source intent per family; many are forms, not complete normative procedures",
+    "Counterfactual full/heading/empty contexts are supplied; not actual production retrieval",
+    "Four stand-alone clarification intents; no paraphrase expansion to inflate sample count",
+    "Dataset author and features author are same automatic agent; independent source review required; no human gold",
+    "New final not opened; unknown labels must be excluded"
+  ]
+}

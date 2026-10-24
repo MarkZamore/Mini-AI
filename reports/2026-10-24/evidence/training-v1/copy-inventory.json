@@ -1,0 +1,596 @@
+{
+  "scope": "Historical first-research training methods, metadata and code only. Not v2 final evaluation.",
+  "human_review": false,
+  "new_final_read": false,
+  "weights_or_corpus_copied": false,
+  "files": [
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\manifest.json",
+      "path": "evidence/training-v1/data/manifest.json",
+      "sha256": "02663a83413fc9cb7043179f91405c4325ebb14d987cacb8c4243c8870f442a8",
+      "bytes": 2600,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\corpus-audit.json",
+      "path": "evidence/training-v1/data/corpus-audit.json",
+      "sha256": "2f0a4a4c01b856981c153418053a22510f427e55255e6650e02ef9fa64c52f69",
+      "bytes": 952,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\data-integrity.json",
+      "path": "evidence/training-v1/data/data-integrity.json",
+      "sha256": "da6e2f2ec0d39ea996e7487055f6452fed4d92808904e04cc21e15e323efcc0e",
+      "bytes": 332,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\data\\triples-manifest.json",
+      "path": "evidence/training-v1/data/triples-manifest.json",
+      "sha256": "c39255c4ab04f6b8fc6c40204c8ad6f26bbedc4c5fb470b06ec7d13a53e3ed77",
+      "bytes": 297,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\data\\manifest.json",
+      "path": "evidence/training-v1/generator/data/manifest.json",
+      "sha256": "82818ce94ca14b5eb3c6978c5436cf118d10b8fa455e5eb32f711b0dfddd5f77",
+      "bytes": 1564,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\paired-training-verification.json",
+      "path": "evidence/training-v1/generator/paired-training-verification.json",
+      "sha256": "c73a5f13710e4104dbfbdacedc0cbeccbbb7251f0b3feb35ecf9b9f5ce2b5675",
+      "bytes": 346,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\foundation-lock.json",
+      "path": "evidence/training-v1/models/e5/foundation-lock.json",
+      "sha256": "38e2983a60920c507697db64f89d6b0cb97ca70d23fa1e8a3fd0d3c18b87ce90",
+      "bytes": 1248,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\comparison.json",
+      "path": "evidence/training-v1/models/e5/comparison.json",
+      "sha256": "b03ecfa04638e4f38a1402c5515c702e2b00e397d15eb8b56ecd1e9aea0bd11c",
+      "bytes": 2436,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\full-comparison.json",
+      "path": "evidence/training-v1/models/e5/full-comparison.json",
+      "sha256": "fb18f2cb6d211b0b1b19a2fe657d922ec8c470dd241a02fd31191aab3ca7877b",
+      "bytes": 2826,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\baseline\\retrieval-metrics.json",
+      "path": "evidence/training-v1/models/e5/baseline/retrieval-metrics.json",
+      "sha256": "b347f5ddde64370c90d4b7b49ea8243f76b91e870c2f37a99fe7cce8ea5b508e",
+      "bytes": 921,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary\\weight-update-proof.json",
+      "path": "evidence/training-v1/models/e5/ordinary/weight-update-proof.json",
+      "sha256": "c819d89202c3e06e3e1ae906de038db2b4e405e55a5c02a0235dea6d80255f1d",
+      "bytes": 648,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\weight-update-proof.json",
+      "path": "evidence/training-v1/models/e5/hard/weight-update-proof.json",
+      "sha256": "b987d2be5ad3bf4c768813877f9d1a676e7357a08c2890feb8353071bb4dcc19",
+      "bytes": 650,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\matched-gguf-export-report.json",
+      "path": "evidence/training-v1/generator/A/matched-gguf-export-report.json",
+      "sha256": "dc25b7120ba78b7421662340fbcd4258f62df6446798e4ec317d3d2eac9fbf94",
+      "bytes": 1460,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\gguf-export-report.json",
+      "path": "evidence/training-v1/generator/A/gguf-export-report.json",
+      "sha256": "6f9c1a3d9321d93cd505f1ae1569f701dc529ce77999756f4369aecdc3ca0c91",
+      "bytes": 638,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\standard-export-rejection.json",
+      "path": "evidence/training-v1/generator/A/standard-export-rejection.json",
+      "sha256": "2a51bf9f9442740e9e682268d8aa0303b80030df059ca538c4ab531236300307",
+      "bytes": 388,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\merge-report.json",
+      "path": "evidence/training-v1/generator/A/merge-report.json",
+      "sha256": "9f9b5d57e35209bfc9cb665af79ab7b96406fbb228451135dfb3fec96c9156b8",
+      "bytes": 3356,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\merge-conformance.json",
+      "path": "evidence/training-v1/generator/A/merge-conformance.json",
+      "sha256": "126d20b15b447796e2df264b22e37a1bac3e0f46c39a750908d01c1f3e41d378",
+      "bytes": 928,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\resume-roundtrip-verification.json",
+      "path": "evidence/training-v1/generator/A/resume-roundtrip-verification.json",
+      "sha256": "88b57f4980c04f76c23af64ec79b947bb581ee1d106c0a215bbc275d0fabba27",
+      "bytes": 483,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\resume-roundtrip-verification.json",
+      "path": "evidence/training-v1/generator/B/resume-roundtrip-verification.json",
+      "sha256": "da6715f88fbd8bb585fda69dfb9eeefd15a4c2cbe1032a0683ac1e5e056f5a21",
+      "bytes": 483,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\partial-base-weights.json",
+      "path": "evidence/training-v1/generator/partial08/partial-base-weights.json",
+      "sha256": "875690f5cc009fe73c1aef21d9efe1ce499574abbc03f05d1241e20dc9dd2e54",
+      "bytes": 3531,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\baseline4B\\metrics.json",
+      "path": "evidence/training-v1/generator/baseline4B/metrics.json",
+      "sha256": "9bedcb56d737e26909dff02cf4ad541909ac38883d975a309e524e1fd43eb4d8",
+      "bytes": 792,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\baseline08\\metrics.json",
+      "path": "evidence/training-v1/generator/baseline08/metrics.json",
+      "sha256": "aa20d86b7fe54b18b201434f53206629e085d87d449f8683cf29e3402c61da85",
+      "bytes": 804,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\dev-rag20\\paired-v2\\review.json",
+      "path": "evidence/training-v1/generator/dev-rag20/paired-v2/review.json",
+      "sha256": "c1ad721f8d5e1bd3ba9121bb278de7fd18d8ca5b687f51bbd5fb5b68fa68beb7",
+      "bytes": 1888360,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\dev-rag20\\paired-v2\\paired-statistics.json",
+      "path": "evidence/training-v1/generator/dev-rag20/paired-v2/paired-statistics.json",
+      "sha256": "f9fdd4c8fb6e11d5f637adc617f239f21494061024daea53c1d70291050181f4",
+      "bytes": 5033,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\dev-rag20\\paired-v2\\scores.json",
+      "path": "evidence/training-v1/generator/dev-rag20/paired-v2/scores.json",
+      "sha256": "f317a3f20614000a82e05a875d267c70e8bdfee57f5ad56dc1ac5e66fde838aa",
+      "bytes": 268195,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\evidence-probe\\parity-v3.json",
+      "path": "evidence/training-v1/evidence-probe/parity-v3.json",
+      "sha256": "4b0120bdf29080dd8f8858268e6b6e62ad48b5c28f8bae43cfe69803babe28e7",
+      "bytes": 332,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\rag-index-baseline\\index.json",
+      "path": "evidence/training-v1/rag-index-baseline/index.json",
+      "sha256": "e056da7ab6f1cb445bf80d9ad34516eb456898dad53e110da27cd1fc65bca532",
+      "bytes": 880,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\rag-index-ordinary\\index.json",
+      "path": "evidence/training-v1/rag-index-ordinary/index.json",
+      "sha256": "4177117aa98758c9787f003681fb7bd96a55b6396737bc2245e56fbbcdc595b3",
+      "bytes": 880,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\rag-index-ordinary-seed2\\index.json",
+      "path": "evidence/training-v1/rag-index-ordinary-seed2/index.json",
+      "sha256": "ef1ee6118ce25927a9c42b67ad4383d3c9bf4d3c993709587ab2bf05413fdb2a",
+      "bytes": 880,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\deployment-decision-v2.json",
+      "path": "evidence/training-v1/deployment-decision-v2.json",
+      "sha256": "7d2a6e2a7f8cf88c0fbbda551199cad750a23a87bba58ba6b64280fc225965dc",
+      "bytes": 3792,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\metric-digest.json",
+      "path": "evidence/training-v1/final-evaluation-run-v1/metric-digest.json",
+      "sha256": "c4c59922eda251a3c8e9289fde75417ee3cbeffc2fd60351e660e2f430f86a9d",
+      "bytes": 30674,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\challenge-reviewed-all-v1\\summary.md",
+      "path": "evidence/training-v1/final-evaluation-run-v1/challenge-reviewed-all-v1/summary.md",
+      "sha256": "cde80da09fd19966d9d9a3c232d699fbb32e5f432b77dead87f454c89a681a01",
+      "bytes": 4070,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\final-evaluation-run-v1\\challenge-reviewed-all-v1\\metrics.json",
+      "path": "evidence/training-v1/final-evaluation-run-v1/challenge-reviewed-all-v1/metrics.json",
+      "sha256": "08a1dda1d0dc38ea5b320efb48628f96add0b4cd79f9086dfe07ef013544273b",
+      "bytes": 619370,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary\\config.json",
+      "path": "evidence/training-v1/models/e5/ordinary/config.json",
+      "sha256": "344c2f0b5b94522e021a8ffbf0fd26eee0e043e5cad1adacb77c9b647a86290d",
+      "bytes": 674,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary\\training-report.json",
+      "path": "evidence/training-v1/models/e5/ordinary/training-report.json",
+      "sha256": "dbedea8a0a1e8b0801ec5832e8e44712af357024281cc718667f4339f5e35ff6",
+      "bytes": 438,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary\\retrieval-metrics.json",
+      "path": "evidence/training-v1/models/e5/ordinary/retrieval-metrics.json",
+      "sha256": "c698880ee89fd144688a90e5d50c0b93127c0b2cde442d726e45856f7d3f7b23",
+      "bytes": 909,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary\\onnx\\export-manifest.json",
+      "path": "evidence/training-v1/models/e5/ordinary/onnx/export-manifest.json",
+      "sha256": "7dff69c083d9e5ea8c777261128b322793010d789783f28170ea423d2f2e8b43",
+      "bytes": 1412,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\config.json",
+      "path": "evidence/training-v1/models/e5/hard/config.json",
+      "sha256": "5ca83b560616a187c128f0207ff2cb43810a842c9fed7026ce83a702c141651d",
+      "bytes": 670,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\training-report.json",
+      "path": "evidence/training-v1/models/e5/hard/training-report.json",
+      "sha256": "5991071a15b35ffee97ee5b556caed4d75c0c9bf78e78124311fb4882567cec4",
+      "bytes": 430,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\retrieval-metrics.json",
+      "path": "evidence/training-v1/models/e5/hard/retrieval-metrics.json",
+      "sha256": "5cf2c56089844f4bb2a06871c46a029fdf672aa36cdee05516d3b89d389e032f",
+      "bytes": 895,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\onnx\\export-manifest.json",
+      "path": "evidence/training-v1/models/e5/hard/onnx/export-manifest.json",
+      "sha256": "909300e2c6c3aebdd4d2eeb8b52d79165116ced6a1332abe7f566d0c297fa7de",
+      "bytes": 1393,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary-seed2\\config.json",
+      "path": "evidence/training-v1/models/e5/ordinary-seed2/config.json",
+      "sha256": "293637c909e931a89ad855bbfaadf08b0d6b558635728443e91d3cfc18ecf22e",
+      "bytes": 674,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary-seed2\\training-report.json",
+      "path": "evidence/training-v1/models/e5/ordinary-seed2/training-report.json",
+      "sha256": "9840debe6401db547e4b536b4944e464c750df63d12b6806199d932446a7455b",
+      "bytes": 444,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary-seed2\\retrieval-metrics.json",
+      "path": "evidence/training-v1/models/e5/ordinary-seed2/retrieval-metrics.json",
+      "sha256": "7d89dd873c08de938448cab36be7b77db1817f33202ad330d1d77c2fdb23c9d3",
+      "bytes": 908,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary-seed2\\onnx\\export-manifest.json",
+      "path": "evidence/training-v1/models/e5/ordinary-seed2/onnx/export-manifest.json",
+      "sha256": "0f7d0a9262118a1a3ab86b6a14adeda36c8f9bfed02ef97586b1ebfc3239a555",
+      "bytes": 1416,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\config.json",
+      "path": "evidence/training-v1/generator/A/config.json",
+      "sha256": "20ee2c2e9994c75fa64919456cf1b53844de8c17aa8d9190f0fb0420b1f7f4e1",
+      "bytes": 1408,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\training-report.json",
+      "path": "evidence/training-v1/generator/A/training-report.json",
+      "sha256": "b37821edd9c674e84c8ecf4681895cec2a1f5b6caf9f7a1a249188b7896241dc",
+      "bytes": 474,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\trainable-parameters.json",
+      "path": "evidence/training-v1/generator/A/trainable-parameters.json",
+      "sha256": "e00b4606bb669a1e5d58805d85ff31d71c36c777471b50bb30e095e932431d41",
+      "bytes": 47585,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\selection\\metrics.json",
+      "path": "evidence/training-v1/generator/A/selection/metrics.json",
+      "sha256": "4885bcbb71901eac93d62394e169aa32c5ceb8077fc0d45591276d508e13f263",
+      "bytes": 775,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\foundation-lock.json",
+      "path": "evidence/training-v1/generator/A/foundation-lock.json",
+      "sha256": "ac732eac102a4483dce49230500c09eacb557496430913ea1a2eed3fa0c76fa5",
+      "bytes": 1321,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\config.json",
+      "path": "evidence/training-v1/generator/B/config.json",
+      "sha256": "6d37d06f833572f9e6d1730237ace947d5e87bc920715780702676c22c3ef309",
+      "bytes": 1408,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\training-report.json",
+      "path": "evidence/training-v1/generator/B/training-report.json",
+      "sha256": "9809c20e252765f647cb44d6e638609c939fdd6f0911fe2d2f1a8e64596b3a77",
+      "bytes": 474,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\trainable-parameters.json",
+      "path": "evidence/training-v1/generator/B/trainable-parameters.json",
+      "sha256": "e00b4606bb669a1e5d58805d85ff31d71c36c777471b50bb30e095e932431d41",
+      "bytes": 47585,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\selection\\metrics.json",
+      "path": "evidence/training-v1/generator/B/selection/metrics.json",
+      "sha256": "4d8deb85722328d0fbe16181cea6816b76a19fa21f35098b44e7c3b2626908f2",
+      "bytes": 775,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\foundation-lock.json",
+      "path": "evidence/training-v1/generator/B/foundation-lock.json",
+      "sha256": "ac732eac102a4483dce49230500c09eacb557496430913ea1a2eed3fa0c76fa5",
+      "bytes": 1321,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\config.json",
+      "path": "evidence/training-v1/generator/partial08/config.json",
+      "sha256": "56b9efbd8185e1a60b81f7e0775eac5a7dc06dc88c55ae7584114df41a286222",
+      "bytes": 1298,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\training-report.json",
+      "path": "evidence/training-v1/generator/partial08/training-report.json",
+      "sha256": "b3d85624ff3f86113a3b5f14959199c73966f05141c861337ba0e67d6329fc4a",
+      "bytes": 481,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\trainable-parameters.json",
+      "path": "evidence/training-v1/generator/partial08/trainable-parameters.json",
+      "sha256": "5149050812db5a4ed1c7d81239fdd22c1fcd4569380d40bd89ff56ab03e35784",
+      "bytes": 3453,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\selection\\metrics.json",
+      "path": "evidence/training-v1/generator/partial08/selection/metrics.json",
+      "sha256": "e277eb6c6ddbddcb58e064c65b325bf20f4247a66c2429c809ddb73c5623aa2b",
+      "bytes": 784,
+      "transform": "byte_exact"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\foundation-lock.json",
+      "path": "evidence/training-v1/generator/partial08/foundation-lock.json",
+      "sha256": "b980a3164368352ee3bc56196e1b677276f8158d52439e062d69c5cb1ed5128f",
+      "bytes": 1133,
+      "transform": "byte_exact"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/research/e5_train.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/research/e5_train.py",
+      "sha256": "5150a91a3eca786b1e5894f5197b98361a04a3c58a575bd182849760daaf7031",
+      "bytes": 13040,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/research/e5_export.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/research/e5_export.py",
+      "sha256": "04f93c349595a6a0a444c0471f1aacd200b58760113f2acf89fafc897cce6b0d",
+      "bytes": 4083,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/research/e5_index.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/research/e5_index.py",
+      "sha256": "435e11f8dc520b1a84dff0b542d77a2006b7e2e38bb5362ccb2144e4f6cddc69",
+      "bytes": 5384,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/research/data_pipeline.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/research/data_pipeline.py",
+      "sha256": "34a3c824f32b6681c1456a703bb6dbfc2df4989d1cc3bcdcaedf8a5372d153cd",
+      "bytes": 15419,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/prepare.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/prepare.py",
+      "sha256": "a18f6d48f1f74eefa889b1138a173e035c43cff9ffff945b390608a4f24c80f4",
+      "bytes": 11710,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/train.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/train.py",
+      "sha256": "1fd0a34629979d3dab99ffe186870da67b43680f1701b7cf020f46b7257187f9",
+      "bytes": 17217,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/export.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/export.py",
+      "sha256": "75631bdeeedeb82959b0424d89f4e1739dc05ec706c4ec5e57eaf28a7980f71d",
+      "bytes": 7002,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/direct_gguf.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/direct_gguf.py",
+      "sha256": "61000d81cd337708eec01d6024a47e19561a6cf8aa1fd4e0674c6bbcf7555c3c",
+      "bytes": 7261,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/common.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/common.py",
+      "sha256": "1e2cd0b706b2a0f2a38318b7f5f35d0e02871af490691e77c9704ca294a298de",
+      "bytes": 3904,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/verify_resume.py",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/verify_resume.py",
+      "sha256": "a02202897372a52acfaf8680d55d05920d680fcda31b06de3b3c56742f2fed44",
+      "bytes": 2274,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source_git_commit": "cbd15cd875bfe3444cb2522df8af89cc19e4105b",
+      "source_git_path": "src/generator-research/README.md",
+      "current_source_equals_published": true,
+      "path": "evidence/training-v1/source/src/generator-research/README.md",
+      "sha256": "b73c73ca903fad4aa8603a59d351dbcd7c9fb3d80924801bb2376edb2cce8aef",
+      "bytes": 5793,
+      "transform": "byte_exact_git_blob"
+    },
+    {
+      "source": "Selected 2 records from explicit old data/train.jsonl and data/sources.jsonl",
+      "path": "evidence/training-v1/examples/train-examples-ru-kz.json",
+      "sha256": "ba7c18e08a7d2939b45c5dcf4f23be37f2bf3d5145d971513bf1f5f66fcbc907",
+      "bytes": 6546,
+      "transform": "selected_train_only_records_no_rewording"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary\\training-log.jsonl",
+      "source_sha256": "96a95042cd91f589912620e0beafe672f629dbfcc40bf969e6aab99b130cebac",
+      "path": "evidence/training-v1/models/e5/ordinary/training-log-no-time.jsonl",
+      "sha256": "96a95042cd91f589912620e0beafe672f629dbfcc40bf969e6aab99b130cebac",
+      "bytes": 3048,
+      "transform": "retain_step_cursor_loss_gradient_norm_learning_rate_only",
+      "timing_fields_included": false
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\hard\\training-log.jsonl",
+      "source_sha256": "beb349747b93793bb55bb4548abea4013487a20ff803d08efd9bc7e9b439e11e",
+      "path": "evidence/training-v1/models/e5/hard/training-log-no-time.jsonl",
+      "sha256": "beb349747b93793bb55bb4548abea4013487a20ff803d08efd9bc7e9b439e11e",
+      "bytes": 3046,
+      "transform": "retain_step_cursor_loss_gradient_norm_learning_rate_only",
+      "timing_fields_included": false
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\models\\e5\\ordinary-seed2\\training-log.jsonl",
+      "source_sha256": "873d99f43a3ffc6517ea8d0029fd669380c5cc6c86111dde4a0fb7358414eb81",
+      "path": "evidence/training-v1/models/e5/ordinary-seed2/training-log-no-time.jsonl",
+      "sha256": "873d99f43a3ffc6517ea8d0029fd669380c5cc6c86111dde4a0fb7358414eb81",
+      "bytes": 3047,
+      "transform": "retain_step_cursor_loss_gradient_norm_learning_rate_only",
+      "timing_fields_included": false
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\training-log.jsonl",
+      "source_sha256": "b446c29101870b4c6a45c3097c150bb1afa1c1388f21d801f8ff1b0b57354532",
+      "path": "evidence/training-v1/generator/A/training-log-no-time.jsonl",
+      "sha256": "d4c408be22a0544b65a8019966eb4d191f29cd0f3378387914fee0b16ee1feec",
+      "bytes": 2004,
+      "transform": "retain_step_cursor_loss_gradient_norm_learning_rate_only",
+      "timing_fields_included": false
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\B\\training-log.jsonl",
+      "source_sha256": "11d4e802f0d3bbdb3a309f41c1c68cdfa1a6389173c8c4d8f05eaecf983fdc0b",
+      "path": "evidence/training-v1/generator/B/training-log-no-time.jsonl",
+      "sha256": "b47f7355dc56830d63a9cd2f467d7244258ed0b328d101a40b121d1974d657fd",
+      "bytes": 2003,
+      "transform": "retain_step_cursor_loss_gradient_norm_learning_rate_only",
+      "timing_fields_included": false
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\partial08\\training-log.jsonl",
+      "source_sha256": "0528acdf11293b91aa31a2538914e77c1c2902339645b9b36cca4bed37bce2b9",
+      "path": "evidence/training-v1/generator/partial08/training-log-no-time.jsonl",
+      "sha256": "74dd3b43c4088a4628131401e680f54093f02ec3eb562b7e9a49c0afa59e6ece",
+      "bytes": 2008,
+      "transform": "retain_step_cursor_loss_gradient_norm_learning_rate_only",
+      "timing_fields_included": false
+    }
+  ],
+  "derived_metadata": [
+    "examples/train-examples-ru-kz.json",
+    "training-log-comparison.json",
+    "dataset-files.json",
+    "generator-weight-files.json",
+    "feasibility-no-time-audit.json",
+    "prior-frozen-anchors.json"
+  ]
+}

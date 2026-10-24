@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\methods-selection.md",
+  "source_sha256": "acdcb2d3afb308a1681070dcb25797aa5ccfddfd552a48a4c2560e3b96a575b3",
+  "delivered_sha256": "ea5661f2426382db34b5d47cab51e1728cdbfc52b5ea95de815cbf23539f9054",
+  "transform": "Only absolute local Markdown evidence links rewritten into small copies within v2 report; primary web citations retained",
+  "local_link_copies": [
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\dev-rag20\\paired-v2\\review.md",
+      "delivered_path": "evidence/training-v1/generator/dev-rag20/paired-v2/review.md",
+      "sha256": "e6f6b36f29d2e4697093b22c14d8fe096eb6c57e9e7f031a22587c75de9ba8bc",
+      "old_link": "C:/Users/Oskar/Documents/Mini-AI/src/build/research-20261024/generator/dev-rag20/paired-v2/review.md",
+      "new_link": "../training-v1/generator/dev-rag20/paired-v2/review.md"
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\candidate-base\\policy-decision.json",
+      "delivered_path": "evidence/training-v1/candidate-base/policy-decision.json",
+      "sha256": "5a9aff8d3c4cf3c27ff82144a0db02bcfe30aeee3683e7e633164fc24174cdf5",
+      "old_link": "C:/Users/Oskar/Documents/Mini-AI/src/build/research-20261024/candidate-base/policy-decision.json",
+      "new_link": "../training-v1/candidate-base/policy-decision.json"
+    }
+  ],
+  "status": "methodological_selection_not_final_quality_result"
+}

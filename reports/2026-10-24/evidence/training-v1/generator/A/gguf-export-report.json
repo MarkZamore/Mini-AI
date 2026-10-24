@@ -1,0 +1,10 @@
+{
+  "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\A\\merged-text-Q6_K.gguf",
+  "sha256": "ab9a0cac6b6354820870e3c10b9a2ed3bf7ef3ed8d978d88babcf01fe37abb09",
+  "bytes": 3563028320,
+  "converter_sha256": "c2b8d1f31a9007be75d6850aa1db47dedcaedee0eeebe00aa978eac6f2cc89ad",
+  "quantizer_sha256": "db8f6c5475b02bd698f17d0071c0a3e52a9f26840330e87f1f1f510e6e2f85f6",
+  "merge_report_sha256": "9f9b5d57e35209bfc9cb665af79ab7b96406fbb228451135dfb3fec96c9156b8",
+  "scope": "Research candidate; postquantization evaluation and package acceptance still required",
+  "production_installed": false
+}

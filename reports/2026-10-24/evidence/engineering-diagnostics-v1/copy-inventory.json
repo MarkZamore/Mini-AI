@@ -1,0 +1,62 @@
+{
+  "scope": "Intermediate full-seven JVM development diagnostics, not a frozen production revision or acceptance",
+  "new_final_read": false,
+  "screenshots_copied": false,
+  "weights_or_corpus_copied": false,
+  "files": [
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v1\\answers.jsonl",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v1/answers.jsonl",
+      "sha256": "4dd3df7b1bf3c4f5ae679390e11d6d6c0588c2c248bffd5e45e4b918075f6516",
+      "bytes": 256578
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v1\\run.json",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v1/run.json",
+      "sha256": "c8096ce68be5dceb58cc8bceedacab0040a1554b80ce6ec2f4e56ce97af13079",
+      "bytes": 1395
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v1\\stdout.log",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v1/stdout.log",
+      "sha256": "0e3f1a42b2c6564873e6407ac5cfc5ae7c18f3a76b870d48927f7077aabd8fb1",
+      "bytes": 249
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v1\\stderr.log",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v1/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v2\\answers.jsonl",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v2/answers.jsonl",
+      "sha256": "7a48d0ca275115e630a9563c7b6fc44c9c2f18b0d39d5d0876b62254bf23a7b2",
+      "bytes": 252971
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v2\\run.json",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v2/run.json",
+      "sha256": "ed285d8271fd61e63175c4febe3a44f5486496c254af9c95b2b4f3e0f53374a5",
+      "bytes": 1394
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v2\\stdout.log",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v2/stdout.log",
+      "sha256": "8f96f961f8d1f9d570eadf2d04aa0bc6d0401436d77b3b87e68f265b4430f4cf",
+      "bytes": 248
+    },
+    {
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\diagnostic-run-v2\\stderr.log",
+      "path": "evidence/engineering-diagnostics-v1/diagnostic-run-v2/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "derived_files": [
+    {
+      "path": "evidence/engineering-diagnostics-v1/observations.json",
+      "sha256": "853db8fad1c4be5f4293feb5f189f024ee25e6b5d06296db1dfbb76710dfa51c"
+    }
+  ]
+}

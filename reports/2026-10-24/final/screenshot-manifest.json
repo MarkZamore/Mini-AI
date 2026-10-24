@@ -1,0 +1,32 @@
+{
+  "source": "real-native-final-v16",
+  "artificial_images": false,
+  "rows": [
+    {
+      "raw": "screenshots\\raw\\after-01.jpg",
+      "raw_sha256": "ecf27b8513eb6deed78c2c536fcba9cdaa0713beee7b069a977a881160d27673",
+      "crop": "screenshots\\cropped\\after-01.png",
+      "crop_sha256": "479b450b629cec1bd9aa11d8b478e5164d0566432dbcf7893a8acb4ec3c84aa4",
+      "rectangle": [
+        12,
+        30,
+        762,
+        1000
+      ],
+      "pixel_parity": true
+    },
+    {
+      "raw": "screenshots\\raw\\after-02.jpg",
+      "raw_sha256": "e58f6e7bc1ea8538c9a0469e775172398bfd81639c21fac7b93443311766121f",
+      "crop": "screenshots\\cropped\\after-02.png",
+      "crop_sha256": "098b27bcbf14ebd10e58e7d05ef0d4b4014cc9ba5d9b1acefb39c1a50ed8e1a1",
+      "rectangle": [
+        12,
+        30,
+        762,
+        1000
+      ],
+      "pixel_parity": true
+    }
+  ]
+}

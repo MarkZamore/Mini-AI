@@ -1,0 +1,11 @@
+{
+  "structural_checks_passed": true,
+  "family_disjoint": true,
+  "atom_literal_substring_checks_passed": true,
+  "demo_question_filter_passed": true,
+  "final_questions_read": false,
+  "near_duplicate_cross_split_sources": [],
+  "near_duplicate_count": 0,
+  "human_review": false,
+  "semantic_gold_acceptance": false
+}

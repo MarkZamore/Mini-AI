@@ -1,0 +1,32 @@
+{
+  "split": "selection",
+  "count": 80,
+  "families": 5,
+  "metrics": {
+    "recall_at_5": 0.65,
+    "recall_at_10": 0.8,
+    "ndcg_at_10": 0.5828650195228503,
+    "mrr": 0.5241452647176398
+  },
+  "languages": {
+    "kz": {
+      "recall_at_5": 0.3888888888888889,
+      "recall_at_10": 0.6111111111111112,
+      "ndcg_at_10": 0.3494635987771078,
+      "mrr": 0.2868351561626563
+    },
+    "ru": {
+      "recall_at_5": 0.8636363636363636,
+      "recall_at_10": 0.9545454545454546,
+      "ndcg_at_10": 0.7738298183148214,
+      "mrr": 0.7183080808080807
+    }
+  },
+  "limits": [
+    "Native anchor-assisted extraction",
+    "No final labels read",
+    "Small family count makes confidence intervals weak"
+  ],
+  "sources_sha256": "a41bcdc6824576620ae14ef8fdf86bcc1995ab618c287b6d572eab9596de2f07",
+  "selection_sha256": "31b09d6770ccfdfe169b2375beba218621f1a29e84d5890390eae9d99955b049"
+}

@@ -1,0 +1,22 @@
+{
+  "scope": "Historical HF generator 16 fixed selection generations, not v2 final",
+  "cases": 16,
+  "languages": {
+    "kz": 8,
+    "ru": 8
+  },
+  "families": {
+    "46723aded82a6935cd71636bf3b1ef620825313e4c04ae45245d5c7e444fba8f": 15,
+    "73d448c2e4336f2eb44f012ec8e9a6bd7637ce047abbc5bb89c5dcb37159d6e7": 1
+  },
+  "source_files": [
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\data\\generation-case-ids.json",
+      "sha256": "229e32688954d55c5b5c3f176b784fcd95904af5228f39f1044fa5bb9fcf23cc"
+    },
+    {
+      "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\generator\\data\\selection-fixed-context.jsonl",
+      "sha256": "d2ddb439561114d1ae07651e0361174d38a6f4e0b0f8144028c927bb63ebc3fc"
+    }
+  ]
+}

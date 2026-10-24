@@ -1,0 +1,58 @@
+{
+  "variant": "ordinary-seed2",
+  "onnx_sha256": "764175a36d9bc375005a846b3f582acd6d671490f494880d55d38ea6e19e66a3",
+  "onnx_size": 470227443,
+  "schemaVersion": 1,
+  "inputs": {
+    "input_ids": "int64 [batch,sequence]",
+    "attention_mask": "int64 [batch,sequence]",
+    "token_type_ids": "int64 [batch,sequence]"
+  },
+  "output": {
+    "embedding": "float32 [batch,384] masked mean pooled, L2 normalised"
+  },
+  "max_length": 256,
+  "query_prefix": "query: ",
+  "passage_prefix": "passage: ",
+  "parity_max_abs": 1.471489667892456e-07,
+  "parity_min_cosine": 0.9999997615814209,
+  "parity_cases": [
+    {
+      "shape": [
+        3,
+        13
+      ],
+      "max_abs": 1.1548399925231934e-07,
+      "min_cosine": 0.9999998807907104
+    },
+    {
+      "shape": [
+        1,
+        6
+      ],
+      "max_abs": 9.313225746154785e-08,
+      "min_cosine": 1.0000001192092896
+    },
+    {
+      "shape": [
+        2,
+        256
+      ],
+      "max_abs": 1.471489667892456e-07,
+      "min_cosine": 0.9999997615814209
+    },
+    {
+      "shape": [
+        1,
+        6
+      ],
+      "max_abs": 8.940696716308594e-08,
+      "min_cosine": 1.0
+    }
+  ],
+  "parity_passed": true,
+  "ort_version": "1.31.0",
+  "torch_version": "2.14.1+cu130",
+  "final_used": false,
+  "sentencepiece_sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+}

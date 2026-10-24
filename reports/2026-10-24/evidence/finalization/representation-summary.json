@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "state": "fixed-oracle-ranking-diagnostic-complete",
+  "preregister": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\representation-pilot-v1\\preparation\\preregister.json",
+    "bytes": 10403,
+    "sha256": "453a0467ed6c341e1c7b2d3fd8bee3cfceb26a63f2a8a51841095134edbe4dee"
+  },
+  "pool_rows": 244,
+  "views": {
+    "body": {
+      "known_link_count": 6,
+      "query_count": 3,
+      "known_links_within": {
+        "5": 0,
+        "10": 0,
+        "24": 0,
+        "64": 0
+      },
+      "all_known_queries_within": {
+        "5": 0,
+        "10": 0,
+        "24": 0,
+        "64": 0
+      },
+      "mean_reciprocal_known_rank": 0.0062499683552315125,
+      "ranks": {
+        "retrieval-dev-v1-plan_responsibility-kz": [
+          171,
+          210
+        ],
+        "retrieval-dev-v1-plan_review-kz": [
+          95
+        ],
+        "action-dev-v1-08": [
+          152,
+          209,
+          200
+        ]
+      }
+    },
+    "title_body": {
+      "known_link_count": 6,
+      "query_count": 3,
+      "known_links_within": {
+        "5": 0,
+        "10": 0,
+        "24": 2,
+        "64": 6
+      },
+      "all_known_queries_within": {
+        "5": 0,
+        "10": 0,
+        "24": 1,
+        "64": 3
+      },
+      "mean_reciprocal_known_rank": 0.03649034672970843,
+      "ranks": {
+        "retrieval-dev-v1-plan_responsibility-kz": [
+          30,
+          47
+        ],
+        "retrieval-dev-v1-plan_review-kz": [
+          18
+        ],
+        "action-dev-v1-08": [
+          16,
+          47,
+          40
+        ]
+      }
+    }
+  },
+  "body_parity": {
+    "passed": true,
+    "rows": 244,
+    "max_absolute_error": 2.2351741790771484e-07,
+    "minimum_cosine": 0.9999998807907104,
+    "preregister_sha256": "453a0467ed6c341e1c7b2d3fd8bee3cfceb26a63f2a8a51841095134edbe4dee",
+    "gate": {
+      "max_absolute_error_less_than": 0.0002,
+      "minimum_cosine_greater_than": 0.9999,
+      "source": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\research\\e5_export.py",
+      "failure_action": "stop; do not rank changed representation"
+    }
+  },
+  "promising_signal_for_root_review_only": false,
+  "full_reindex_started": false,
+  "adopted": false,
+  "final_test_read": false,
+  "device": "cpu",
+  "threads": 4,
+  "component_wall_seconds": 4.39786269999604,
+  "truncation": {
+    "body": 0,
+    "title_body": 0
+  },
+  "runtime_versions": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4"
+  },
+  "limitations": [
+    "Three previously exposed development queries from one document; not new held-out evaluation.",
+    "Oracle clauses deliberately injected into a mined union pool, not corpus retrieval recall.",
+    "Unseen corpus negatives change under title+body too; a full-index gain cannot be inferred.",
+    "Other pool candidates are unlabelled, not verified semantic negatives.",
+    "No extra query rewriting, aliases, weights, FT, downloads, native/app changes or final-test reads.",
+    "No deployment or performance acceptance from CPU component timing."
+  ]
+}

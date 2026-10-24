@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "baseId": "local",
+  "dimensions": 384,
+  "rows": 106139,
+  "corpusSha256": "58d6d60adbe58e4e9fe17ba0e843d40bc56906bd1dde9a7b2d12276401d7399a",
+  "embedderSha256": "c399f8e018630338cdb624e78806f5e7c1616b8bb86b86834d20c396bddb8a5e",
+  "vectors": "vectors.f32",
+  "fragments": "fragments.jsonl",
+  "minScore": -1.0,
+  "minScoreMeaning": "Coverage-only retrieval cutoff; not calibrated probability or evidence sufficiency",
+  "normalization": "L2",
+  "dtype": "little-endian float32",
+  "maxLength": 256,
+  "queryPrefix": "query: ",
+  "passagePrefix": "passage: ",
+  "vectorsSha256": "45107a6341391511c4db96a578f761589f7bfd346d6303fd7f6649392a9a01fd",
+  "fragmentsSha256": "0452748443cd2c7bff30ea409828372b9bd789bd98ca6fe69d63899ee129e717",
+  "selectionFreezeSha256": "f30d24f57ac267d22fea48b4aa5493c93cb7689a8a78bc81d987bf9e919c060a"
+}

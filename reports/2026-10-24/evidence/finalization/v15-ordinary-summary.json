@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "scope": "Full semantic reread open repeated28development/84atoms, not final acceptance, causalFT or human expert review",
+  "automatic": true,
+  "human_review": false,
+  "reviewer_count": 1,
+  "helper_unavailable": "agent thread limit reached; no extra agent started",
+  "preregistered_rubric_sha256": "2eea8733f5874bf997c6d94e3a289b08e4e232c44e05aa70135c1d895e3c72ba",
+  "overall": {
+    "cases": 28,
+    "mandatory_atoms": 84,
+    "atoms": {
+      "supported": 67,
+      "missing": 16,
+      "unknown": 1
+    },
+    "all_required_supported_cases": 21,
+    "answer_first_true": 20
+  },
+  "by_language": {
+    "ru": {
+      "cases": 14,
+      "mandatory_atoms": 42,
+      "atoms": {
+        "supported": 42
+      },
+      "all_required_supported_cases": 14,
+      "answer_first_true": 12
+    },
+    "kz": {
+      "cases": 14,
+      "mandatory_atoms": 42,
+      "atoms": {
+        "missing": 16,
+        "supported": 25,
+        "unknown": 1
+      },
+      "all_required_supported_cases": 7,
+      "answer_first_true": 8
+    }
+  },
+  "confirmed_critical_cases": 0,
+  "unclassified_confirmed_critical_records": 0,
+  "critical_limit": "Zero detected confirmed critical assertions does not prove zero risk; omissions and unknown remain.",
+  "unknown_categories": {
+    "mandatory_semantic_scope": [
+      "retrieval-dev-v1-return-kz"
+    ],
+    "generic_completeness_metadata": [
+      "retrieval-dev-v1-report_conclusions-ru",
+      "retrieval-dev-v1-report_conclusions-kz"
+    ]
+  },
+  "material_omission_or_unknown_cases": [
+    "retrieval-dev-v1-wage-kz",
+    "retrieval-dev-v1-return-kz",
+    "retrieval-dev-v1-plan_responsibility-kz",
+    "retrieval-dev-v1-plan_review-kz",
+    "retrieval-dev-v1-report_analysis-kz",
+    "retrieval-dev-v1-report_conclusions-kz",
+    "retrieval-dev-v1-falsification-kz"
+  ],
+  "relevance": {
+    "unit_counts": {
+      "relevant": 39,
+      "irrelevant": 15,
+      "unknown": 1
+    },
+    "micro_precision_conservative": 0.7090909090909091,
+    "nonempty_delivery_cases": 24,
+    "cases_precision_at_least_point8": 12,
+    "empty_delivery": "N/A; does not rescue refusal"
+  },
+  "necessary_completeness_ceiling": {
+    "cases": 21,
+    "denominator": 28,
+    "fraction": 0.75,
+    "meaning": "Only necessary fullfact completeness on open diagnostic; utility/relevance may further reduce usable cases. Not primary accuracy."
+  },
+  "provenance": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\ordinary-v15-searchable\\source-review\\source-provenance-v1.json",
+    "sha256": "fe86388dbab7457a46b4e4392c09c7bc386ae3d3cd7adb1b0a47806f71c07545",
+    "unique_canonical_fragments": 41,
+    "XML_fragments": 39,
+    "PDF_fragments": 2,
+    "new_alternative_source_IDs": 0
+  },
+  "v14_descriptive_comparison": {
+    "old_raw_sha256": "2d69b2ad25f2b40afd0989b02135eb2c9691e1e0f4765f145421c62192f9143f",
+    "new_raw_sha256": "bf9abe6a6fa4662a5d9e038a681e2ec9de5a38f5460861ee8b918acef04f0d47",
+    "byte_identical_user_visible_cases": 26,
+    "changed_cases": [
+      "retrieval-dev-v1-lost-kz",
+      "retrieval-dev-v1-gadgets-kz"
+    ],
+    "known_fact_statuses_changed": 0,
+    "answer_first_changed": 0,
+    "old_relevance": {
+      "relevant": 41,
+      "irrelevant": 16,
+      "unknown": 1,
+      "micro": 0.7068965517241379
+    },
+    "observed_changes": [
+      "lost-KZ removed unrelated employer-storage paragraph; required facts unchanged",
+      "gadgets-KZ removed thirdPDFblock, original2DOCXduplicates/attendance remain"
+    ],
+    "interpretation": "Not a causal FT/quality/latency experiment; no new unseen test."
+  },
+  "performance": {
+    "scope": "Full7 JVM service host, not nativeGUI/AOT/Teams call",
+    "quantile": "linear interpolation position(n-1)*p",
+    "v15": {
+      "firstNonemptyTextSeconds": {
+        "median": 3.09371695,
+        "p95": 6.7710916999999995,
+        "max": 20.6435625,
+        "min": 1.1090353
+      },
+      "fullSeconds": {
+        "median": 3.09385725,
+        "p95": 6.77126073,
+        "max": 20.6448893,
+        "min": 1.1092118
+      }
+    },
+    "v14": {
+      "firstNonemptyTextSeconds": {
+        "median": 2.90653865,
+        "p95": 6.7204750099999995,
+        "max": 21.1582184,
+        "min": 0.8292138
+      },
+      "fullSeconds": {
+        "median": 2.90673535,
+        "p95": 6.720925145,
+        "max": 21.1597948,
+        "min": 0.8293084
+      }
+    },
+    "first_case": {
+      "id": "retrieval-dev-v1-wage-ru",
+      "first": 20.6435625,
+      "full": 20.6448893,
+      "coldness": "Not independently instrumented"
+    },
+    "teams_resources": "Not recorded in this run",
+    "length_chars": {
+      "median": 649.0,
+      "max": 1899
+    },
+    "refusals": 4
+  },
+  "raw_answers": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\ordinary-v15-searchable\\answers.jsonl",
+    "bytes": 774517,
+    "sha256": "bf9abe6a6fa4662a5d9e038a681e2ec9de5a38f5460861ee8b918acef04f0d47"
+  },
+  "gold": {
+    "path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\development-source-verified-v1.jsonl",
+    "sha256": "465c4dcbee6a4e5f4aef3761b6227bb096557d31d6d4aeecb8d131ed5eeba1ed",
+    "bytes": 96854
+  },
+  "run_metadata": {
+    "scope": "Full-seven JVM development service host; not final EXE/GUI or held-out acceptance",
+    "command": [
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\tools\\graalvm-community-openjdk-25.0.2+10.1\\bin\\java.exe",
+      "-Xmx2g",
+      "-XX:-UsePerfData",
+      "-XX:+DisableAttachMechanism",
+      "-XX:ErrorFile=NUL",
+      "--enable-native-access=ALL-UNNAMED",
+      "-Denterprise.nativeDlls=true",
+      "-Dfile.encoding=UTF-8",
+      "-classpath",
+      "src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\classpath\\classes;src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\classpath\\EnterpriseAI-1.0.0.jar;src\\build\\research-20261024\\quality-v2\\host\\actions-v15-searchable\\classpath\\libraries\\*",
+      "ai.enterprise.research.RagEvaluation",
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\runtime-searchable-ordinary-v2",
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\retrieval\\development-source-verified-v1.jsonl",
+      "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\host\\ordinary-v15-searchable\\answers.jsonl",
+      "answer"
+    ],
+    "input_sha256": "465c4dcbee6a4e5f4aef3761b6227bb096557d31d6d4aeecb8d131ed5eeba1ed",
+    "human_verified": false,
+    "classpath_inventory_sha256": "77f6fcc210ec71ca8135453ecf0e0426325eeae39f74cc069c4f2362a8c221a1",
+    "worker_manifest_sha256": "aeb86673038e6188f61d996ed982561df857ea662398c08b89bec311e2e18d39",
+    "exit_code": 0,
+    "state": "completed",
+    "wall_seconds": 105.07800000000134,
+    "free_c_bytes": 26931572736,
+    "lease_released": true
+  },
+  "sealed_read": false,
+  "new_model_JVM_GPU_runs_by_reviewer": 0,
+  "final_acceptance_claim": false,
+  "M2_training_authorized_by_review": false
+}

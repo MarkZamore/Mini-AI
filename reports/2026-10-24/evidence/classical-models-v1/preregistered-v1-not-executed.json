@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "feature_version": "question-evidence-numeric-v1",
+  "seed": 20261024,
+  "methods": [
+    "fixed_rules",
+    "logistic",
+    "gradient_boosting"
+  ],
+  "feature_names": [
+    "question_tokens",
+    "question_chars",
+    "question_specific_token_ratio",
+    "question_deictic",
+    "question_temporal",
+    "question_actor",
+    "evidence_count",
+    "evidence_nonempty_count",
+    "evidence_total_tokens",
+    "evidence_max_tokens",
+    "distinct_document_count",
+    "warning_fraction",
+    "partial_fraction",
+    "question_overlap_max",
+    "question_overlap_mean",
+    "evidence_question_overlap_max",
+    "dense_score_available_fraction",
+    "dense_score_max",
+    "dense_score_mean",
+    "lexical_score_available_fraction",
+    "lexical_score_max",
+    "lexical_score_mean",
+    "kazakh_letter_fraction"
+  ],
+  "feature_exclusions": [
+    "gold_required_atoms",
+    "expected_mode",
+    "label_status",
+    "label_scope",
+    "rationale",
+    "family/document/fragment identifiers",
+    "context intervention labels"
+  ],
+  "fixed_rules": {
+    "short_deictic_tokens_max": 7,
+    "minimum_question_overlap_without_dense": 0.05,
+    "zero_evidence": "insufficient"
+  },
+  "logistic": {
+    "C": 0.3,
+    "solver": "lbfgs",
+    "max_iter": 1000,
+    "class_weight": "balanced",
+    "scaling": "StandardScaler fit only on fold train"
+  },
+  "gradient_boosting": {
+    "n_estimators": 64,
+    "learning_rate": 0.05,
+    "max_depth": 2,
+    "min_samples_leaf": 4,
+    "sample_weight": "balanced within fold train"
+  },
+  "cross_validation": {
+    "maximum_folds": 5,
+    "splitter": "StratifiedGroupKFold",
+    "grouping": "Connected components of all source families/documents, declared intents and identical normalized questions"
+  },
+  "bootstrap": {
+    "replicates": 10000,
+    "cluster": "Same connected source/intent groups as CV",
+    "report_ci": 0.95,
+    "export_gate_ci": 0.975,
+    "multiplicity_note": "Two model-vs-rules comparisons; gate uses 97.5% percentile intervals, nominal Bonferroni coverage, not proof with very few clusters."
+  },
+  "export_gate": {
+    "minimum_independent_groups": 8,
+    "minimum_cases_each_class": 10,
+    "minimum_macro_f1_gain": 0.05,
+    "macro_f1_gain_gate_ci_lower_strictly_positive": true,
+    "max_false_accept_delta_gate_ci_upper": 0.03,
+    "max_false_refusal_delta_gate_ci_upper": 0.03,
+    "minimum_coverage_delta_gate_ci_lower": -0.03
+  },
+  "reserve_path": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\evaluation\\public\\reserved-families-v1.json",
+  "reserve_sha256": "4ba29fd097aae0b91c2f4b7332b9a598b80cfccce1bc62a32ff6c7192fbfc715",
+  "no_final_or_GPU": true,
+  "probabilities_are_not_normative_correctness": true
+}

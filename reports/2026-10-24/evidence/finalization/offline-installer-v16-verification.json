@@ -1,0 +1,19 @@
+{
+  "state": "PASS",
+  "full_seven_module_runtime_files": 6811,
+  "offline_apply_exit_code": 0,
+  "verify_only_exit_code": 0,
+  "active_profile": "cpu",
+  "application_or_model_launched": false,
+  "source_critical_sha_and_fileid_unchanged": [
+    "Mini-AI.exe",
+    "db/index.sqlite",
+    "model/worker.json"
+  ],
+  "transaction_journal": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\installer-offline-fixture-v16\\.mini-ai-updates\\final-v16-foundation-searchable\\journal.json",
+  "journal_sha256": "d0a267df053ec43ccf484190d2dfdc8e44e96a35ae482de6bf2ccb25a1fa4d84",
+  "backup_directory": "C:\\Users\\Oskar\\Documents\\Mini-AI\\src\\build\\research-20261024\\quality-v2\\installer-offline-fixture-v16\\.mini-ai-updates\\final-v16-foundation-searchable\\backup",
+  "app_sha256": "471cd062408efb135bd0c08465131a297dd9dfeadcd986e164a8057efa2f790b",
+  "model_manifest_sha256": "0c1cff3cd055ebaf9b809df1c19ecc604ee178ed9b4cb5ad3bc564ea17cb0313",
+  "free_c_bytes": 23593521152
+}

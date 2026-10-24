@@ -1,0 +1,89 @@
+{
+  "logistic": {
+    "classes": [
+      "answer",
+      "clarify",
+      "insufficient"
+    ],
+    "coefficient_shape": [
+      3,
+      23
+    ],
+    "intercept_count": 3,
+    "feature_count": 23,
+    "iterations": [
+      13
+    ],
+    "top_abs_coefficients": {
+      "answer": [
+        {
+          "feature": "evidence_total_tokens",
+          "standardized_coefficient": 0.3640273444040607
+        },
+        {
+          "feature": "evidence_max_tokens",
+          "standardized_coefficient": 0.337795794962543
+        },
+        {
+          "feature": "evidence_count",
+          "standardized_coefficient": 0.2666409711903439
+        }
+      ],
+      "clarify": [
+        {
+          "feature": "question_chars",
+          "standardized_coefficient": -0.4976143237454868
+        },
+        {
+          "feature": "question_tokens",
+          "standardized_coefficient": -0.4731342640318447
+        },
+        {
+          "feature": "question_deictic",
+          "standardized_coefficient": 0.23495795618646556
+        }
+      ],
+      "insufficient": [
+        {
+          "feature": "question_chars",
+          "standardized_coefficient": 0.353236683018411
+        },
+        {
+          "feature": "question_tokens",
+          "standardized_coefficient": 0.34038548763161736
+        },
+        {
+          "feature": "evidence_total_tokens",
+          "standardized_coefficient": -0.28391720646614377
+        }
+      ]
+    }
+  },
+  "gradient_boosting": {
+    "stages": 32,
+    "trees_per_stage": 3,
+    "total_trees": 96,
+    "max_actual_depth": 2,
+    "total_nodes": 570,
+    "total_leaves": 333,
+    "top_feature_importances": [
+      {
+        "feature": "question_tokens",
+        "impurity_importance": 0.24543608138751014
+      },
+      {
+        "feature": "question_chars",
+        "impurity_importance": 0.23593998756656548
+      },
+      {
+        "feature": "evidence_max_tokens",
+        "impurity_importance": 0.19777271674092808
+      },
+      {
+        "feature": "evidence_total_tokens",
+        "impurity_importance": 0.125641510548672
+      }
+    ]
+  },
+  "scope": "Trusted research joblib files just produced by this run; descriptive coefficient/tree check, not held-out quality or causal feature importance."
+}

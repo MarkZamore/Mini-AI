@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "main_status": "historical_method_validation_before_finalization",
+  "new_final_read": false,
+  "validation_scope": "Authored main, appendices and adapted methods-selection; immutable small evidence copies; old frozen MD+ZIP",
+  "relative_local_links": 80,
+  "bad_links": [],
+  "immutable_source_copies_checked": 99,
+  "immutable_copy_mismatches": [],
+  "old_report_zip_unchanged": true,
+  "two_old_train_examples_verbatim": true,
+  "example_check_basis": "Training appendix byte-identical to previous verbatim-example validation",
+  "weight_or_full_corpus_duplication": false,
+  "appendix_words": {
+    "Инженерные_методы_версии2.md": 1236,
+    "Как_обучалась_модель.md": 3536,
+    "Классические_модели_режима_ответа.md": 1251
+  },
+  "classical_run": "COMPLETED_REJECTED_NO_CANDIDATE_EXPORT",
+  "classical_metrics_sha256": "03e1070abe8612c8b921ca8594847b281f35d302b85f2f868399f4569080e853",
+  "engineering_diagnostics": "Six open development observations; not final or GUI; no new screenshots",
+  "report_files": [
+    {
+      "path": "Отчёт.md",
+      "sha256": "1aadaf105f56d7e70708efce1c556104ef02792bf3278565d72851a2ec8586b4"
+    },
+    {
+      "path": "appendices/Инженерные_методы_версии2.md",
+      "sha256": "8d77994f82e5b6124b0b125a5bd2dad0e1bfda017d1a907cc1da4a29fba1756d"
+    },
+    {
+      "path": "appendices/Как_обучалась_модель.md",
+      "sha256": "6627acd429b2cc0940a70219df75d02126683a419f0a58ee2be2fb51afc30ed6"
+    },
+    {
+      "path": "appendices/Классические_модели_режима_ответа.md",
+      "sha256": "7d34914b4efcdb094cfec8086c123c4298d9aeb4199a8bb36ba340e889251672"
+    },
+    {
+      "path": "evidence/methods-v2/methods-selection.md",
+      "sha256": "ea5661f2426382db34b5d47cab51e1728cdbfc52b5ea95de815cbf23539f9054"
+    }
+  ],
+  "historical_snapshot": true,
+  "current_status_reference": "report-index-v2.json",
+  "current_user_quality_acceptance": "accepted_by_explicit_instruction",
+  "current_automated_quality_acceptance": "not_demonstrated"
+}

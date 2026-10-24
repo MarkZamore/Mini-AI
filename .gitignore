@@ -30,3 +30,16 @@
 !.env.example
 *.pem
 *.key
+
+# Installed portable release controls and rollback copies
+/profiles/
+/Portable-Setup.ps1
+/Portable-Launch.ps1
+/portable-release.json
+/portable-files.json
+/.mini-ai-delta-common.ps1
+/.mini-ai-updates/
+/Запустить-на-процессоре.cmd
+/Запустить-на-NVIDIA.cmd
+/Установить-и-запустить.cmd
+/downloads/

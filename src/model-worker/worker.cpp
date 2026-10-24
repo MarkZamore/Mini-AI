@@ -29,6 +29,8 @@ class Worker {
     std::thread job;
     std::unique_ptr<Package> package;
     std::unique_ptr<llama_model,decltype(&llama_model_free)> model{nullptr,llama_model_free};
+    // Reverse destruction order is context, adapter, model. The model owns the adapter registry.
+    std::unique_ptr<llama_adapter_lora,decltype(&llama_adapter_lora_free)> adapter{nullptr,llama_adapter_lora_free};
     std::unique_ptr<llama_context,decltype(&llama_free)> context{nullptr,llama_free};
     std::unique_ptr<ChatTemplate> chat_program;
     std::string chat_template;
@@ -121,6 +123,13 @@ class Worker {
             auto path=utf8(package->weights);
             model.reset(llama_model_load_from_file(path.c_str(),parameters));
             if (!model) throw Failure("INCOMPATIBLE_MODEL","Engine could not load the verified model contents");
+            if (stop.load()) throw Failure("CANCELLED","Worker is shutting down");
+            if (!package->adapter.empty()) {
+                const auto adapter_path=utf8(package->adapter);
+                adapter.reset(llama_adapter_lora_init(model.get(),adapter_path.c_str()));
+                if (!adapter) throw Failure("INCOMPATIBLE_MODEL","Engine could not load the verified LoRA adapter for this base");
+                if (stop.load()) throw Failure("CANCELLED","Worker is shutting down");
+            }
             vocabulary=llama_model_get_vocab(model.get());
             if (!vocabulary || llama_model_has_encoder(model.get())) throw Failure("INCOMPATIBLE_MODEL","A decoder-only text model is required");
             char architecture[256]{};
@@ -145,6 +154,27 @@ class Worker {
             parameters_context.abort_callback_data=this;
             context.reset(llama_init_from_model(model.get(),parameters_context));
             if (!context) throw Failure("OUT_OF_MEMORY","Cannot allocate the requested CPU context");
+            if (adapter) {
+                llama_adapter_lora * adapters[]={adapter.get()};
+                float scales[]={1.0f}; // GGUF alpha/rank is applied by the pinned engine.
+                if (llama_set_adapters_lora(context.get(),adapters,1,scales)!=0)
+                    throw Failure("INCOMPATIBLE_MODEL","Engine could not attach the verified LoRA adapter");
+                // In this pinned engine, the first nonempty decode reserves the graph for
+                // min(n_ctx,n_ubatch), n_seq_max and full hybrid memory with the active LoRA.
+                // Do this before ready/cap checks; never expose the probe as user history.
+                auto token=adapter_prepare_token(llama_vocab_bos(vocabulary),llama_vocab_n_tokens(vocabulary));
+                if (abort_generation(this)) throw Failure("CANCELLED","Worker is shutting down");
+                const int code=llama_decode(context.get(),llama_batch_get_one(&token,1));
+                llama_synchronize(context.get());
+                if (abort_generation(this)) throw Failure("CANCELLED","Worker is shutting down");
+                if (code!=0) throw Failure(code==-2 ? "OUT_OF_MEMORY" : "INCOMPATIBLE_MODEL","Adapter graph preparation failed");
+                auto memory=llama_get_memory(context.get());
+                if (!memory) throw Failure("INCOMPATIBLE_MODEL","Adapter graph requires clearable decoder memory");
+                llama_memory_clear(memory,true); // Both KV and recurrent state, not one sequence.
+                llama_synchronize(context.get());
+                llama_perf_context_reset(context.get());
+                if (abort_generation(this)) throw Failure("CANCELLED","Worker is shutting down");
+            }
             if (gpu) {
                 size_t free=0,total=0; ggml_backend_dev_memory(gpu,&free,&total);
                 if (free<package->gpu_reserve || (gpu_free_before>free && gpu_free_before-free>package->gpu_budget))
@@ -235,7 +265,21 @@ class Worker {
             auto maximum=request["maxTokens"].get<uint32_t>();
             if (tokens.empty() || tokens.size()+maximum>package->context) throw Failure("CONTEXT_TOO_LARGE","Prompt and requested answer exceed the package context");
             llama_memory_clear(llama_get_memory(context.get()),true);
-            std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> sampler(llama_sampler_init_greedy(),llama_sampler_free);
+            const bool selection=evidence_selection_request(request["messages"]);
+            const bool translation=evidence_translation_request(request["messages"]);
+            const bool constrained=selection || translation;
+            std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> sampler(nullptr,llama_sampler_free);
+            if(constrained) {
+                sampler.reset(llama_sampler_chain_init(llama_sampler_chain_default_params()));
+                if(!sampler) throw std::bad_alloc();
+                std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> grammar(
+                    llama_sampler_init_grammar(vocabulary,selection?evidence_selection_grammar():evidence_translation_grammar(),"root"),llama_sampler_free);
+                if(!grammar) throw Failure("INTERNAL_ERROR","Requested evidence grammar could not be initialized");
+                llama_sampler_chain_add(sampler.get(),grammar.get());grammar.release();
+                std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)> greedy(llama_sampler_init_greedy(),llama_sampler_free);
+                if(!greedy) throw std::bad_alloc();
+                llama_sampler_chain_add(sampler.get(),greedy.get());greedy.release();
+            } else sampler.reset(llama_sampler_init_greedy());
             if (!sampler) throw std::bad_alloc();
             // v1 permits an empty text chunk. It carries no answer content,
             // but lets the unchanged app distinguish long prompt processing
@@ -260,9 +304,10 @@ class Worker {
             }
             std::string pending;
             uint32_t generated_tokens=0;
+            bool saw_eog=false;
             for (uint32_t index=0;index<maximum && !abort_generation(this);++index) {
                 auto token=llama_sampler_sample(sampler.get(),context.get(),-1);
-                if (llama_vocab_is_eog(vocabulary,token)) break;
+                if (llama_vocab_is_eog(vocabulary,token)) {saw_eog=true;break;}
                 ++generated_tokens;
                 std::array<char,512> piece{};
                 int n=llama_token_to_piece(vocabulary,token,piece.data(),int(piece.size()),0,false);
@@ -292,20 +337,22 @@ class Worker {
                 if (usage_frames++<64) {
                     // Diagnostics only: generation JSONL v1 stays unchanged. Tokens exclude EOG, not text frames.
                     Json statistics={{"requestId",id},{"input_tokens",tokens.size()},
-                        {"output_tokens",generated_tokens},{"finish_reason",cancel.load()?"cancel":generated_tokens>=maximum?"length":"eos"}};
+                        {"output_tokens",generated_tokens},{"finish_reason",cancel.load()?"cancel":saw_eog?"eos":"length"},
+                        {"evidence_selection_grammar",selection},
+                        {"constrained_grammar",selection?"evidence-selection-json-v1":translation?"complete-evidence-translation-json-v1":"none"}};
                     if(gpu) {size_t free=0,total=0;ggml_backend_dev_memory(gpu,&free,&total);
                         statistics["gpu_free_bytes"]=free;statistics["gpu_initial_free_bytes"]=gpu_free_before;
                         statistics["gpu_observed_delta_bytes"]=gpu_free_before>free?gpu_free_before-free:0;}
                     auto usage=std::string("MINI_AI_USAGE ")+statistics.dump()+"\n";
                     DWORD written=0;WriteFile(GetStdHandle(STD_ERROR_HANDLE),usage.data(),DWORD(usage.size()),&written,nullptr);
                 }
-                if(cancel.load()) emit({{"type","cancelled"},{"requestId",id}});
-                else {
+                auto terminal=generation_terminal(id,saw_eog,cancel.load(),[&]() {
                     (void)next_utf8(pending,true);
                     auto tail=citations.finish();
-                    if(!tail.empty())emit({{"type","token"},{"requestId",id},{"text",tail}});
-                    emit({{"type","done"},{"requestId",id}});
-                }
+                    if(!tail.empty() && !abort_generation(this))emit({{"type","token"},{"requestId",id},{"text",tail}});
+                });
+                if(cancel.load()) terminal={{"type","cancelled"},{"requestId",id}};
+                emit(terminal);
             }
         } catch(const std::bad_alloc &) {
             try { if(cancel.load()) emit({{"type","cancelled"},{"requestId",id}}); else error(id,"OUT_OF_MEMORY","Insufficient memory during generation"); } catch(...) {}
