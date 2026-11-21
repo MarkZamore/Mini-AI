@@ -1,5 +1,6 @@
 """Observe the owned native Mini-AI window and icon; observer artifacts only."""
 import argparse, ctypes as C, hashlib, importlib.util, json, os, subprocess, time
+import ctypes.wintypes as W
 from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np
@@ -10,9 +11,9 @@ ui=importlib.util.module_from_spec(spec);spec.loader.exec_module(ui)
 def main():
     try:ui.u.SetProcessDpiAwarenessContext(C.c_void_p(-4))
     except (AttributeError,OSError):pass
-    parser=argparse.ArgumentParser();parser.add_argument('--exe',required=True);parser.add_argument('--output');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--exe',required=True);parser.add_argument('--output');parser.add_argument('--theme',choices=('fluent','legacy'),default='fluent');args=parser.parse_args()
     exe=Path(args.exe).resolve();build=Path(__file__).resolve().parents[2]/'build'
-    output=Path(args.output).resolve() if args.output else build/'test-results/dusty-yellow-branding-ui.json'
+    output=Path(args.output).resolve() if args.output else build/'test-results/restyle-branding-ui.json'
     if not output.is_relative_to(build.resolve()):raise ValueError('Observer artifacts must be under src/build')
     output.parent.mkdir(parents=True,exist_ok=True)
     started=datetime.now(timezone.utc).isoformat()
@@ -32,13 +33,22 @@ def main():
         if not any(icons):raise AssertionError('Native title/taskbar window icon missing')
         screenshot=output.with_suffix('.png');image=ui.capture(top,child.pid,screenshot)
         rgb=np.asarray(image,dtype=np.int16)
-        yellow_palette=np.array([[240,235,221],[247,243,231],[250,248,240],[168,153,111]],dtype=np.int16)
-        yellow=ui.palette_mask(rgb,yellow_palette)
-        purple=ui.palette_mask(rgb,ui.pulse_palette())
-        if np.count_nonzero(yellow)<100 or np.count_nonzero(purple)<20:raise AssertionError('Pastel-yellow surface and purple graph theme pixels must both be present')
+        bounds=ui.rect(top)
+        ui.u.GetDpiForWindow.argtypes=[W.HWND];ui.u.GetDpiForWindow.restype=W.UINT
+        dpi=ui.u.GetDpiForWindow(top);logical_size=[(bounds.right-bounds.left)*96/dpi,(bounds.bottom-bounds.top)*96/dpi]
+        if args.theme=='legacy':
+            surface=ui.palette_mask(rgb,np.array([[240,235,221],[247,243,231],[250,248,240],[168,153,111]],dtype=np.int16))
+            nodes=ui.palette_mask(rgb,ui.pulse_palette())
+            if np.count_nonzero(surface)<100 or np.count_nonzero(nodes)<20:raise AssertionError('Legacy pastel surface/graph pixels missing')
+        else:
+            surface=(rgb[:,:,0]<90)&(rgb[:,:,1]<90)&(rgb[:,:,2]<100)&(rgb[:,:,2]>=rgb[:,:,0])
+            palette=[tuple(round(a+(b-a)*i/63) for a,b in zip((97,113,128),(151,175,195))) for i in range(64)]
+            nodes=ui.palette_mask(rgb,[ui.highlight(color,level) for color in palette for level in range(7)])
+            if np.count_nonzero(surface)<1000 or np.count_nonzero(nodes)<20:raise AssertionError('Fluent dark surface and blue-gray graph pixels must both be present')
+            if any(abs(actual-expected)>2 for actual,expected in zip(logical_size,(820,560))):raise AssertionError('Expected 820x560 DIP native startup window: '+repr(logical_size))
         stdout,stderr=child.communicate(timeout=12)
         if child.returncode or stderr:raise AssertionError('Branding UI failed: '+repr(stderr))
-        report={'success':True,'pid':child.pid,'ordinaryParentPid':os.getpid(),'exe':str(exe),'exeSha256':hashlib.file_digest(exe.open('rb'),'sha256').hexdigest(),'startedUtc':started,'completedUtc':datetime.now(timezone.utc).isoformat(),'exitCode':child.returncode,'stdout':stdout.decode('utf-8'),'mainCaption':'Mini-AI','windowIconPresent':True,'pastelYellowPixels':int(np.count_nonzero(yellow)),'purpleNodePixels':int(np.count_nonzero(purple)),'obsoleteChromeAbsent':True,'controls':items,'ownedWindowScreenshot':str(screenshot),'limitations':['Checks the actual owned HWND icon, not Start-menu icon cache.','Native pixels complement, rather than replace, UI/layout and embedded icon resource tests.','This icon and theme observer does not verify filesystem or registry operations.']}
+        report={'success':True,'pid':child.pid,'ordinaryParentPid':os.getpid(),'exe':str(exe),'exeSha256':hashlib.file_digest(exe.open('rb'),'sha256').hexdigest(),'startedUtc':started,'completedUtc':datetime.now(timezone.utc).isoformat(),'exitCode':child.returncode,'stdout':stdout.decode('utf-8'),'mainCaption':'Mini-AI','windowIconPresent':True,'theme':args.theme,'surfacePixels':int(np.count_nonzero(surface)),'graphPalettePixels':int(np.count_nonzero(nodes)),'nativeDpi':dpi,'windowSizeDip':logical_size,'windowSizePixels':[image.width,image.height],'obsoleteChromeAbsent':True,'controls':items,'ownedWindowScreenshot':str(screenshot),'limitations':['Checks the actual owned HWND icon, not Start-menu icon cache.','Native pixels complement, rather than replace, UI/layout and embedded icon resource tests.','This icon and theme observer does not verify filesystem or registry operations.']}
         output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     finally:
         if child.poll() is None:

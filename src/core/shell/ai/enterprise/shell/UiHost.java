@@ -24,9 +24,9 @@ public interface UiHost {
     static void showError(Shell parent, UiTheme theme, Api.ServiceError error) {
         if (parent.isDisposed() || error == null || "CANCELLED".equals(error.code())) return;
         var dialog=new Shell(parent,SWT.DIALOG_TRIM|SWT.APPLICATION_MODAL);
-        theme.decorate(dialog); dialog.setText(UiTheme.NAME);
+        theme.decorate(dialog); theme.installBackdrop(dialog); dialog.setText(UiTheme.NAME);
         dialog.setData("enterpriseai.ui.error",error.code());
-        var layout=new GridLayout(1,false);layout.marginWidth=20;layout.marginHeight=16;layout.verticalSpacing=16;dialog.setLayout(layout);
+        var layout=new GridLayout(1,false);layout.marginWidth=24;layout.marginHeight=24;layout.verticalSpacing=16;dialog.setLayout(layout);
         var message=new Label(dialog,SWT.WRAP);theme.apply(message);message.setText(error.message());
         var textData=new GridData(SWT.FILL,SWT.CENTER,true,false);textData.widthHint=430;message.setLayoutData(textData);
         var ok=new SoftButton(dialog,theme,"OK",false);ok.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));

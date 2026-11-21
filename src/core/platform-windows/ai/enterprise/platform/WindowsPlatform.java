@@ -39,6 +39,22 @@ public final class WindowsPlatform implements Api.Platform {
     public static String[] commandLineArguments(String[] fallback){return ImageInfo.inImageRuntimeCode()?argumentsNative():fallback;}
     public long availableMemoryBytes() { return memoryNative(); }
     public boolean cpuSupports(String isa) { return cpuNative(isa); }
+    /** Windows AccentLight2/3; visual fallback also supports foreign JVM embedding hosts. */
+    public static int[] accentColors() {
+        if (loaded) {
+            try { int[] colors=accentColorsNative();if(colors!=null&&colors.length==2)return colors; }
+            catch (UnsatisfiedLinkError ignored) { /* An older developer DLL keeps the Fluent defaults. */ }
+        }
+        return new int[]{0x60CDFF,0x99EBFF};
+    }
+    /** Configure only an owned window's uncovered client gutters; returns the exact HRESULT. */
+    public static int configureBackdrop(long window,int marginPixels) {
+        if(loaded) {
+            try { return configureBackdropNative(window,Math.max(0,marginPixels)); }
+            catch(UnsatisfiedLinkError ignored) { /* Older embedding DLL: opaque fallback. */ }
+        }
+        return 0x80004001; // E_NOTIMPL
+    }
     /** Windows 11 modern text input rejects host image paths >=256 UTF-16 units.
      * The standalone launcher invokes this only on the thread that will create its UI.
      * Ordinary Unicode keyboard input/clipboard work; composition through any IME is unavailable
@@ -61,6 +77,8 @@ public final class WindowsPlatform implements Api.Platform {
     private static native String[] argumentsNative();
     private static native long memoryNative();
     private static native boolean cpuNative(String isa);
+    private static native int[] accentColorsNative();
+    private static native int configureBackdropNative(long window,int marginPixels);
     private static native int prepareDesktopNative();
     private static native int openWithNative(String path);
     private static native long[] startNative(String exe,String directory,long memoryLimit);

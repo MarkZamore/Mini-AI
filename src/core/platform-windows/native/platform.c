@@ -10,6 +10,73 @@
 #include <stdlib.h>
 #include <imm.h>
 
+/* Resolve WinRT only from inbox combase. The application ships no new DLL and
+ * neither activates a UI nor writes Windows preferences to read accent colours. */
+typedef HRESULT (WINAPI *VisualRoInitialize)(UINT32);
+typedef void (WINAPI *VisualRoUninitialize)(void);
+typedef HRESULT (WINAPI *VisualCreateString)(PCWSTR,UINT32,void**);
+typedef HRESULT (WINAPI *VisualDeleteString)(void*);
+typedef HRESULT (WINAPI *VisualActivateInstance)(void*,void**);
+typedef HRESULT (STDMETHODCALLTYPE *VisualQueryInterface)(void*,const GUID*,void**);
+typedef ULONG (STDMETHODCALLTYPE *VisualRelease)(void*);
+typedef struct { BYTE a,r,g,b; } VisualColor;
+typedef HRESULT (STDMETHODCALLTYPE *VisualGetColorValue)(void*,int,VisualColor*);
+JNIEXPORT jintArray JNICALL Java_ai_enterprise_platform_WindowsPlatform_accentColorsNative(JNIEnv*e,jclass c) {
+ (void)c;jint colors[2]={0x60CDFF,0x99EBFF};
+ HMODULE combase=LoadLibraryExW(L"combase.dll",NULL,LOAD_LIBRARY_SEARCH_SYSTEM32);
+ if(combase) {
+  VisualRoInitialize initialize=(VisualRoInitialize)GetProcAddress(combase,"RoInitialize");
+  VisualRoUninitialize uninitialize=(VisualRoUninitialize)GetProcAddress(combase,"RoUninitialize");
+  VisualCreateString create=(VisualCreateString)GetProcAddress(combase,"WindowsCreateString");
+  VisualDeleteString deleteString=(VisualDeleteString)GetProcAddress(combase,"WindowsDeleteString");
+  VisualActivateInstance activate=(VisualActivateInstance)GetProcAddress(combase,"RoActivateInstance");
+  if(initialize&&uninitialize&&create&&deleteString&&activate) {
+   HRESULT initialized=initialize(0);void* name=NULL;void* instance=NULL;void* settings=NULL;
+   static const GUID iid={0x03021be4,0x5254,0x4781,{0x81,0x94,0x51,0x68,0xf7,0xd0,0x6d,0x7b}};
+   const WCHAR className[]=L"Windows.UI.ViewManagement.UISettings";
+   if(SUCCEEDED(create(className,(UINT32)(sizeof(className)/sizeof(WCHAR)-1),&name))&&SUCCEEDED(activate(name,&instance))&&instance) {
+    void** table=*(void***)instance;
+    if(SUCCEEDED(((VisualQueryInterface)table[0])(instance,&iid,&settings))&&settings) {
+     VisualColor light2,light3;table=*(void***)settings;
+     VisualGetColorValue get=(VisualGetColorValue)table[6];
+     if(SUCCEEDED(get(settings,7,&light2))&&SUCCEEDED(get(settings,8,&light3))) {
+      colors[0]=(light2.r<<16)|(light2.g<<8)|light2.b;colors[1]=(light3.r<<16)|(light3.g<<8)|light3.b;
+     }
+     ((VisualRelease)table[2])(settings);
+    }
+    table=*(void***)instance;((VisualRelease)table[2])(instance);
+   }
+   if(name)deleteString(name);if(SUCCEEDED(initialized))uninitialize();
+  }
+  FreeLibrary(combase);
+ }
+ jintArray result=(*e)->NewIntArray(e,2);if(result)(*e)->SetIntArrayRegion(e,result,0,2,colors);return result;
+}
+
+typedef struct { int left,right,top,bottom; } VisualMargins;
+typedef HRESULT (WINAPI *VisualSetAttribute)(HWND,DWORD,LPCVOID,DWORD);
+typedef HRESULT (WINAPI *VisualExtendFrame)(HWND,const VisualMargins*);
+JNIEXPORT jint JNICALL Java_ai_enterprise_platform_WindowsPlatform_configureBackdropNative(JNIEnv*e,jclass c,jlong window,jint margin) {
+ (void)e;(void)c;HRESULT result=E_NOTIMPL;
+ HMODULE dwm=LoadLibraryExW(L"dwmapi.dll",NULL,LOAD_LIBRARY_SEARCH_SYSTEM32);
+ if(dwm) {
+  VisualSetAttribute set=(VisualSetAttribute)GetProcAddress(dwm,"DwmSetWindowAttribute");
+  VisualExtendFrame extend=(VisualExtendFrame)GetProcAddress(dwm,"DwmExtendFrameIntoClientArea");
+  if(set&&extend) {
+   HWND hwnd=(HWND)(intptr_t)window;int type=margin>0?2:1;
+   VisualMargins gutters={margin,margin,margin,margin};
+   result=set(hwnd,38,&type,sizeof(type));
+   if(SUCCEEDED(result))result=extend(hwnd,&gutters);
+   if(FAILED(result)) {
+    // Never leave transparent painting enabled when backdrop configuration failed.
+    type=1;VisualMargins none={0,0,0,0};set(hwnd,38,&type,sizeof(type));extend(hwnd,&none);
+   }
+  }
+  FreeLibrary(dwm);
+ }
+ return (jint)result;
+}
+
 static void fail(JNIEnv *e,const char *text){jclass c=(*e)->FindClass(e,"java/lang/IllegalStateException");if(c)(*e)->ThrowNew(e,c,text);}
 static WCHAR* wide(JNIEnv *e,jstring value){jsize n=(*e)->GetStringLength(e,value);WCHAR* out=calloc((size_t)n+1,sizeof(WCHAR));if(!out){fail(e,"Allocation failed");return NULL;}(*e)->GetStringRegion(e,value,0,n,(jchar*)out);return out;}
 static WCHAR* widePath(JNIEnv *e,jstring value){WCHAR*raw=wide(e,value);if(!raw)return NULL;size_t n=wcslen(raw);if(n<248||!wcsncmp(raw,L"\\\\?\\",4))return raw;WCHAR*result=calloc(n+10,sizeof(WCHAR));if(!result){free(raw);fail(e,"Allocation failed");return NULL;}if(raw[0]==L'\\'&&raw[1]==L'\\')swprintf_s(result,n+10,L"\\\\?\\UNC\\%s",raw+2);else if(raw[1]==L':'&&raw[2]==L'\\')swprintf_s(result,n+10,L"\\\\?\\%s",raw);else{free(result);return raw;}free(raw);return result;}

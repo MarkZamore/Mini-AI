@@ -9,6 +9,8 @@
 [странице релиза](https://github.com/MarkZamore/Mini-AI/releases/tag/v2026.10.24-final).
 Предыдущие версии сохраняются в [GitHub Releases](https://github.com/MarkZamore/Mini-AI/releases).
 
+Исходный код в `main` включает оформление на основе Autonomy&Performance с тёмной палитрой, Segoe UI Variable Text, минимальным размером окна 820×560 DIP и плавной прокруткой. [Описание интерфейса и снимки исходной сборки от 21 октября 2026 года](UI-RESTYLE.md).
+
 [Скачать установщик](https://github.com/MarkZamore/Mini-AI/releases/download/v2026.10.24-final/Mini-AI-update-setup.zip)
 и [Markdown-отчёт с материалами](https://github.com/MarkZamore/Mini-AI/releases/download/v2026.10.24-final/Mini-AI-research-final.zip).
 

@@ -50,11 +50,18 @@ public final class GraphCanvas extends Composite {
     private String busy = "Загрузка графа…";
 
     public GraphCanvas(Composite parent, int style) {
-        super(parent, style);
+        super(parent, style | SWT.DOUBLE_BUFFERED);
         theme = UiHost.find(parent).theme();
         theme.apply(this);
         setData("enterpriseai.ui.graph", "panel");
-        setLayout(new FillLayout());
+        var frameLayout = new FillLayout(); frameLayout.marginWidth = 8; frameLayout.marginHeight = 8;
+        setLayout(frameLayout);
+        addPaintListener(event -> {
+            theme.paintBackdrop(this, event.gc);
+            var area = getClientArea(); event.gc.setBackground(theme.panel());
+            event.gc.fillRoundRectangle(0, 0, area.width, area.height, 16, 16);
+        });
+        addListener(SWT.Resize, event -> redraw());
         canvas = new Canvas(this, SWT.DOUBLE_BUFFERED);
         theme.apply(canvas);
         canvas.setBackground(theme.panel());

@@ -4,8 +4,11 @@ import ai.enterprise.assistant.AssistantPanel;
 import ai.enterprise.assistant.MarkdownText;
 import ai.enterprise.assistant.SourcePresentation;
 import ai.enterprise.assistant.RoundedSourcesBlock;
+import ai.enterprise.bootstrap.EnterpriseAIComponent;
 import ai.enterprise.contracts.Api;
 import ai.enterprise.contracts.Json;
+import ai.enterprise.generated.GeneratedCatalog;
+import ai.enterprise.shell.SmoothScrollViewport;
 import ai.enterprise.shell.UiHost;
 import ai.enterprise.shell.UiTheme;
 import ai.enterprise.shell.SoftButton;
@@ -42,13 +45,23 @@ public final class AssistantPanelUiTest {
         if (!reportName.matches("[A-Za-z0-9_.-]+\\.json")) throw new IllegalArgumentException("Use a report basename ending in .json");
         if (args.length > 1) System.setProperty("swt.library.path", Path.of(args[1]).toAbsolutePath().toString());
         var executor = Executors.newSingleThreadExecutor();
-        Api.Context context = new Api.Context(new Api.Environment(source.resolve("build/assistant-ui-fixture"), executor, new ProbePlatform()));
-        ProbeSession session = new ProbeSession(); context.register(Api.AssistantSessionServiceV1.class, session);
-        ProbeViewer viewer = new ProbeViewer(); context.register(Api.SourceViewerServiceV1.class, viewer);
+        var environment = new Api.Environment(source.resolve("build/restyle-ui-root"), executor, new ProbePlatform());
+        ProbeSession session = new ProbeSession();
+        ProbeViewer viewer = new ProbeViewer();
         Map<String,Object> result = new LinkedHashMap<>(); result.put("suite", UiTheme.NAME + " assistant real SWT behavior");
-        result.put("scope", "Developer UI only; no actual model, documents, SQLite or no-write claim");
+        result.put("scope", "Full catalog and read-only SQLite; deterministic assistant and viewer probes drive the UI scenarios");
         Display display = null;
-        try {
+        try (var component = EnterpriseAIComponent.create(environment, GeneratedCatalog.modules(), GeneratedCatalog.panels())) {
+            Api.Context context = component.context();
+            for (var service : List.of(Api.DatabaseServiceV1.class, Api.DocumentAccessServiceV1.class,
+                    Api.SearchServiceV1.class, Api.GraphServiceV1.class, Api.SourceViewerServiceV1.class,
+                    Api.InferenceServiceV1.class, Api.AssistantSessionServiceV1.class)) {
+                check(context.find(service).isPresent(), "full catalog registered " + service.getSimpleName());
+            }
+            check(!context.require(Api.DatabaseServiceV1.class).sqliteVersion().equals("unavailable"),
+                "full catalog opens the read-only database");
+            replaceForUiFixture(context, Api.AssistantSessionServiceV1.class, session);
+            replaceForUiFixture(context, Api.SourceViewerServiceV1.class, viewer);
             display = new Display(); Shell shell = new Shell(display); UiTheme theme = UiTheme.get(display);
             theme.decorate(shell); shell.setText(UiTheme.NAME); shell.setLayout(new FillLayout());
             RecordingHost host = new RecordingHost(theme); UiHost.install(shell, host);
@@ -57,6 +70,7 @@ public final class AssistantPanelUiTest {
             shell.setSize(700, 800); shell.open(); pump(display, () -> shell.isVisible());
             Text query = (Text) marked(panel, "query");
             MarkdownText transcript = (MarkdownText) marked(panel, "transcript");
+            SmoothScrollViewport queryViewport = viewport(query);
             SoftButton send = (SoftButton) marked(panel, "send"); Control empty = marked(panel, "empty");
             Composite composer = (Composite) marked(panel, "composer"); Control sources = marked(panel, "sources");
             Label sourceTitle = (Label) marked(panel, "sources-title");
@@ -68,9 +82,10 @@ public final class AssistantPanelUiTest {
             result.put("dpi", Map.of("requestedSwtScale", requestedScale, "deviceZoom", DPIUtil.getDeviceZoom(),
                 "effectiveSwtScale", DPIUtil.getEffectiveAutoScaleValue(), "shellNativeZoom", shell.getZoom(),
                 "displayDpiX", dpi.x, "displayDpiY", dpi.y));
-            if (requestedScale.matches("100|150|200"))
-                check(DPIUtil.getDeviceZoom() == Integer.parseInt(requestedScale), "requested developer SWT scaling is active");
-            Rectangle queryBounds = display.map(query, composer, query.getClientArea());
+            if (requestedScale.matches("100|125|150|200"))
+                check(DPIUtil.getZoomForAutoscaleProperty(shell.getZoom()) == Integer.parseInt(requestedScale),
+                    "requested developer SWT scaling is active");
+            Rectangle queryBounds = display.map(queryViewport, composer, queryViewport.getClientArea());
             Rectangle sendBounds = display.map(send, composer, new Rectangle(0, 0, send.getSize().x, send.getSize().y));
             Rectangle composerBounds = composer.getClientArea();
             result.put("geometry", Map.of("composer", rectangle(composerBounds), "query", rectangle(queryBounds),
@@ -102,7 +117,7 @@ public final class AssistantPanelUiTest {
                 t.contains("AI-помощник по документам") || t.contains("История хранится") || t.contains("Готово") || t.contains("Ссылки и точные места")), "removed labels and ready status are absent");
             query.setText("  "); check(!send.isEnabled(), "whitespace does not enable send");
             query.setText("Первая строка"); check(send.isEnabled(), "nonblank input enables send");
-            ImageData arrowImage = snapshot(send); RGB glyph = display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT).getRGB();
+            ImageData arrowImage = snapshot(send); RGB glyph = theme.onAccent().getRGB();
             Event newline = key(SWT.CR, SWT.SHIFT); query.notifyListeners(SWT.KeyDown, newline);
             check(newline.doit && session.operations.isEmpty(), "Shift+Enter preserves the text edit and does not submit");
             query.setText("Первая строка\nВторая строка"); Event enter = key(SWT.CR, 0); query.notifyListeners(SWT.KeyDown, enter);
@@ -125,7 +140,8 @@ public final class AssistantPanelUiTest {
                 "stopBelowSquare", color(pixel(stopImage, 0, 6))));
             check(sources.isVisible() && !((GridData)sources.getLayoutData()).exclude,
                 "starting a request preserves the visible empty sources block");
-            check(!empty.isVisible() && transcript.getText().contains("Первая строка"), "submitted history replaces the centered brand");
+            check(!empty.isVisible() && transcript.isVisible() && transcript.getText().contains("Первая строка"),
+                "submitted history replaces the centered brand");
             Operation first = session.operations.getFirst();
             first.emit("state", "Подготовка модели и ожидание ответа…", List.of(), null);
             pump(display, () -> activityStage.getText().equals("Подготовка модели и ожидание ответа…"));
@@ -183,17 +199,15 @@ public final class AssistantPanelUiTest {
 
             send.notifyListeners(SWT.Selection, new Event()); Operation second = session.operations.getLast();
             Api.Fragment fragment = fragment(); second.emit("sources", "", List.of(fragment), null);
-            pump(display, sources::isVisible);
+            pump(display, () -> controls((Composite)sources).stream().anyMatch(Link.class::isInstance));
             check(!((GridData)sources.getLayoutData()).exclude && labels((Composite)sources).stream().anyMatch(t -> t.contains("Стр. 2") && t.contains("требуется сверка")), "compact source location and readable quality notice are visible");
             check(labels((Composite)sources).stream().noneMatch(t -> t.contains(fragment.fragmentId()) || t.contains("machine_extracted") || t.contains("bbox")),
                 "main source panel does not expose raw IDs or extraction payload");
             String canonicalAnswer = "Условие 1 обязательно. Исключение 2 сохраняется. [source:" + fragment.fragmentId() + "]"
                 + "\n\nОграничения источников: OCR needs_review partial";
             String displayedAnswer = SourcePresentation.answer(canonicalAnswer, List.of(fragment));
-            check(displayedAnswer.contains("Условие 1 обязательно. Исключение 2 сохраняется. [1]")
-                && !displayedAnswer.contains("needs_review") && displayedAnswer.contains("карточках источников")
-                && displayedAnswer.contains("фрагменты требуют сверки") && !displayedAnswer.contains("полноту ответа"),
-                "citation presentation preserves substantive conditions and replaces service suffix with a readable note");
+            check(displayedAnswer.equals("Условие 1 обязательно. Исключение 2 сохраняется. [1]"),
+                "citation presentation preserves substantive conditions and keeps routine warnings in the source card");
             check(SourcePresentation.warningDetails(canonicalAnswer).contains("OCR needs_review partial") && fragment.fragmentId().equals("fragment-1"),
                 "full diagnostics and canonical source ID remain available without data mutation");
             second.fail("MODEL_MISSING", "Не найден model\\inference-worker.exe", List.of(fragment));
@@ -210,7 +224,8 @@ public final class AssistantPanelUiTest {
             check(Arrays.equals(card.getImages(), shell.getImages()), "source card uses the same in-memory application icons");
             Text details = controls(card).stream().filter(c -> c instanceof Text).map(c -> (Text)c).findFirst().orElseThrow();
             check(details.getText().contains("не отображение оригинала") && details.getText().contains("pdf_region") && details.getText().contains("page"), "source card preserves the JSON/original distinction and provenance");
-            Control open = controls(card).stream().filter(c -> c instanceof Canvas).findFirst().orElseThrow();
+            SoftButton open = controls(card).stream().filter(SoftButton.class::isInstance)
+                .map(SoftButton.class::cast).findFirst().orElseThrow();
             open.notifyListeners(SWT.Selection, new Event()); pump(display, () -> host.errors.size() == 2);
             check(viewer.calls == 1 && host.errors.getLast().code().equals("SOURCE_CHANGED"), "source opening failure reports once through the same host error port");
             card.close();
@@ -316,7 +331,7 @@ public final class AssistantPanelUiTest {
             if (error instanceof Error serious) throw serious;
             throw new RuntimeException(error);
         } finally {
-            context.close(); executor.shutdownNow(); if (display != null && !display.isDisposed()) display.dispose();
+            executor.shutdownNow(); if (display != null && !display.isDisposed()) display.dispose();
             result.put("assertions", checks.size()); result.put("checks", List.copyOf(checks));
             Path report = source.resolve("build/test-results").resolve(reportName);
             Files.createDirectories(report.getParent()); Files.writeString(report, Json.stringify(result));
@@ -357,6 +372,19 @@ public final class AssistantPanelUiTest {
     private static boolean descendant(Control child, Composite parent) {
         for (Control c = child; c != null; c = c.getParent()) if (c == parent) return true;
         return false;
+    }
+    private static SmoothScrollViewport viewport(Control control) {
+        for (Control current = control; current != null; current = current.getParent()) {
+            if (current instanceof SmoothScrollViewport viewport) return viewport;
+        }
+        throw new AssertionError("Missing smooth scroll viewport");
+    }
+    @SuppressWarnings("unchecked")
+    private static <T> void replaceForUiFixture(Api.Context context, Class<T> type, T probe) throws ReflectiveOperationException {
+        var field = Api.Context.class.getDeclaredField("services");
+        field.setAccessible(true);
+        var services = (Map<Class<?>, Object>) field.get(context);
+        if (services.replace(type, probe) == null) throw new AssertionError("Full catalog service absent: " + type.getSimpleName());
     }
     private static List<Control> controls(Composite parent) {
         var result = new ArrayList<Control>();

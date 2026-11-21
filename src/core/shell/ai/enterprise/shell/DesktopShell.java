@@ -22,8 +22,10 @@ public final class DesktopShell {
         try {
             var theme=UiTheme.get(display);
             var shell=new Shell(display);theme.decorate(shell);shell.setText(UiTheme.NAME);
-            var layout=new GridLayout(1,false);layout.marginWidth=12;layout.marginHeight=12;layout.verticalSpacing=8;shell.setLayout(layout);
+            theme.installBackdrop(shell);
+            var layout=new GridLayout(1,false);layout.marginWidth=24;layout.marginHeight=24;layout.verticalSpacing=16;shell.setLayout(layout);
             var footer=new Label(shell,SWT.WRAP);theme.apply(footer);footer.setBackground(theme.background());
+            footer.setFont(theme.captionFont());footer.setForeground(theme.muted());
             footer.setData("enterpriseai.ui.selected-document",Boolean.TRUE);
             var footerData=new GridData(SWT.FILL,SWT.CENTER,true,false);footerData.exclude=true;footer.setLayoutData(footerData);footer.setVisible(false);
             var reported=new LinkedHashSet<String>();
@@ -51,8 +53,8 @@ public final class DesktopShell {
             var content=compose(shell,component.context(),component.panels());
             content.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));content.moveAbove(footer);
             var area=display.getPrimaryMonitor().getClientArea();
-            shell.setSize(Math.min(1440,area.width-40),Math.min(920,area.height-60));
-            shell.setLocation(area.x+(area.width-shell.getSize().x)/2,area.y+(area.height-shell.getSize().y)/2);
+            shell.setMinimumSize(820,560);shell.setSize(820,560);
+            shell.setLocation(area.x+Math.max(0,(area.width-shell.getSize().x)/2),area.y+Math.max(0,(area.height-shell.getSize().y)/2));
             shell.addListener(SWT.Close,e->component.close());shell.open();
             display.asyncExec(()->{
                 if(shell.isDisposed())return;
@@ -84,7 +86,7 @@ public final class DesktopShell {
     }
     public static Composite compose(Composite parent,Api.Context context,List<PanelFactory> factories) {
         var theme=UiTheme.get(parent.getDisplay());
-        var container=new Composite(parent,SWT.NONE);theme.apply(container);container.setLayout(new FillLayout());
+        var container=new Composite(parent,SWT.NONE);theme.apply(container);theme.installBackdrop(container);container.setLayout(new FillLayout());
         var sorted=new ArrayList<>(factories);
         sorted.sort(Comparator.comparingInt(p->p.slot().equals("assistant")||p.slot().equals("left")?0:p.slot().equals("graph")?2:1));
         if(sorted.isEmpty()) {
@@ -94,7 +96,7 @@ public final class DesktopShell {
         }
         if(sorted.size()==1)createPanel(container,context,sorted.getFirst());
         else {
-            var split=new SashForm(container,SWT.HORIZONTAL|SWT.SMOOTH);theme.apply(split);split.setSashWidth(10);
+            var split=new SashForm(container,SWT.HORIZONTAL|SWT.SMOOTH);theme.apply(split);theme.installBackdrop(split);split.setSashWidth(24);
             for(var factory:sorted)createPanel(split,context,factory);
             if(sorted.size()==2)split.setWeights(45,55);else split.setWeights(sorted.stream().mapToInt(p->100).toArray());
             installSashStyle(split,theme,context);
@@ -120,11 +122,18 @@ public final class DesktopShell {
     }
     private static void styleSash(Sash sash,UiTheme theme) {
         if(Boolean.TRUE.equals(sash.getData("enterpriseai.ui.splitter")))return;
+        theme.apply(sash);
         sash.setBackground(theme.separator());sash.setCursor(sash.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE));
         sash.setData("enterpriseai.ui.splitter",Boolean.TRUE);
         sash.addListener(SWT.MouseEnter,e->{sash.setBackground(theme.separatorHover());sash.redraw();});
         sash.addListener(SWT.MouseExit,e->{sash.setBackground(theme.separator());sash.redraw();});
-        sash.addPaintListener(e->{var size=sash.getSize();e.gc.setAdvanced(false);e.gc.setBackground(sash.getBackground());e.gc.fillRectangle(0,0,size.x,size.y);e.gc.setBackground(theme.accent());for(int y=-9;y<=9;y+=9)e.gc.fillOval(size.x/2-2,size.y/2+y-2,4,4);});
+        sash.addPaintListener(e->{
+            var size=sash.getSize();e.gc.setAdvanced(false);theme.paintBackdrop(sash,e.gc);
+            boolean hover=sash.getBackground().equals(theme.separatorHover());
+            e.gc.setBackground(hover?theme.separatorHover():theme.separator());
+            int width=hover?4:2,height=Math.min(40,size.y);
+            e.gc.fillRoundRectangle((size.x-width)/2,(size.y-height)/2,width,height,width,width);
+        });
     }
     private static void createPanel(Composite parent,Api.Context context,PanelFactory factory) {
         try{factory.create(parent,context);}

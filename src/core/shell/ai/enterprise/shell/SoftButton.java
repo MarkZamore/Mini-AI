@@ -3,6 +3,7 @@ package ai.enterprise.shell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.accessibility.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.*;
 
 /** Keyboard-accessible button drawn using in-memory GDI, including the send glyph. */
@@ -46,10 +47,17 @@ public final class SoftButton extends Canvas {
         addPaintListener(e -> {
             var gc = e.gc; var area = getClientArea(); gc.setAdvanced(false);
             gc.setBackground(getBackground()); gc.fillRectangle(area);
-            gc.setBackground(isEnabled() ? (pressed || hover ? theme.accentHover() : theme.accent()) : theme.border());
+            boolean highlighted=hover||isFocusControl();
+            gc.setBackground(!isEnabled()?theme.disabled():arrow
+                ?(pressed?theme.accentPressed():highlighted?theme.accentHover():theme.accent())
+                :(pressed?theme.surfacePressed():highlighted?theme.surfaceHover():theme.field()));
             if (arrow) gc.fillOval(2,2,Math.max(1,area.width-4),Math.max(1,area.height-4));
-            else gc.fillRoundRectangle(1,1,Math.max(1,area.width-2),Math.max(1,area.height-2),14,14);
-            gc.setForeground(isEnabled() ? getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT) : theme.muted());
+            else {
+                gc.fillRoundRectangle(1,1,Math.max(1,area.width-2),Math.max(1,area.height-2),8,8);
+                gc.setForeground(theme.border());gc.setLineWidth(1);
+                gc.drawRoundRectangle(1,1,Math.max(1,area.width-3),Math.max(1,area.height-3),8,8);
+            }
+            gc.setForeground(!isEnabled()?theme.textDisabled():arrow?theme.onAccent():theme.text());
             if (arrow) {
                 int x=area.width/2,y=area.height/2; gc.setLineWidth(2);
                 if (stopMode) { gc.setBackground(gc.getForeground()); gc.fillRectangle(x-5,y-5,10,10); }
@@ -57,7 +65,6 @@ public final class SoftButton extends Canvas {
             } else {
                 Point size=gc.textExtent(label); gc.drawText(label,(area.width-size.x)/2,(area.height-size.y)/2,true);
             }
-            if (isFocusControl()) { gc.setForeground(theme.text()); gc.drawFocus(3,3,Math.max(1,area.width-6),Math.max(1,area.height-6)); }
         });
     }
     public boolean isStopMode() { return stopMode; }
@@ -73,8 +80,13 @@ public final class SoftButton extends Canvas {
     }
     private void activate() { if (isEnabled() && !isDisposed()) notifyListeners(SWT.Selection,new Event()); }
     public Point computeSize(int wHint,int hHint,boolean changed) {
-        int w=arrow?40:Math.max(72,label.length()*8+28);
-        return new Point(wHint==SWT.DEFAULT?w:wHint,hHint==SWT.DEFAULT?40:hHint);
+        checkWidget();int w=36;
+        if(!arrow) {
+            var gc=new GC(this);
+            try { gc.setFont(getFont());w=Math.max(60,gc.textExtent(label).x+26); }
+            finally { gc.dispose(); }
+        }
+        return new Point(wHint==SWT.DEFAULT?w:wHint,hHint==SWT.DEFAULT?36:hHint);
     }
     public void setEnabled(boolean enabled) { super.setEnabled(enabled); if (!enabled) { pressed=false;setCapture(false); } redraw(); }
 }

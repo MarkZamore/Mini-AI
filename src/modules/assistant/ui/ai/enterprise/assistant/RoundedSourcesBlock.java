@@ -37,7 +37,7 @@ public final class RoundedSourcesBlock extends Composite {
             event.gc.setAdvanced(false); event.gc.setBackground(theme.panel()); event.gc.fillRectangle(area);
             event.gc.setForeground(theme.border());
             event.gc.drawRoundRectangle(0, top, Math.max(0, area.width - 1),
-                Math.max(0, area.height - top - 1), 14, 14);
+                Math.max(0, area.height - top - 1), 16, 16);
         });
         addListener(SWT.Resize, event -> { layout(true); redraw(); });
     }

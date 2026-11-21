@@ -5,7 +5,6 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.graphics.Font;
@@ -13,7 +12,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.*;
 
 /** Native, selectable Markdown view. Clipboard text always comes from the original source. */
-public final class MarkdownText extends StyledText {
+public final class MarkdownText extends NativeWheelStyledText {
     private static final int BOLD = 1, ITALIC = 2, CODE = 4, STRIKE = 8, LINK = 16, QUOTE = 32, TABLE = 64;
     private static final Pattern HEADING = Pattern.compile("^ {0,3}(#{1,6})[ \\t]+(.*)$");
     private static final Pattern LIST = Pattern.compile("^(\\s*)([-+*]|\\d+[.)])[ \\t]+(.*)$");

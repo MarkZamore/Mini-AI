@@ -4,6 +4,7 @@ import ai.enterprise.contracts.Api;
 import ai.enterprise.contracts.Json;
 import ai.enterprise.shell.PanelFactory;
 import ai.enterprise.shell.SoftButton;
+import ai.enterprise.shell.SmoothScrollViewport;
 import ai.enterprise.shell.UiHost;
 import ai.enterprise.shell.UiTheme;
 import java.util.*;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
@@ -25,65 +25,106 @@ public final class AssistantPanel implements PanelFactory {
 
     public Composite create(Composite parent, Api.Context context) {
         UiHost host = UiHost.find(parent); UiTheme theme = host.theme();
-        Composite panel = new Composite(parent, SWT.NONE); theme.apply(panel);
+        Composite panel = new Composite(parent, SWT.DOUBLE_BUFFERED); theme.apply(panel);
+        panel.addPaintListener(event -> {
+            theme.paintBackdrop(panel, event.gc);
+            var area = panel.getClientArea(); event.gc.setBackground(theme.panel());
+            event.gc.fillRoundRectangle(0, 0, area.width, area.height, 16, 16);
+        });
+        panel.addListener(SWT.Resize, event -> panel.redraw());
         GridLayout layout = new GridLayout(1, false);
-        layout.marginWidth = 16; layout.marginHeight = 16; layout.verticalSpacing = 12; panel.setLayout(layout);
+        layout.marginWidth = 16; layout.marginHeight = 16; layout.verticalSpacing = 8; panel.setLayout(layout);
         Composite historyArea = new Composite(panel, SWT.NONE); theme.apply(historyArea);
-        historyArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridData historySize = new GridData(SWT.FILL, SWT.FILL, true, true);
+        historySize.widthHint = 0; historySize.heightHint = 128; historySize.minimumHeight = 28;
+        historyArea.setLayoutData(historySize);
         StackLayout historyStack = new StackLayout(); historyArea.setLayout(historyStack);
         Canvas empty = new Canvas(historyArea, SWT.DOUBLE_BUFFERED); theme.apply(empty);
         empty.setData("enterpriseai.ui.empty", Boolean.TRUE);
         empty.addPaintListener(event -> {
-            event.gc.setFont(theme.brandFont()); event.gc.setForeground(theme.accent());
+            event.gc.setFont(theme.brandFont()); event.gc.setForeground(theme.text());
             Point size = event.gc.textExtent(UiTheme.NAME); var bounds = empty.getClientArea();
             event.gc.drawText(UiTheme.NAME, Math.max(0, (bounds.width - size.x) / 2),
                 Math.max(0, (bounds.height - size.y) / 2), true);
         });
-        MarkdownText transcript = new MarkdownText(historyArea, theme);
+        SmoothScrollViewport transcriptViewport = SmoothScrollViewport.forStyledText(historyArea, theme,
+            clip -> new MarkdownText(clip, theme));
+        MarkdownText transcript = (MarkdownText)transcriptViewport.styledText();
         theme.apply(transcript); transcript.setData("enterpriseai.ui.transcript", Boolean.TRUE);
         historyStack.topControl = empty;
 
         RoundedSourcesBlock sourcesGroup = new RoundedSourcesBlock(panel, theme, "Источники ответа");
         sourcesGroup.content().setLayout(new FillLayout());
         GridData sourceSize = new GridData(SWT.FILL, SWT.FILL, true, false);
-        sourceSize.heightHint = 130;
+        sourceSize.heightHint = 130; sourceSize.widthHint = 0;
         sourcesGroup.setLayoutData(sourceSize);
-        ScrolledComposite scroller = new ScrolledComposite(sourcesGroup.content(), SWT.V_SCROLL); theme.apply(scroller);
-        scroller.setExpandHorizontal(true); scroller.setExpandVertical(true);
-        Composite sourceContent = new Composite(scroller, SWT.NONE); theme.apply(sourceContent);
-        sourceContent.setLayout(new GridLayout(1, false)); scroller.setContent(sourceContent);
+        SmoothScrollViewport scroller = SmoothScrollViewport.forContent(sourcesGroup.content(), theme);
+        Composite sourceContent = scroller.content(); theme.apply(sourceContent);
+        GridLayout sourceLayout = new GridLayout(1, false);
+        sourceLayout.marginWidth = 0; sourceLayout.marginHeight = 0; sourceLayout.verticalSpacing = 8;
+        sourceContent.setLayout(sourceLayout);
 
         RequestActivity activity = new RequestActivity(panel, theme);
         Composite composer = new Composite(panel, SWT.DOUBLE_BUFFERED); theme.apply(composer);
         composer.setBackground(theme.field()); composer.setData("enterpriseai.ui.composer", Boolean.TRUE);
         GridLayout composerLayout = new GridLayout(1, false);
-        composerLayout.marginWidth = 14; composerLayout.marginHeight = 12;
-        composerLayout.verticalSpacing = 6; composer.setLayout(composerLayout);
-        composer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        composerLayout.marginWidth = 12; composerLayout.marginHeight = 12;
+        composerLayout.verticalSpacing = 8; composer.setLayout(composerLayout);
+        GridData composerSize = new GridData(SWT.FILL, SWT.FILL, true, false);
+        composerSize.widthHint = 0; composer.setLayoutData(composerSize);
         composer.addPaintListener(event -> {
             var area = composer.getClientArea(); event.gc.setAdvanced(false);
             event.gc.setBackground(theme.panel()); event.gc.fillRectangle(area);
             event.gc.setBackground(theme.field());
-            event.gc.fillRoundRectangle(0, 0, Math.max(0, area.width - 1), Math.max(0, area.height - 1), 26, 26);
+            event.gc.fillRoundRectangle(0, 0, Math.max(0, area.width - 1), Math.max(0, area.height - 1), 16, 16);
             event.gc.setForeground(theme.border());
-            event.gc.drawRoundRectangle(0, 0, Math.max(0, area.width - 1), Math.max(0, area.height - 1), 26, 26);
+            event.gc.drawRoundRectangle(0, 0, Math.max(0, area.width - 1), Math.max(0, area.height - 1), 16, 16);
         });
-        Text query = new Text(composer, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL); theme.apply(query);
+        SmoothScrollViewport queryViewport = SmoothScrollViewport.forText(composer, theme, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        queryViewport.setBackground(theme.field());
+        Text query = queryViewport.text(); theme.apply(query);
         query.setBackground(theme.field()); query.setData("enterpriseai.ui.query", Boolean.TRUE);
         query.setMessage("Напишите сообщение"); query.setTextLimit(131000);
         GridData querySize = new GridData(SWT.FILL, SWT.FILL, true, false);
-        querySize.heightHint = 88; querySize.minimumHeight = 56; query.setLayoutData(querySize);
+        querySize.heightHint = 88; querySize.minimumHeight = 56; querySize.widthHint = 0;
+        queryViewport.setLayoutData(querySize);
         Composite actions = new Composite(composer, SWT.NONE); theme.apply(actions); actions.setBackground(theme.field());
         GridLayout actionLayout = new GridLayout(2, false);
         actionLayout.marginWidth = 0; actionLayout.marginHeight = 0; actionLayout.horizontalSpacing = 8;
         actions.setLayout(actionLayout); actions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        Composite spacer = new Composite(actions, SWT.NONE); spacer.setBackground(theme.field());
+        Composite spacer = new Composite(actions, SWT.NONE); theme.apply(spacer); spacer.setBackground(theme.field());
         spacer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         SoftButton send = new SoftButton(actions, theme, "Отправить", true);
         send.setData("enterpriseai.ui.send", Boolean.TRUE); send.setEnabled(false); send.setToolTipText("Отправить сообщение");
         GridData sendSize = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         sendSize.widthHint = 40; sendSize.heightHint = 40; send.setLayoutData(sendSize);
-        composer.setTabList(new Control[] {query, actions}); actions.setTabList(new Control[] {send});
+        composer.setTabList(new Control[] {queryViewport, actions}); actions.setTabList(new Control[] {send});
+
+        // At minimum window height, reserve useful history space before reducing
+        // the input from 88 to 56 DIP. The fixed source frame and action stay visible.
+        boolean[] reflowQueued = {false};
+        Runnable queueComposerReflow = () -> {
+            if (panel.isDisposed() || reflowQueued[0]) return;
+            reflowQueued[0] = true;
+            panel.getDisplay().asyncExec(() -> {
+                reflowQueued[0] = false;
+                if (panel.isDisposed()) return;
+                boolean active = !((GridData)activity.row.getLayoutData()).exclude;
+                int width = Math.max(1, panel.getClientArea().width - 2 * layout.marginWidth);
+                int activityHeight = active ? activity.row.computeSize(width, SWT.DEFAULT).y : 0;
+                int fixed = 2 * layout.marginHeight + sourceSize.heightHint
+                    + 2 * composerLayout.marginHeight + composerLayout.verticalSpacing + 40
+                    + (active ? 3 : 2) * layout.verticalSpacing + activityHeight + 128;
+                int height = Math.max(56, Math.min(88, panel.getClientArea().height - fixed));
+                if (querySize.heightHint != height) {
+                    querySize.heightHint = height; panel.layout(true, true);
+                }
+            });
+        };
+        panel.addListener(SWT.Resize, event -> queueComposerReflow.run());
+        activity.row.addListener(SWT.Show, event -> queueComposerReflow.run());
+        activity.row.addListener(SWT.Hide, event -> queueComposerReflow.run());
+        activity.row.addListener(SWT.Resize, event -> queueComposerReflow.run());
 
         var session = context.find(Api.AssistantSessionServiceV1.class); Display display = panel.getDisplay();
         final Request[] active = {null};
@@ -114,8 +155,9 @@ public final class AssistantPanel implements PanelFactory {
                 }
             }
             transcript.setDocument(text); transcript.setSelection(transcript.getCharCount());
-            Control visible = text.isEmpty() ? empty : transcript;
+            Control visible = text.isEmpty() ? empty : transcriptViewport;
             if (historyStack.topControl != visible) { historyStack.topControl = visible; historyArea.layout(); }
+            transcriptViewport.revealEnd();
         };
         Runnable queueRedraw = () -> {
             if (!display.isDisposed() && updatePending.compareAndSet(false, true)) display.asyncExec(() -> {
@@ -131,6 +173,7 @@ public final class AssistantPanel implements PanelFactory {
                 link.setText("<a>" + escape("[" + number + "] " + fragment.title()) + "</a>");
                 link.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
                 Label locator = new Label(sourceContent, SWT.WRAP); theme.apply(locator);
+                locator.setFont(theme.captionFont()); locator.setForeground(theme.muted());
                 locator.setText(SourcePresentation.locator(fragment));
                 locator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
                 link.addListener(SWT.Selection, event -> {
@@ -148,11 +191,9 @@ public final class AssistantPanel implements PanelFactory {
                 });
             }
             sourceContent.layout(true, true);
-            scroller.setMinSize(sourceContent.computeSize(Math.max(200, scroller.getClientArea().width), SWT.DEFAULT));
+            scroller.refresh();
             panel.layout(true, true);
         };
-        scroller.addListener(SWT.Resize, event -> scroller.setMinSize(
-            sourceContent.computeSize(Math.max(200, scroller.getClientArea().width), SWT.DEFAULT)));
         java.util.function.BiConsumer<Request, Api.ServiceError> reportError = (request, error) -> {
             if (error != null && !request.token.cancelled() && !"CANCELLED".equals(error.code())
                 && request.errorShown.compareAndSet(false, true)) host.error(request.id, error);
@@ -233,12 +274,15 @@ public final class AssistantPanel implements PanelFactory {
 
     private static void showSourceCard(Composite parent, Api.Context context, Api.Fragment fragment, String answerWarnings) {
         UiHost host = UiHost.find(parent); UiTheme theme = host.theme();
-        Shell card = new Shell(parent.getShell(), SWT.DIALOG_TRIM | SWT.RESIZE); theme.decorate(card);
+        Shell card = new Shell(parent.getShell(), SWT.DIALOG_TRIM | SWT.RESIZE); theme.decorate(card); theme.installBackdrop(card);
         Display cardDisplay = card.getDisplay(); card.setText("Источник: " + fragment.title());
         GridLayout layout = new GridLayout(1, false);
-        layout.marginWidth = 16; layout.marginHeight = 16; layout.verticalSpacing = 12; card.setLayout(layout);
-        Text details = new Text(card, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL); theme.apply(details);
-        details.setBackground(theme.field()); details.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        layout.marginWidth = 24; layout.marginHeight = 24; layout.verticalSpacing = 16; card.setLayout(layout);
+        SmoothScrollViewport detailsViewport = SmoothScrollViewport.forText(card, theme,
+            SWT.READ_ONLY | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        detailsViewport.setBackground(theme.field());
+        detailsViewport.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        Text details = detailsViewport.text(); theme.apply(details); details.setBackground(theme.field());
         details.setText("Фрагмент: " + fragment.fragmentId() + "\nДокумент: " + fragment.documentId()
             + "\n\nИзвлечённое содержимое JSON (не отображение оригинала):\n" + fragment.text()
             + "\n\nТочные привязки:\n" + Json.stringify(fragment.sourceRefs())
@@ -246,7 +290,9 @@ public final class AssistantPanel implements PanelFactory {
             + "\n\nКачество и предупреждения:\n" + Json.stringify(fragment.fields().get("quality"))
             + "\n" + Json.stringify(fragment.fields().get("warnings"))
             + (answerWarnings.isBlank() ? "" : "\n\nПолные ограничения ответа:\n" + answerWarnings));
+        detailsViewport.refresh();
         Label notice = new Label(card, SWT.WRAP); theme.apply(notice);
+        notice.setFont(theme.captionFont()); notice.setForeground(theme.muted());
         notice.setText("Windows предложит программу для оригинала. Внешняя программа может создавать записи. Точное место остаётся в карточке; переход к нему не гарантируется.");
         notice.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         SoftButton open = new SoftButton(card, theme, "Открыть оригинал через Windows…", false);
@@ -279,7 +325,11 @@ public final class AssistantPanel implements PanelFactory {
             }
         });
         card.addListener(SWT.Dispose, event -> { if (token[0] != null) token[0].cancel(); });
-        card.setSize(640, 540); card.open();
+        card.setSize(640, 540);
+        var ownerBounds = parent.getShell().getBounds(); var cardSize = card.getSize();
+        card.setLocation(ownerBounds.x + (ownerBounds.width - cardSize.x) / 2,
+            ownerBounds.y + (ownerBounds.height - cardSize.y) / 2);
+        card.open();
     }
 
     private static final class Request {
@@ -323,10 +373,12 @@ public final class AssistantPanel implements PanelFactory {
                 }
             });
             stage = new Label(row, SWT.WRAP); theme.apply(stage);
+            stage.setFont(theme.captionFont()); stage.setForeground(theme.muted());
             stage.setData("enterpriseai.ui.activity-stage", Boolean.TRUE);
             GridData stageSize = new GridData(SWT.FILL, SWT.CENTER, true, false);
             stageSize.widthHint = 0; stage.setLayoutData(stageSize);
             elapsed = new Label(row, SWT.RIGHT); theme.apply(elapsed);
+            elapsed.setFont(theme.captionFont()); elapsed.setForeground(theme.muted());
             elapsed.setData("enterpriseai.ui.activity-elapsed", Boolean.TRUE);
             elapsed.setText("· 00:00:00");
             GridData timeSize = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
